@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("📡 Chargement du module Structures — Drone Lands");
 
+  // === CONFIG ===
+  const JSON_URL = "data/structures.json"; // ✅ ton chemin actuel
   const API_URL = "api/manage_structures.php";
-  const JSON_URL = "data/structures.json";
 
+  // === Sélecteurs DOM ===
   const regionFilter = document.getElementById("regionFilter");
   const typeFilter = document.getElementById("typeFilter");
   const allianceFilter = document.getElementById("allianceFilter");
@@ -16,13 +18,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let allStructures = [];
 
-  // --- Charger les données ---
+  // === Charger les données ===
   async function loadData() {
     try {
-      const res = await fetch(JSON_URL + "?v=" + Date.now());
+      const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
       const json = await res.json();
       allStructures = json.structures || [];
-      console.log("✅ Données chargées :", allStructures.length);
+      console.log(`✅ Données chargées : ${allStructures.length}`);
       populateFilters();
       renderTable(allStructures);
     } catch (e) {
@@ -31,13 +33,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // --- Peupler les filtres dynamiques ---
+  // === Filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
 
-    function fillSelect(select, items, defaultLabel) {
+    function fillSelect(select, items, label) {
       if (!select) return;
-      select.innerHTML = `<option value="">${defaultLabel}</option>`;
+      select.innerHTML = `<option value="">${label}</option>`;
       items.forEach(i => {
         const opt = document.createElement("option");
         opt.value = i;
@@ -52,22 +54,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     fillSelect(constellationFilter, uniques("Constellation"), "🌌 Toutes constellations");
   }
 
-  // --- Rendu du tableau ---
+  // === Affichage du tableau ===
   function renderTable(structures) {
     if (!structures || structures.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="8">Aucune structure trouvée</td></tr>`;
-      if (counter) counter.textContent = "Total : 0 structure";
+      counter.textContent = "Total : 0 structure";
       return;
     }
 
     tableBody.innerHTML = "";
 
-    // Ajout des lignes
     structures.forEach(s => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${s["Nom du système"] || "-"}</td>
-        <td>${s["Remarques"] || "-"}</td>
+        <td>${s["Nom de la structure"] || s["Remarques"] || "-"}</td>
         <td>${s["Région"] || "-"}</td>
         <td>${s["Constellation"] || "-"}</td>
         <td>${s["Type"] || "-"}</td>
@@ -78,17 +79,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       tableBody.appendChild(tr);
     });
 
-    if (counter) counter.textContent = `Total : ${structures.length} structures`;
+    counter.textContent = `Total : ${structures.length} structures`;
   }
 
-  // --- Filtrage dynamique ---
+  // === Filtres dynamiques ===
   function filterAndRender() {
-    const search = (searchInput?.value || "").toUpperCase();
-    const region = regionFilter?.value || "";
-    const type = typeFilter?.value || "";
-    const alliance = allianceFilter?.value || "";
-    const constellation = constellationFilter?.value || "";
-    const reinforcedOnly = reinforcedFilter?.checked;
+    const search = (searchInput.value || "").toUpperCase();
+    const region = regionFilter.value;
+    const type = typeFilter.value;
+    const alliance = allianceFilter.value;
+    const constellation = constellationFilter.value;
+    const reinforcedOnly = reinforcedFilter.checked;
 
     const filtered = allStructures.filter(s => {
       if (region && s["Région"] !== region) return false;
@@ -103,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderTable(filtered);
   }
 
-  // --- Événements sur les filtres ---
+  // === Événements ===
   [regionFilter, typeFilter, allianceFilter, constellationFilter, reinforcedFilter, searchInput].forEach(el => {
     if (el) el.addEventListener("input", filterAndRender);
   });
@@ -112,11 +113,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     resetBtn.addEventListener("click", () => {
       [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(el => el.value = "");
       if (reinforcedFilter) reinforcedFilter.checked = false;
-      if (searchInput) searchInput.value = "";
+      searchInput.value = "";
       filterAndRender();
     });
   }
 
-  // --- Lancement initial ---
+  // === Initialisation ===
   await loadData();
 });
