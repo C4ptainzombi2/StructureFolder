@@ -120,4 +120,83 @@ const JSON_URL = "api/manage_structures.php";
 
   // === Initialisation ===
   await loadData();
+
+  // --- AJOUT / MISE À JOUR D’UNE STRUCTURE ---
+  const addButton = document.getElementById("addButton");
+  const pasteArea = document.getElementById("pasteArea");
+  const feedback = document.getElementById("pasteFeedback");
+
+  if (addButton) {
+    addButton.addEventListener("click", async () => {
+      const text = pasteArea.value.trim();
+      if (!text) {
+        feedback.textContent = "⚠️ Veuillez coller un texte avant d’ajouter.";
+        return;
+      }
+
+      // Extraction des infos depuis le texte collé
+      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+      const firstLine = lines[0] || "";
+      const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
+      const system = match ? match[1].trim() : "";
+      const structureName = match ? match[2].trim() : firstLine;
+
+      // Extraction de la date
+      let date = "";
+      const dateMatch = text.match(/(\d{4}[.\-\/]\d{2}[.\-\/]\d{2})[^\d]*(\d{2}:\d{2}:\d{2})/);
+      if (dateMatch) {
+        date = dateMatch[1].replace(/[.\/]/g, "-") + " " + dateMatch[2];
+      }
+
+      // Détection du statut renforcé
+      const isReinforced = /reinforced/i.test(text);
+
+      // Charger les structures existantes
+      const res = await fetch("data/structures.json");
+      const data = await res.json();
+      const structures = data.structures || [];
+
+      // Recherche d'une correspondance
+      const existing = structures.find(s =>
+        s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
+        s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
+      );
+
+      if (!existing) {
+        feedback.textContent = "❌ Structure non trouvée dans les données existantes.";
+        return;
+      }
+
+      // Préparation des données mises à jour
+      const updated = {
+        ...existing,
+        "Nom du système": system,
+        "Nom de la structure": structureName,
+        "Date": date || existing["Date"] || "",
+        "Renforcé": isReinforced ? "oui" : "non"
+      };
+
+      feedback.textContent = "⏳ Mise à jour en cours...";
+
+      try {
+        const postRes = await fetch("api/manage_structures.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        });
+
+        const result = await postRes.json();
+        if (result.success) {
+          feedback.textContent = "✅ Structure mise à jour avec succès.";
+          pasteArea.value = "";
+          await loadData();
+        } else {
+          feedback.textContent = "❌ Erreur : " + (result.error || "mise à jour impossible.");
+        }
+      } catch (err) {
+        console.error("Erreur lors de la mise à jour :", err);
+        feedback.textContent = "❌ Erreur réseau ou serveur.";
+      }
+    });
+  }
 });

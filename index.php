@@ -19,10 +19,10 @@ include __DIR__ . '/includes/header.php';
     <p id="counter">Total : 0 structure</p>
   </header>
 
-  <section id="pasteAreaContainer">
-    <textarea id="pasteArea" placeholder="Collez ici les données copiées du jeu... (ex : ZJ-5IS - Astrahus - Alliance)"></textarea>
-    <button id="addButton">Ajouter / Mettre à jour</button>
-  </section>
+<textarea id="pasteArea" placeholder="Collez ici les infos (ex : R3P0-Z - Station ... Reinforced until ...)"></textarea>
+<button id="addButton">➕ Ajouter / Mettre à jour</button>
+<div id="pasteFeedback" style="margin-top:5px;color:#ccc;"></div>
+
 
   <table id="structuresTable">
     <thead>
