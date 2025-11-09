@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${s["Type"] || "-"}</td>
           <td>${s["Alliance / Corporation"] || "-"}</td>
           <td>${s["Date"] || "-"}</td>
+          <td>${$["Temps restant"] || "-"}</td>
           <td>${s["Renforcée ?"] || s["Renforcé"] || "❌"}</td>
         `;
         tableBody.appendChild(tr);
