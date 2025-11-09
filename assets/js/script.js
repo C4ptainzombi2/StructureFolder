@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("📡 Chargement du module Structures — Drone Lands");
 
   // === CONFIG ===
-  const JSON_URL = "data/structures.json"; // ✅ ton chemin actuel
+const JSON_URL = "api/manage_structures.php";
   const API_URL = "api/manage_structures.php";
 
   // === Sélecteurs DOM ===
