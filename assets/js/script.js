@@ -156,11 +156,13 @@ const JSON_URL = "api/manage_structures.php";
       const data = await res.json();
       const structures = data.structures || [];
 
-      // Recherche d'une correspondance
-      const existing = structures.find(s =>
-        s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
-        s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
-      );
+     // Recherche plus souple (ignore la casse et les espaces)
+            const normalize = str => (str || "").toLowerCase().replace(/\s+/g, "").trim();
+
+            const existing = structures.find(s =>
+            normalize(s["Nom du système"]) === normalize(system) &&
+            normalize(s["Nom de la structure"]) === normalize(structureName)
+            );
 
       if (!existing) {
         feedback.textContent = "❌ Structure non trouvée dans les données existantes.";
