@@ -1,0 +1,246 @@
+{
+    "region": "Domain",
+    "constellations": {
+        "Throne Worlds": [
+            "AMARR",
+            "BORANAI",
+            "HEDION",
+            "MABNEN",
+            "TOSHABIA",
+            "IRNIN",
+            "KEHOUR",
+            "MARTHA",
+            "SIMBELOUD",
+            "EBIDAN"
+        ],
+        "Mobit": [
+            "AKHRAGAN",
+            "MIKHIR",
+            "BASHAKRU",
+            "SUKIRAH",
+            "SHURIA",
+            "NARAI",
+            "ZIONA"
+        ],
+        "Yestadan": [
+            "GAHA",
+            "ARMALA",
+            "MUREMA",
+            "CAILANAR",
+            "ILONARAV",
+            "UCHAT"
+        ],
+        "Mazake": [
+            "JOPPAYA",
+            "PELKIA",
+            "RAREN",
+            "MAZITAH",
+            "HIRAMU",
+            "SAKHTI",
+            "ALDALI",
+            "HUTIAN",
+            "NOLI",
+            "NOMASH"
+        ],
+        "Kekah": [
+            "AGHESI",
+            "FABIN",
+            "AIRSHAZ",
+            "PATZCHA",
+            "CHARRA"
+        ],
+        "Sosarir": [
+            "THEBEKA",
+            "RASILE",
+            "NERERUT",
+            "SITANAN",
+            "VASHKAH",
+            "ARDISHAPUR PRIME",
+            "GID",
+            "DAKBA",
+            "NIFSHED",
+            "SHUMAM"
+        ],
+        "Armi": [
+            "MILAL",
+            "SOBENAH",
+            "BOURAR",
+            "RAMMI",
+            "ARODAN",
+            "RIMBAH"
+        ],
+        "Mulata": [
+            "MAMENKHANAR",
+            "SEIRADIH",
+            "ARERA",
+            "HIZHARA",
+            "NEZIEL",
+            "AHALA",
+            "KNOPHTIKOO",
+            "RUCHY",
+            "HAI"
+        ],
+        "Nashar": [
+            "SADYE",
+            "BIKA",
+            "ARSHAT",
+            "JERMA",
+            "MIYELI",
+            "REYI"
+        ],
+        "Kehina": [
+            "MOUSSOU",
+            "NADOHMAN",
+            "SAHDIL",
+            "ESTEBAN",
+            "LUROMOOH",
+            "NALU"
+        ],
+        "Avib": [
+            "JARSHITSAN",
+            "HADONOO",
+            "AZIZORA",
+            "AHMAK",
+            "SHABURA",
+            "ADIA"
+        ],
+        "Liela": [
+            "EBO",
+            "AVAIR",
+            "RAYL",
+            "ASOUTAR",
+            "PORSHARRAH",
+            "TASTELA",
+            "CLARELAM"
+        ],
+        "Norgoh": [
+            "ISAMM",
+            "EBTESHAM",
+            "ARTOUN",
+            "SAFIZON",
+            "ZATSYAKI",
+            "EBA",
+            "BHIZHEBA",
+            "FORA"
+        ],
+        "Fua": [
+            "FAHRUNI",
+            "SAHDA",
+            "NAGUTON",
+            "EALUR",
+            "SHAJARLEG",
+            "BASAN",
+            "AKILA",
+            "AMOD"
+        ],
+        "Kashag": [
+            "UNEFSIH",
+            "MISTA",
+            "VALMU",
+            "SIBOT",
+            "ANDABIAR",
+            "KHERAM"
+        ],
+        "Parud": [
+            "ARBAZ",
+            "PENIRGMAN",
+            "CHAVEN",
+            "KHOPA",
+            "ASHAB",
+            "ORKASHU",
+            "DEEPARI"
+        ],
+        "Zemont": [
+            "YOUL",
+            "EKID",
+            "NAKRI",
+            "ZAIMETH",
+            "SHARHELUND",
+            "MAI"
+        ],
+        "Yekti": [
+            "SHARJI",
+            "KUDI",
+            "BAHROMAB",
+            "MADIRMILIRE",
+            "FABUM",
+            "SAANA"
+        ],
+        "Hoosa": [
+            "TESHI",
+            "SAYARTCHEN",
+            "GOSALAV",
+            "SORZIELANG",
+            "SOMOUH",
+            "ABAIM",
+            "HORIR"
+        ],
+        "Chardu": [
+            "IDES",
+            "YEERAMOUN",
+            "ANILA",
+            "PEDEL",
+            "ETAV",
+            "SAHERI",
+            "LAHNINA"
+        ],
+        "Maddam": [
+            "MAHROKHT",
+            "ALKABSI",
+            "SARUM PRIME",
+            "HAMA",
+            "IRNAL",
+            "BAGODAN",
+            "MURZI",
+            "CHESOH",
+            "HANAN"
+        ],
+        "Qeti": [
+            "HERILA",
+            "CHEMILIP",
+            "RARAVATH",
+            "HISOUFAD",
+            "JESOYEH",
+            "HAHDA",
+            "NAMAILI",
+            "AFIVAD",
+            "UZIGH",
+            "ERZOH"
+        ],
+        "Mofa": [
+            "MERZ",
+            "MIAKIE",
+            "SIRKAHRI",
+            "FASWIBA",
+            "HAYUMTOM",
+            "ZANKA",
+            "GALEH"
+        ],
+        "Maseend": [
+            "YUHELIA",
+            "MAIAH",
+            "HAMSE",
+            "BARIRA",
+            "LASHKAI",
+            "ZHILSHINOU",
+            "JASWELU",
+            "ANA"
+        ],
+        "Nakid": [
+            "WAROUH",
+            "JAMBU",
+            "BITTANSHAL",
+            "ARTON",
+            "SIEH",
+            "MADIMAL"
+        ],
+        "Jakemhih": [
+            "MAMET",
+            "HOSHOUN",
+            "BIPHI",
+            "ZIRIERT",
+            "MISABA",
+            "REPHIRIB"
+        ]
+    }
+}

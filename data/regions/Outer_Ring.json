@@ -1,0 +1,82 @@
+{
+    "region": "Outer Ring",
+    "constellations": {
+        "Crown": [
+            "C0T-77",
+            "RL-KT0",
+            "UO9-YG",
+            "ZQP-QV",
+            "P-NUWP",
+            "ZJQH-S",
+            "E9G-MT",
+            "TQ-RR8"
+        ],
+        "Heart": [
+            "1L-BHT",
+            "D5IW-F",
+            "F-XWIN",
+            "4C-B7X",
+            "LGUZ-1",
+            "BF-SDP",
+            "F5FO-U"
+        ],
+        "Belt": [
+            "5WAE-M",
+            "0-WVQS",
+            "0-9UHT",
+            "M-NKZM",
+            "H-M1BY",
+            "J1H-R4"
+        ],
+        "Wield": [
+            "J9SH-A",
+            "JKJ-VJ",
+            "RTX0-S",
+            "33FN-P",
+            "NM-OEA",
+            "MT-2VJ"
+        ],
+        "Sword": [
+            "3HQC-6",
+            "OX-RGN",
+            "R-OCBA",
+            "GA-2V7",
+            "DB-6W4",
+            "7-692B"
+        ],
+        "Regalia": [
+            "L3-XYO",
+            "AN-G54",
+            "ZXI-K2",
+            "T-Z6J2",
+            "CT7-5V",
+            "2JJ-0E"
+        ],
+        "Scepter": [
+            "B0C-LD",
+            "NP6-38",
+            "G-YT55",
+            "IZ-AOB",
+            "G5-EN3",
+            "W-Z3HW"
+        ],
+        "Velvet": [
+            "W2F-ZH",
+            "BMU-V1",
+            "ZXC8-1",
+            "LBV-Q1",
+            "Z-40CG",
+            "O-RIDF"
+        ],
+        "Sole": [
+            "A-5M31",
+            "BOE7-P",
+            "E-GCX0",
+            "VBFC-8",
+            "YVA-F0",
+            "0D-CHA",
+            "A2V6-6",
+            "VJ0-81"
+        ]
+    }
+}

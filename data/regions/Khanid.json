@@ -1,0 +1,113 @@
+{
+    "region": "Khanid",
+    "constellations": {
+        "Nohshayess": [
+            "GOUSOVIBA",
+            "NEYI",
+            "KIHTALED",
+            "IPREF",
+            "AGIL",
+            "KHANID PRIME",
+            "JACHANU",
+            "SAZRE",
+            "BUKAH"
+        ],
+        "Finaka": [
+            "ERVEKAM",
+            "MASHTARMEM",
+            "SEHSASEZ",
+            "OSIS",
+            "GEZTIC",
+            "YEZARA",
+            "KAHAH",
+            "SALOTI",
+            "HISHAI"
+        ],
+        "Amdimmah": [
+            "MOLEA",
+            "GIDALI",
+            "PALAS",
+            "SAFSHELA",
+            "RETEKA",
+            "MONIYYUKU"
+        ],
+        "Youledian": [
+            "LANSEZ",
+            "KEBERZ",
+            "NOURBAL",
+            "ARZANNI",
+            "ASHMARIR",
+            "KAIRA"
+        ],
+        "Sib": [
+            "BADIVEFI",
+            "TALIDAL",
+            "ASHI",
+            "TZASHRAH",
+            "EFA",
+            "MORO",
+            "SABUSI",
+            "AINSAN"
+        ],
+        "Seevadin": [
+            "CLAINI",
+            "GEHI",
+            "SESHALA",
+            "VEZILA",
+            "HAM",
+            "UPT",
+            "HEMOUNER"
+        ],
+        "Fekhoya": [
+            "AFNAKAT",
+            "COL",
+            "CHAMEMI",
+            "FIRBHA",
+            "TEGHEON",
+            "BASHYAM",
+            "PARSES",
+            "BALANAZ"
+        ],
+        "Arniri": [
+            "EDANI",
+            "DANERA",
+            "BOMANA",
+            "RAHABEDA",
+            "AUREJET",
+            "RILERA"
+        ],
+        "Akar": [
+            "AMAFI",
+            "HAKANA",
+            "ASHKOO",
+            "BARATAR",
+            "ARZIEH",
+            "NAHRNEDER"
+        ],
+        "Homroon": [
+            "NANDEZA",
+            "DIMOOHAN",
+            "CHITIAMEM",
+            "KUHRI",
+            "ZAHEFEUS",
+            "ZEPHAN",
+            "NEDA"
+        ],
+        "Budar": [
+            "GOUDIYAH",
+            "SASSECHO",
+            "TIMUDAN",
+            "IBANI",
+            "CABEKI",
+            "IRMALIN"
+        ],
+        "Alpakian": [
+            "NAKIS",
+            "HEZERE",
+            "FANATHOR",
+            "ZIRSEM",
+            "POUT",
+            "RAFEME"
+        ]
+    }
+}

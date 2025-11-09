@@ -1,0 +1,64 @@
+{
+    "region": "Black Rise",
+    "constellations": {
+        "Urpiken": [
+            "HYKANIMA",
+            "OKAGAIKEN",
+            "KEHJARI",
+            "VILLASEN",
+            "SARENEMI",
+            "ASHITSU",
+            "KORASEN",
+            "IENAKKAMON"
+        ],
+        "Okakuola": [
+            "HIRRI",
+            "KEDAMA",
+            "OINASIKEN",
+            "NOTORAS",
+            "RAKAPAS",
+            "TEIMO",
+            "IWISODA",
+            "NISUWA",
+            "PYNEKASTOH",
+            "REITSATO"
+        ],
+        "Inolari": [
+            "KINAKKA",
+            "RAIHBAKA",
+            "INNIA",
+            "IRALAJA",
+            "MARTOH",
+            "EHA",
+            "PAVANAKKA"
+        ],
+        "Aokinen": [
+            "UCHOMIDA",
+            "SAMANUNI",
+            "ASTOH",
+            "ONNAMON",
+            "ROHAMAA",
+            "UUHULANEN",
+            "TSURUMA"
+        ],
+        "Ishaga": [
+            "HIKKOKEN",
+            "ENALURI",
+            "AIVONEN",
+            "HALLANEN",
+            "AKIDAGI",
+            "IMMURI",
+            "NENNAMAILA"
+        ],
+        "Kurala": [
+            "OKKAMON",
+            "VAARALEN",
+            "ASAKAI",
+            "PRISM",
+            "MUSHIKEGI",
+            "TESKANEN",
+            "ELUNALA",
+            "IKOSKIO"
+        ]
+    }
+}

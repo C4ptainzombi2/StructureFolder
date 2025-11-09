@@ -1,0 +1,113 @@
+{
+    "region": "Immensea",
+    "constellations": {
+        "Q-IPAA": [
+            "NS2L-4",
+            "QI-S9W",
+            "B-S347",
+            "PPFB-U",
+            "AF0-V5",
+            "B-A587"
+        ],
+        "K-ZKBM": [
+            "Y19P-1",
+            "B9E-H6",
+            "SPBS-6",
+            "JDAS-0",
+            "A4B-V5",
+            "LN-56V",
+            "Y2-QUV",
+            "O7-7UX"
+        ],
+        "MY-QQI": [
+            "Z8-81T",
+            "XD-JW7",
+            "DY-P7Q",
+            "H-RXNZ",
+            "ZBP-TP",
+            "XVV-21"
+        ],
+        "RTCU-5": [
+            "GXK-7F",
+            "EA-HSA",
+            "78TS-Q",
+            "WYF8-8",
+            "CJNF-J",
+            "FYI-49"
+        ],
+        "C73-U5": [
+            "RF6T-8",
+            "ZJA-6U",
+            "94FR-S",
+            "Q-HJ97",
+            "GM-0K7",
+            "I-NGI8",
+            "R-ZUOL",
+            "E1F-LK",
+            "Z4-QLD"
+        ],
+        "K-N3MD": [
+            "QE-E1D",
+            "LK1K-5",
+            "REB-KR",
+            "Z-H2MA",
+            "L-5JCJ",
+            "B-KDOZ",
+            "4-GB14"
+        ],
+        "4MY-AB": [
+            "PH-NFR",
+            "DW-N2S",
+            "W-FHWJ",
+            "X-6WC7",
+            "D-BAMJ",
+            "JKWP-U",
+            "RHE7-W",
+            "F76-8Q"
+        ],
+        "Y46-EN": [
+            "O3Z5-G",
+            "4DV-1T",
+            "XS-K1O",
+            "FN-DSR",
+            "B-R5RB",
+            "7-ZT1Y"
+        ],
+        "EL8Z-M": [
+            "9-XN3F",
+            "AC-7LZ",
+            "LBA-SO",
+            "Y-FZ5N",
+            "E8-YS9",
+            "U79-JF"
+        ],
+        "YENX-U": [
+            "B2-UQW",
+            "U9U-TQ",
+            "6-I162",
+            "08-N7Q",
+            "Y-C4AL",
+            "CKX-RW",
+            "8X6T-8"
+        ],
+        "WTE-CK": [
+            "W4E-IT",
+            "OP9L-F",
+            "J-QA7I",
+            "2O-EEW",
+            "Y-N4EF",
+            "7YSF-E"
+        ],
+        "IJE6-J": [
+            "KCDX-7",
+            "O7-VJ5",
+            "FRTC-5",
+            "M-ZJWJ",
+            "R-ORB7",
+            "RU-PT9",
+            "DR-427",
+            "NI-J0B",
+            "QN-6J2"
+        ]
+    }
+}

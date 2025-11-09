@@ -1,0 +1,138 @@
+{
+    "region": "Genesis",
+    "constellations": {
+        "Nazdirer": [
+            "SHERA",
+            "LOR",
+            "CLEYD",
+            "VECAMIA",
+            "AHBAZON",
+            "ATREEN"
+        ],
+        "Sanctum": [
+            "PAKHSHI",
+            "TAR",
+            "TEKAIMA",
+            "MANARQ",
+            "EMSAR",
+            "OURAPHEH",
+            "YULAI",
+            "TARTA",
+            "KEMERK"
+        ],
+        "Ashela": [
+            "NARDIARANG",
+            "ZIASAD",
+            "SIBE",
+            "MAKHWASAN",
+            "ZARER",
+            "TOON",
+            "HESARID"
+        ],
+        "Ekrin": [
+            "ASHOKON",
+            "AVYUH",
+            "APANAKE",
+            "SHEROO",
+            "SOSH",
+            "SIGGA",
+            "KESEYA"
+        ],
+        "Mih": [
+            "ZOOHEN",
+            "SERREN",
+            "HADJI",
+            "ASSEZ",
+            "ALAL",
+            "DOM-APHIS",
+            "IDERION",
+            "CHAMJA"
+        ],
+        "Ubar": [
+            "DIADERI",
+            "MANATIRID",
+            "PASHANAI",
+            "PAMAH",
+            "LERAN",
+            "BEKE",
+            "MALMA"
+        ],
+        "Meli": [
+            "NORANIM",
+            "CHEJ",
+            "MENAI",
+            "ARING",
+            "GAYAR",
+            "PETIDU",
+            "NAKA"
+        ],
+        "Reya": [
+            "MADOMI",
+            "GERGISH",
+            "TAHLI",
+            "IMYA",
+            "KOBAM",
+            "HIRIZAN"
+        ],
+        "Charak": [
+            "ANYED",
+            "HABU",
+            "ASANOT",
+            "ANZALAISIO",
+            "CHIGA",
+            "ABHAN"
+        ],
+        "Makh": [
+            "SAPHTHAR",
+            "ITRIN",
+            "BANTISH",
+            "KORRIDI",
+            "LELA",
+            "KERI"
+        ],
+        "Monalaz": [
+            "ANTEM",
+            "DJIMAME",
+            "MOZZIDIT",
+            "ANGUR",
+            "HANGOND",
+            "ACCESS"
+        ],
+        "Aven": [
+            "BHERDASOPT",
+            "GONDITSA",
+            "SIMELA",
+            "SHALNE",
+            "SHAPISIN",
+            "OLIN",
+            "GALNAFSAD",
+            "OTAKOD"
+        ],
+        "Kihkounad": [
+            "AZEDI",
+            "SHARZA",
+            "PIRNA",
+            "SESHI",
+            "ANARA",
+            "PARTOD"
+        ],
+        "EVE": [
+            "EXIT",
+            "GATEWAY",
+            "CENTRAL POINT",
+            "PROMISED LAND",
+            "DEAD END",
+            "NEW EDEN",
+            "CANARD"
+        ],
+        "Fabas": [
+            "GIRANI-FA",
+            "NASRERI",
+            "HEORAH",
+            "EBASEZ",
+            "AGAL",
+            "DOZA",
+            "BANIA"
+        ]
+    }
+}

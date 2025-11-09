@@ -1,0 +1,73 @@
+{
+    "region": "Devoid",
+    "constellations": {
+        "Semou": [
+            "TZVI",
+            "RAA",
+            "SIFILAR",
+            "ARZAD",
+            "OYEMAN",
+            "EZZARA"
+        ],
+        "Ryra": [
+            "ODIN",
+            "ESESCAMA",
+            "CHOONKA",
+            "THASINAZ",
+            "DIHRA",
+            "DITAL"
+        ],
+        "Kisana": [
+            "EREDAN",
+            "OHIDE",
+            "SASOUTIKH",
+            "GHETH",
+            "LISUDEH",
+            "MEHATOOR"
+        ],
+        "Jayai": [
+            "ROUSHZAR",
+            "LABAPI",
+            "ARAYAR",
+            "ASGHED",
+            "TARARAN",
+            "SOSAN",
+            "HALMAH"
+        ],
+        "Kabo": [
+            "RAHADALON",
+            "SOOSAT",
+            "IBASH",
+            "ITSYAMIL",
+            "MENDORI",
+            "USSAD"
+        ],
+        "Daredan": [
+            "NAKATRE",
+            "LADDIAHA",
+            "HAKSHMA",
+            "UADELAH",
+            "AKES",
+            "RIAVAYED",
+            "HATI"
+        ],
+        "Abthi": [
+            "NAEEL",
+            "LOWER DEBYL",
+            "EHNOUM",
+            "UPPER DEBYL",
+            "SHASTAL",
+            "THAKALA"
+        ],
+        "Enka": [
+            "MILI",
+            "FAKTUN",
+            "HALENAN",
+            "ULERAH",
+            "UKTIAD",
+            "NIDEBORA",
+            "ARVEYIL",
+            "PALPIS"
+        ]
+    }
+}

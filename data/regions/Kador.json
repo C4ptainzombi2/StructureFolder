@@ -1,0 +1,116 @@
+{
+    "region": "Kador",
+    "constellations": {
+        "Megeh": [
+            "HIROUDEH",
+            "DRESI",
+            "APHEND",
+            "ROMI",
+            "ZORORZIH",
+            "AHARALEL",
+            "GENSELA"
+        ],
+        "Kakol": [
+            "GHESIS",
+            "GAMDIS",
+            "JOAMMA",
+            "GONAN",
+            "JORAMOK",
+            "NEBURAB",
+            "ABAND"
+        ],
+        "Febihkin": [
+            "UANIM",
+            "MURINI",
+            "ASKONAK",
+            "NORDAR",
+            "KADOR PRIME",
+            "KHAFIS",
+            "DANTAN"
+        ],
+        "Trigentia": [
+            "TURBA",
+            "SONAMA",
+            "HALIBAI",
+            "SUNER",
+            "INIS-ILIX",
+            "KOTHE",
+            "AKHWA"
+        ],
+        "Heti": [
+            "ANSASOS",
+            "DEHROKH",
+            "BORDAN",
+            "ZIMMEM",
+            "CHANEYA",
+            "OBEREN"
+        ],
+        "Parrosa": [
+            "FINID",
+            "YAREBAP",
+            "MANDOO",
+            "MIAH",
+            "PEYIRI",
+            "KAMDA"
+        ],
+        "Favo": [
+            "RAYERET",
+            "BUSHEMAL",
+            "ARDHIS",
+            "GASAVAK",
+            "IAOKIT",
+            "MENRI"
+        ],
+        "Araz": [
+            "CHANOUN",
+            "GARISAS",
+            "APHI",
+            "JAKRI",
+            "NIDUPAD",
+            "ZIMSE",
+            "KOONA",
+            "MUNORY"
+        ],
+        "Ahrnot": [
+            "HOSTAKOH",
+            "YOOH",
+            "JESHIDEH",
+            "HILMAR",
+            "KASI",
+            "SHURA"
+        ],
+        "Pezarba": [
+            "MOD",
+            "OMAM",
+            "BERSYRIM",
+            "SECHMAREN",
+            "ZINOO",
+            "HIREMIR"
+        ],
+        "Naloran": [
+            "HIKANSOG",
+            "SYRIKOS",
+            "YEBOUZ",
+            "HAPALA",
+            "SALAH",
+            "AKHMOH"
+        ],
+        "Moghiz": [
+            "JENNIM",
+            "ELMED",
+            "SHAGGOTH",
+            "USTNIA",
+            "KOORENG",
+            "MININ",
+            "YEHNIFI"
+        ],
+        "Qermi": [
+            "SHEMAH",
+            "ASRIOS",
+            "ITHAR",
+            "TELANG",
+            "LAZARA",
+            "ZORRABED"
+        ]
+    }
+}

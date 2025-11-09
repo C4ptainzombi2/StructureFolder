@@ -1,0 +1,154 @@
+{
+    "region": "Derelik",
+    "constellations": {
+        "San Matar": [
+            "TANOO",
+            "LASHESIH",
+            "AKPIVEM",
+            "JARK",
+            "SASTA",
+            "ZAID",
+            "YUZIER",
+            "NIRBHI"
+        ],
+        "Anares": [
+            "SOOMA",
+            "CHIDAH",
+            "SHENELA",
+            "ASABONA",
+            "ONSOOH",
+            "SHAMAHI",
+            "SENDAYA",
+            "NAZHGETE"
+        ],
+        "Mamouna": [
+            "FUTZCHAG",
+            "KAZNA",
+            "PODION",
+            "LILMAD",
+            "JAYNELEB"
+        ],
+        "Kalangin": [
+            "FOVIHI",
+            "KIEREEND",
+            "RASHY",
+            "ORDIZE",
+            "PSASA",
+            "ESHTAH",
+            "LACHAILES",
+            "KASRASI"
+        ],
+        "Hevaka": [
+            "MOHAS",
+            "HASIARI",
+            "RADIMA",
+            "ALKEZ",
+            "NIMAMBAL",
+            "YISHINOON",
+            "UPLINGUR"
+        ],
+        "Sazdih": [
+            "DOOZ",
+            "BAYUKA",
+            "UZISTOON",
+            "BAIRSHIR",
+            "MOH",
+            "SARI"
+        ],
+        "Ananah": [
+            "FASPERA",
+            "JAYMASS",
+            "MIFRATA",
+            "MAJAMAR",
+            "IHAL",
+            "CAMAL",
+            "FERA"
+        ],
+        "Mossas": [
+            "JUDDI",
+            "MASPAH",
+            "IBARIA",
+            "SHALA",
+            "ZEMALU",
+            "KHANKENIRDIA"
+        ],
+        "Mekashtad": [
+            "NIKH",
+            "AMPHAR",
+            "SALASHAYAMA",
+            "JANUS",
+            "AGHA",
+            "IOSANTIN",
+            "ORVA",
+            "ZET",
+            "AKHRAD",
+            "PIROHDIM",
+            "SHARIR",
+            "USROH",
+            "THIARER"
+        ],
+        "Bedaleya": [
+            "GOMATI",
+            "JANGAR",
+            "NAKAH",
+            "IRSHAH",
+            "HASATEEM",
+            "ASSAH"
+        ],
+        "Orshed": [
+            "TIDACHA",
+            "ODLIB",
+            "JOFAN",
+            "MILU",
+            "YADI",
+            "BUFTIAR"
+        ],
+        "Oraron": [
+            "JARIZZA",
+            "EJAHI",
+            "ASGHATIL",
+            "BAR",
+            "SUCHA",
+            "GELHAN",
+            "AKEVA"
+        ],
+        "Aguh": [
+            "SOSA",
+            "ILAHED",
+            "ESHWIL",
+            "ARANIR",
+            "ISHKAD",
+            "HAHYIL"
+        ],
+        "Mal": [
+            "ASILEM",
+            "MAHNAGH",
+            "SHACH",
+            "KEHRARA",
+            "ARENA",
+            "TIMEOR",
+            "UHTAFAL",
+            "DYSA",
+            "SERAD",
+            "MAHTI",
+            "ABHA"
+        ],
+        "Subi": [
+            "SHEDOO",
+            "GAMIS",
+            "NIERIL",
+            "BERTA",
+            "BEKIRDOD",
+            "HOTHOMOUH"
+        ],
+        "Joas": [
+            "ARNOLA",
+            "ASTABIH",
+            "UBTES",
+            "BIMENER",
+            "KENOBANALA",
+            "KHABI",
+            "UANZIN"
+        ]
+    }
+}

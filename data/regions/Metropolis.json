@@ -1,0 +1,209 @@
+{
+    "region": "Metropolis",
+    "constellations": {
+        "Barvigrard": [
+            "BEI",
+            "UTTINDAR",
+            "HAGILUR",
+            "ANHER",
+            "RAGNARG",
+            "HEK"
+        ],
+        "Tiat": [
+            "HROR",
+            "AMO",
+            "RESBROKO",
+            "HADOZEKO",
+            "ARDAR",
+            "AUNER"
+        ],
+        "Aldodan": [
+            "EVATI",
+            "OFSTOLD",
+            "TODIFRAUAN",
+            "HELGATILD",
+            "ARNSTUR",
+            "LASLEINUR",
+            "ARNHER",
+            "BRIN"
+        ],
+        "Ani": [
+            "NAKUGARD",
+            "TRAUN",
+            "URIOK",
+            "BARKRIK",
+            "INDER",
+            "TVINK",
+            "LANNGISI",
+            "HJORAMOLD"
+        ],
+        "Fribrodi": [
+            "DUDREDA",
+            "HAKISALKI",
+            "ARWA",
+            "ARIFSDALD",
+            "ANSEN"
+        ],
+        "Eugidi": [
+            "FLOSESWIN",
+            "UISPER",
+            "ASET",
+            "EYTJANGARD",
+            "TURNUR",
+            "ISBRABATA",
+            "VIMEINI",
+            "AVENOD"
+        ],
+        "Essin": [
+            "FRERSTORN",
+            "ONTORN",
+            "SIREKUR",
+            "GEBULADI",
+            "EBOLFER",
+            "ESZUR",
+            "HOFJALDGUND"
+        ],
+        "Angils": [
+            "KLOGORI",
+            "ORFROLD",
+            "EGMAR",
+            "TAFF",
+            "UALKIN",
+            "GUKARLA"
+        ],
+        "Gedur": [
+            "ARLULF",
+            "BRUNDAKUR",
+            "STIRHT",
+            "ILLUIN",
+            "NEDEGULF",
+            "ALDILUR",
+            "ALF",
+            "ABRAT",
+            "ORGRON"
+        ],
+        "Lorundio": [
+            "EUST",
+            "FLOST",
+            "TODRIR",
+            "ASGEIR",
+            "EVULDGENZO",
+            "ONGUND"
+        ],
+        "Ankard": [
+            "JONDIK",
+            "OLBRA",
+            "ALTRINUR",
+            "VILUR",
+            "RESET",
+            "EYGFE",
+            "FILDAR"
+        ],
+        "Jonar": [
+            "EILUVODI",
+            "FREATLIDUR",
+            "ROLEINN",
+            "MATURAT",
+            "BONGVEBER",
+            "ANBALD",
+            "VORSK"
+        ],
+        "Stadakorn": [
+            "HJORTUR",
+            "EGBONBET",
+            "TOTKUBAD",
+            "MEIMUNGEN",
+            "AGTVER",
+            "DATULEN",
+            "SITUNER",
+            "TAMEKAMUR",
+            "EVETTULLUR",
+            "EREGO"
+        ],
+        "Meinigefur": [
+            "LEURTMAR",
+            "RYDDINJORN",
+            "ARLEK",
+            "ELGOI",
+            "ERAM",
+            "YRMORI",
+            "ALDAGOLF",
+            "EMBOD"
+        ],
+        "Aptetter": [
+            "ALDRAT",
+            "URNHARD",
+            "HARDBAKO",
+            "ERSTUR",
+            "FREDAGOD",
+            "LIBOLD"
+        ],
+        "Ergruk": [
+            "WIRDALEN",
+            "NEIN",
+            "ENDEN",
+            "ERSTET",
+            "ANSTARD",
+            "OSVESTMUNNUR"
+        ],
+        "Brazinget": [
+            "HILFHURMUR",
+            "GEFFUR",
+            "OPPOLD",
+            "TRATOKARD",
+            "LUMEGEN",
+            "GEDUGAUD"
+        ],
+        "Frar": [
+            "POLSTODUR",
+            "HEBISA",
+            "TOLLUS",
+            "OGOTEN",
+            "EARLED",
+            "ADERKAN",
+            "ANSHER"
+        ],
+        "Inkelm": [
+            "EARWIK",
+            "FINANAR",
+            "MOSELGI",
+            "MATEBER",
+            "ILUIN",
+            "OFAGE"
+        ],
+        "Panorad": [
+            "JOSEKORN",
+            "NIFFLUNG",
+            "HAKERI",
+            "ORAEKJA",
+            "DANTBEINN",
+            "IRGRUS"
+        ],
+        "Argeir": [
+            "ORDUIN",
+            "ENGOSI",
+            "ATONDER",
+            "HOTRARDIK",
+            "RIDONER",
+            "KLAEVIK"
+        ],
+        "Rollera": [
+            "LIRERIM",
+            "OFFIKATLIN",
+            "DIROMITUR",
+            "ELDJAERIN",
+            "ERLENDUR",
+            "ALDIK",
+            "TABBETZUR",
+            "EURGRANA"
+        ],
+        "Hulf": [
+            "FRULEGUR",
+            "HRODUKO",
+            "HODROLD",
+            "ODEBEINN",
+            "KONORA",
+            "ERINDUR"
+        ]
+    }
+}

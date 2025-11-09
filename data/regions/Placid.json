@@ -1,0 +1,98 @@
+{
+    "region": "Placid",
+    "constellations": {
+        "Viriette": [
+            "AGOZE",
+            "INTAKI",
+            "BRAREL",
+            "VEY",
+            "ANNANCALE",
+            "OSTINGELE",
+            "HARROULE"
+        ],
+        "Fislipesnes": [
+            "STACMON",
+            "COVRYN",
+            "IGES",
+            "DASTRYNS",
+            "SLAYS",
+            "UPHALLANT"
+        ],
+        "Alselbosier": [
+            "ALPERAUTE",
+            "AUNSOU",
+            "CUMEMARE",
+            "REYNIRE",
+            "PAIN",
+            "GARE"
+        ],
+        "Josmaert": [
+            "PELILLE",
+            "DOUR",
+            "GRISPIRE",
+            "BRELLYSTIER",
+            "VIVANIER",
+            "ALGASIENAN"
+        ],
+        "Unour": [
+            "OSMALLANAIS",
+            "IVORIDER",
+            "MOLLIN",
+            "IFFRUE",
+            "VILINNON",
+            "OMMAERRER"
+        ],
+        "Ganoure": [
+            "AULBRES",
+            "BARLEGUET",
+            "VESTOUVE",
+            "AUSMAERT",
+            "ESPIGOURE",
+            "KENNINCK"
+        ],
+        "Pegeler": [
+            "ARCHAVOINET",
+            "EUGALES",
+            "FRARIE",
+            "AUBENALL",
+            "MOCLINAMAUD",
+            "RENARELLE"
+        ],
+        "Beyt": [
+            "ORVOLLE",
+            "OSMEDEN",
+            "ADACYNE",
+            "OULLEY",
+            "CHARDALANE",
+            "MAUT"
+        ],
+        "Amevync": [
+            "VLILLIRIER",
+            "ALDRANETTE",
+            "OICX",
+            "EVAULON",
+            "ANCHAUTTES",
+            "ALSAVOINON",
+            "ESESIER"
+        ],
+        "Mallugier": [
+            "AVAUX",
+            "GALLUSIENE",
+            "RUERROTTA",
+            "HEDOUBEL",
+            "AMOEN",
+            "AMASIREE",
+            "AUBONNIE"
+        ],
+        "Serthoulde": [
+            "ALPARENA",
+            "RESCHARD",
+            "ARDERONNE",
+            "MERCOMESIER",
+            "ALAMEL",
+            "MANTENAULT",
+            "ATHOUNON",
+            "ODAMIA"
+        ]
+    }
+}

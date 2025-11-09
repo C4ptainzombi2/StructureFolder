@@ -1,0 +1,138 @@
+{
+    "region": "Tash-Murkon",
+    "constellations": {
+        "Sanair": [
+            "TIVIDU",
+            "TENDHYES",
+            "GORAM",
+            "ANJEDIN",
+            "ADAHUM",
+            "AHROSSEAS"
+        ],
+        "Somi": [
+            "RIRAMIA",
+            "NAFOMEH",
+            "PIMSU",
+            "JARZALAD",
+            "MATYAS",
+            "IMESHASA"
+        ],
+        "Mise": [
+            "IVIH",
+            "SEIL",
+            "MANI",
+            "SEHMOSH",
+            "DABRID",
+            "GYERZEN"
+        ],
+        "Emsek": [
+            "HIBI",
+            "GEMODI",
+            "CHAMUME",
+            "NUZAIR",
+            "PERA",
+            "SHOUSRAN",
+            "YONG"
+        ],
+        "Arvachah": [
+            "PIMEBEKA",
+            "BAVIASI",
+            "TASH-MURKON PRIME",
+            "EMRAYUR",
+            "SHESHA",
+            "HILABAN",
+            "PASHA"
+        ],
+        "Mimishia": [
+            "SACALAN",
+            "MIMEN",
+            "THASHKARAI",
+            "ATOOSH",
+            "UNKAH",
+            "HOONA"
+        ],
+        "Sukanan": [
+            "TESHKAT",
+            "KESHIROU",
+            "NASESHARAFA",
+            "TIRBAM",
+            "ORDAT",
+            "RETHAN"
+        ],
+        "Damadil": [
+            "LOSSA",
+            "ONAZEL",
+            "ASESAMY",
+            "HOSTNI",
+            "MIMIME",
+            "KIBURSHA",
+            "PERDAN"
+        ],
+        "Rifenda": [
+            "ABAI",
+            "NEHKIAH",
+            "IRO",
+            "AHKOUR",
+            "GAKNEM",
+            "SIYI"
+        ],
+        "Nasorin": [
+            "REMORIU",
+            "YANUEL",
+            "NAFRIVIK",
+            "TARU",
+            "ARKOZ",
+            "AZHGABID",
+            "JINIZU",
+            "PHOREN"
+        ],
+        "Tsemshatel": [
+            "ASEZAI",
+            "FERIRA",
+            "YEDER",
+            "AZERAKISH",
+            "LARI",
+            "YASUD",
+            "GHISHUL",
+            "MOUTID"
+        ],
+        "Anidaza": [
+            "GONI",
+            "ADAR",
+            "PAYE",
+            "SAGAIN",
+            "MODUN",
+            "SAMINER"
+        ],
+        "Ajah": [
+            "MARTHIA",
+            "ASSIAD",
+            "RUMIDA",
+            "NOSODNIS",
+            "ISWA",
+            "RAND",
+            "SIZAMOD",
+            "KEREPA",
+            "SAFILBAB"
+        ],
+        "Subhatoub": [
+            "SINID",
+            "ALRA",
+            "ILAS",
+            "ZITH",
+            "TEW",
+            "ZEHRU",
+            "SEITAM"
+        ],
+        "Peges": [
+            "UHODOH",
+            "ESA",
+            "HATH",
+            "JUDRA",
+            "SHARIOS",
+            "ARAKOR",
+            "AHTEER",
+            "KARI"
+        ]
+    }
+}

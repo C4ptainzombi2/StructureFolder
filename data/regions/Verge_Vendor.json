@@ -1,0 +1,61 @@
+{
+    "region": "Verge Vendor",
+    "constellations": {
+        "Woenckee": [
+            "MURETHAND",
+            "MELMANIEL",
+            "OUELLETTA",
+            "COSTOLLE",
+            "MUETRALLE",
+            "LOES"
+        ],
+        "Anwyns": [
+            "TOURIER",
+            "ALENIA",
+            "MEROLLES",
+            "ALENTENE",
+            "CISTUVAERT",
+            "VAERE",
+            "AIDART",
+            "ADALLIER",
+            "CHANNACE"
+        ],
+        "Kiartanne": [
+            "JUFVITTE",
+            "ANSALLE",
+            "SCHEENINS",
+            "AMYGNON",
+            "GISLERES",
+            "ELLMAY",
+            "THERUESSE"
+        ],
+        "Obray": [
+            "ELETTA",
+            "LUSE",
+            "EKUENBIRON",
+            "VAY",
+            "RANEILLES",
+            "HEVRICE",
+            "JOVAINNON",
+            "CLACILLE",
+            "CLELLINON"
+        ],
+        "Ancbeu": [
+            "SCOLLUZER",
+            "SORTET",
+            "CLAULENNE",
+            "MASALLE",
+            "ANNELLE",
+            "CHESIETTE",
+            "REBLIER"
+        ],
+        "Aideron": [
+            "AMODERIA",
+            "ARRARON",
+            "CHANTROUSSE",
+            "OSMOMONNE",
+            "STOU",
+            "TIERIJEV"
+        ]
+    }
+}

@@ -1,0 +1,69 @@
+{
+    "region": "Curse",
+    "constellations": {
+        "Tranquility": [
+            "H-ADOC",
+            "G-G78S",
+            "UW9B-F",
+            "ZZ-ZWC",
+            "OSY-UD",
+            "K-MGJ7"
+        ],
+        "Paradise": [
+            "JWJ-P1",
+            "V-IUEL",
+            "0SHT-A",
+            "D87E-A",
+            "K-B2D3",
+            "PO4F-3",
+            "J7A-UR",
+            "5E-VR8",
+            "V7D-JD"
+        ],
+        "Elysium": [
+            "HLW-HP",
+            "8G-MQV",
+            "RA-NXN",
+            "VOL-MI",
+            "KLMT-W",
+            "XX9-WV"
+        ],
+        "Sound": [
+            "AAM-1A",
+            "EW-JR5",
+            "YKE4-3",
+            "CL-85V",
+            "K-QWHE",
+            "MDD-79",
+            "RMOC-W"
+        ],
+        "Rapture": [
+            "ES-UWY",
+            "S1DP-Y",
+            "Y-DW5K",
+            "M-N7WD",
+            "QFEW-K",
+            "CVY-UC",
+            "EQX-AE"
+        ],
+        "Hale": [
+            "G-R4W1",
+            "BPK-XK",
+            "LJ-YSW",
+            "Y-K50G",
+            "K88X-J",
+            "G-0Q86",
+            "CL-1JE",
+            "J4UD-J"
+        ],
+        "Heaven": [
+            "HEMIN",
+            "UTOPIA",
+            "JORUND",
+            "DORIL",
+            "LITOM",
+            "FARIT",
+            "JAMUNDA"
+        ]
+    }
+}

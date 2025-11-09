@@ -1,0 +1,84 @@
+{
+    "region": "Kor-Azor",
+    "constellations": {
+        "Jatari": [
+            "FENSI",
+            "NEBIAN",
+            "KHABARA",
+            "JENI",
+            "BRIDI",
+            "AMI"
+        ],
+        "Gebem": [
+            "AMDONEN",
+            "MORA",
+            "KOR-AZOR PRIME",
+            "LEVA",
+            "NISHAH",
+            "MASANUH",
+            "SEHMY",
+            "NAKREGDE",
+            "CONOBAN"
+        ],
+        "Nimedaz": [
+            "DANYANA",
+            "NAHYEEN",
+            "JINKAH",
+            "NIBAINKIER",
+            "POLFALY",
+            "ANDRUB",
+            "ANNAD",
+            "CHAKTAREN"
+        ],
+        "Panoumid": [
+            "KULU",
+            "CHOGA",
+            "SOUMI",
+            "IMIH",
+            "NARE",
+            "ZINKON"
+        ],
+        "Finena": [
+            "KIZAMA",
+            "SHAHA",
+            "NEESHER",
+            "MISHA",
+            "ORDION",
+            "PERBHE"
+        ],
+        "Ravin": [
+            "ABATH",
+            "SCHMAEEL",
+            "MAFRA",
+            "ARZI",
+            "KERYING",
+            "ZORENYEN",
+            "OGUSER"
+        ],
+        "Orus": [
+            "NAHOL",
+            "TADADAN",
+            "TRALASA",
+            "GADEMAM",
+            "PANANAN",
+            "DARAN",
+            "LATARI"
+        ],
+        "Comadu": [
+            "SHOKAL",
+            "ATARLI",
+            "KEPROH",
+            "ZATAMAKA",
+            "RANNOZE",
+            "PIRI"
+        ],
+        "Tendrara": [
+            "ENAL",
+            "JEDANDAN",
+            "MIROONA",
+            "RANNI",
+            "ARZA",
+            "LIPARER"
+        ]
+    }
+}

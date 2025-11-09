@@ -1,0 +1,112 @@
+{
+    "region": "The Citadel",
+    "constellations": {
+        "Imurukka": [
+            "INOUE",
+            "ISAZIWA",
+            "EITU",
+            "HORKKISEN",
+            "ERILA"
+        ],
+        "Nagaslaiken": [
+            "OHVOSAMON",
+            "AUVIKEN",
+            "SAIKANEN",
+            "OIJAMON",
+            "KAKKI",
+            "JERAS"
+        ],
+        "Arekin": [
+            "KAUSAAJA",
+            "OINIKEN",
+            "KAIMON",
+            "AHYNADA",
+            "AIKORO",
+            "ALIKARA"
+        ],
+        "Ieyama": [
+            "USI",
+            "ISHOMILKEN",
+            "NIKKISHINA",
+            "HASAMA",
+            "UUNA",
+            "MANJONAKKO"
+        ],
+        "Caldari Border Zone": [
+            "KASSIGAINEN",
+            "YASHUNEN",
+            "TENNEN",
+            "HATAKANI",
+            "SIVALA",
+            "IIVINEN"
+        ],
+        "Kantanen": [
+            "KUBINEN",
+            "UEDAMA",
+            "ENDERAILEN",
+            "KULELEN",
+            "RAIROMON",
+            "HOGIMO",
+            "HUTTAKEN"
+        ],
+        "Outartoh": [
+            "PAARA",
+            "ANNARO",
+            "ISUTAKA",
+            "TASABESHI",
+            "ONO",
+            "MUVOLAILEN"
+        ],
+        "Uusasai": [
+            "HALAIMA",
+            "KAMIO",
+            "SANKKASEN",
+            "TINTOH",
+            "SANTOLA",
+            "IKAO",
+            "WAIRA"
+        ],
+        "Suon": [
+            "INARO",
+            "KAAPUTENEN",
+            "WASKISEN",
+            "SIRPPALA",
+            "IRJUNEN",
+            "INARI"
+        ],
+        "Otawasa": [
+            "YRIA",
+            "OSHAIMA",
+            "HYSERA",
+            "VENILEN",
+            "OISIO"
+        ],
+        "Tasen": [
+            "HAATOMO",
+            "SUROKEN",
+            "KUSOMONMON",
+            "JUUNIGAISHI",
+            "ISIKESU",
+            "ANTTIRI"
+        ],
+        "Isoma": [
+            "HASMIJAALA",
+            "NAGAMANEN",
+            "OTO",
+            "SUJARENTO",
+            "ERANAKKO",
+            "ONATOH",
+            "TANNOLEN",
+            "TAMA"
+        ],
+        "Santenpaa": [
+            "UOTILA",
+            "ISENAIROS",
+            "SAILA",
+            "ARAMACHI",
+            "OICHIYA",
+            "MOTSU",
+            "LAAH"
+        ]
+    }
+}

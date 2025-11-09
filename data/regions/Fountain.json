@@ -1,0 +1,154 @@
+{
+    "region": "Fountain",
+    "constellations": {
+        "Pegasus": [
+            "XF-TQL",
+            "4-EP12",
+            "YZS5-4",
+            "3WE-KY",
+            "IR-WT1",
+            "9-VO0Q",
+            "A8-XBW"
+        ],
+        "Wyvern": [
+            "PNQY-Y",
+            "RP2-OQ",
+            "YVBE-E",
+            "BYXF-Q",
+            "AC2E-3",
+            "C-C99Z",
+            "CL-BWB",
+            "R3W-XU"
+        ],
+        "Manticore": [
+            "E-BWUU",
+            "Y-1W01",
+            "9R4-EJ",
+            "SPLE-Y",
+            "Q-XEB3",
+            "K8L-X7"
+        ],
+        "Sphinx": [
+            "5-D82P",
+            "8ESL-G",
+            "JGOW-Y",
+            "APM-6K",
+            "RE-C26",
+            "AL8-V4",
+            "KCT-0A",
+            "N2-OQG",
+            "OW-TPO",
+            "9O-ORX",
+            "IGE-RI"
+        ],
+        "Centaur": [
+            "Z9PP-H",
+            "7-8S5X",
+            "EI-O0O",
+            "7X-02R",
+            "D2AH-Z",
+            "J5A-IX"
+        ],
+        "Unicorn": [
+            "B17O-R",
+            "6F-H3W",
+            "H-NPXW",
+            "L-1SW8",
+            "U-SOH2",
+            "DBRN-Z"
+        ],
+        "Satyr": [
+            "00GD-D",
+            "C1XD-X",
+            "G95F-H",
+            "B32-14",
+            "C-N4OD",
+            "CHA2-Q"
+        ],
+        "Kraken": [
+            "UAYL-F",
+            "ESC-RI",
+            "671-ST",
+            "A-HZYL",
+            "H-S80W",
+            "Z30S-A"
+        ],
+        "Chimera": [
+            "6VDT-H",
+            "NDH-NV",
+            "QV28-G",
+            "15U-JY",
+            "NY6-FH",
+            "XJP-Y7",
+            "AV-VB6",
+            "HMF-9D",
+            "7BX-6F"
+        ],
+        "Phoenix": [
+            "YZ-LQL",
+            "MN5N-X",
+            "A-1CON",
+            "75FA-Z",
+            "WY-9LL",
+            "D-Q04X",
+            "SERPENTIS PRIME"
+        ],
+        "Taurus": [
+            "P5-EFH",
+            "L-A5XP",
+            "D4KU-5",
+            "YRNJ-8",
+            "3ZTV-V",
+            "9D6O-M"
+        ],
+        "Griffin": [
+            "LIWW-P",
+            "G-UTHL",
+            "38IA-E",
+            "M-KXEH",
+            "TU-Y2A",
+            "7BIX-A"
+        ],
+        "Hydra": [
+            "I-CUVX",
+            "J-RQMF",
+            "TEG-SD",
+            "14YI-D",
+            "87XQ-0",
+            "LJ-TZW",
+            "KVN-36"
+        ],
+        "Minotaur": [
+            "57-KJB",
+            "V6-NY1",
+            "OL3-78",
+            "9DQW-W",
+            "PXF-RF",
+            "R-BGSU"
+        ],
+        "Skaven": [
+            "O-PNSN",
+            "1-5GBW",
+            "C-FER9",
+            "F2-2C3",
+            "F-88PJ",
+            "ATQ-QS"
+        ],
+        "Mermaid": [
+            "XUW-3X",
+            "006-L3",
+            "PB-0C1",
+            "ZUE-NS",
+            "L7-APB",
+            "ZTS-4D"
+        ],
+        "Basilisk": [
+            "4HS-CR",
+            "WMH-SO",
+            "LBGI-2",
+            "G1CA-Y",
+            "Y-2ANO",
+            "Z-YN5Y"
+        ]
+    }
+}

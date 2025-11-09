@@ -1,0 +1,60 @@
+{
+    "region": "Solitude",
+    "constellations": {
+        "Braille": [
+            "CONOMETTE",
+            "AIMOGUIER",
+            "YVEVE",
+            "MEUNVON",
+            "CADELANNE",
+            "ELORE",
+            "ANCKEE",
+            "VEVELONEL"
+        ],
+        "Elose": [
+            "PERTNINEERE",
+            "BOYSTIN",
+            "LOUR",
+            "MAIRE",
+            "OERSE",
+            "OCTANNEVE"
+        ],
+        "Orvanne": [
+            "LARRYN",
+            "NIBALLE",
+            "POSTOUVIN",
+            "ODINESYN",
+            "WERAROIX",
+            "SARLINE",
+            "AETER",
+            "GERERIQUE",
+            "HARNER"
+        ],
+        "Goins": [
+            "YVAEROURE",
+            "VECODIE",
+            "ARASARE",
+            "YVELET",
+            "LAZER",
+            "STOURE"
+        ],
+        "Elerelle": [
+            "HELUENE",
+            "ARITTANT",
+            "ORUSE",
+            "HARE",
+            "OGARIA",
+            "FAURULLE",
+            "AGAULLORES",
+            "BABIRMOULT"
+        ],
+        "Mobrault": [
+            "RATILLOSE",
+            "ONDREE",
+            "POCHELYMPE",
+            "EGGHERON",
+            "TOUSTAIN",
+            "STRALOIN"
+        ]
+    }
+}

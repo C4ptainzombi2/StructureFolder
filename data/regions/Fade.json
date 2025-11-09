@@ -1,0 +1,40 @@
+{
+    "region": "Fade",
+    "constellations": {
+        "XFLN-F": [
+            "C8-CHY",
+            "E-9ORY",
+            "CR-IFM",
+            "HHK-VL",
+            "P-33KR",
+            "DO6H-Q",
+            "DW-T2I"
+        ],
+        "UWRZ-2": [
+            "O-CNPR",
+            "L-SCBU",
+            "VRH-H7",
+            "O1Y-ED",
+            "K4YZ-Y",
+            "X36Y-G",
+            "L-C3O7"
+        ],
+        "7X-X1Y": [
+            "YKSC-A",
+            "FIO1-8",
+            "C-OK0R",
+            "0-ARFO",
+            "E9KD-N",
+            "8W-OSE",
+            "WQY-IQ"
+        ],
+        "VNX-P0": [
+            "C4C-Z4",
+            "GME-PQ",
+            "MPPA-A",
+            "X5-UME",
+            "I-UUI5",
+            "8QMO-E"
+        ]
+    }
+}

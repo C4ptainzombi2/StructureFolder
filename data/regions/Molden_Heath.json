@@ -1,0 +1,54 @@
+{
+    "region": "Molden Heath",
+    "constellations": {
+        "Fittakan": [
+            "AEDDIN",
+            "GULFONODI",
+            "TEONUSUDE",
+            "GELFIVEN",
+            "BOSENA",
+            "ODDELULF",
+            "ATLAR"
+        ],
+        "Tartatven": [
+            "HEILD",
+            "HROKKUR",
+            "HROBER",
+            "AEDALD",
+            "MUTTOKON",
+            "AUDESDER"
+        ],
+        "Besateoden": [
+            "ILLAMUR",
+            "HORAKA",
+            "ELDULF",
+            "ORIEN",
+            "VARIGNE",
+            "MEILDOLF"
+        ],
+        "Almur": [
+            "ISTODARD",
+            "GONHEIM",
+            "HALF",
+            "SAKULDA",
+            "HEDALEOLFARBER",
+            "ALTBRARD"
+        ],
+        "Eoldulf": [
+            "FEGOMENKO",
+            "OSVETUR",
+            "MIMIROR",
+            "ENNUR",
+            "UNERTEK"
+        ],
+        "Elfrard": [
+            "KLINGT",
+            "WELD",
+            "KATTEGAUD",
+            "KADLINA",
+            "HEGFUNDEN",
+            "AEDITIDE",
+            "EGBINGER"
+        ]
+    }
+}

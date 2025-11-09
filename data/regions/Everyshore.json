@@ -1,0 +1,72 @@
+{
+    "region": "Everyshore",
+    "constellations": {
+        "Osnins": [
+            "ARNATELE",
+            "HALLE",
+            "MORMOEN",
+            "AMATTENS",
+            "JURLESEL",
+            "BEREYE",
+            "AICE",
+            "JUNSORAERT"
+        ],
+        "Chasnaye": [
+            "HARERGET",
+            "AZER",
+            "CHERORE",
+            "TORVI",
+            "MOSSON",
+            "MYA",
+            "GERPER"
+        ],
+        "Ysiette": [
+            "MAROSIER",
+            "LIRSAUTTON",
+            "BLAMESTON",
+            "VAURENT",
+            "ACLAN",
+            "JASCHERCIS",
+            "ARDALLABIER"
+        ],
+        "Odilis": [
+            "ATHINARD",
+            "MEVES",
+            "ETHERNITY",
+            "MATTERE",
+            "GICODEL",
+            "FRAROLLE",
+            "QUIER"
+        ],
+        "Giatole": [
+            "ATLANINS",
+            "LEREMBLOMPES",
+            "BILLE",
+            "COLCER",
+            "ALACHENE",
+            "UPHENE",
+            "ELAREL"
+        ],
+        "Elalan": [
+            "ENEDORE",
+            "AVERON",
+            "CARIRGNOTTIN",
+            "LAIC",
+            "ODIXIE",
+            "ANTOLLARE",
+            "TOLLE",
+            "AVELE",
+            "SCUELAZYNS",
+            "AYDOTEAUX",
+            "MUER"
+        ],
+        "Marele": [
+            "GROOTHESE",
+            "OLIDE",
+            "ADEEL",
+            "MANNAR",
+            "MORMELOT",
+            "ANGATALIE"
+        ]
+    }
+}

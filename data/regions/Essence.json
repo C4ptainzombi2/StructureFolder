@@ -1,0 +1,88 @@
+{
+    "region": "Essence",
+    "constellations": {
+        "Crux": [
+            "LUMINAIRE",
+            "MIES",
+            "OURSULAERT",
+            "RENYN",
+            "DURIPANT",
+            "ALGOGILLE",
+            "COUSTER"
+        ],
+        "Patrie": [
+            "CASLEMON",
+            "JOLEVIER",
+            "MESYBIER",
+            "CHARMEROUT",
+            "YVANGIER",
+            "PEMENE"
+        ],
+        "Jeon": [
+            "HEYDIELES",
+            "FLIET",
+            "ACTEE",
+            "INDREGULLE",
+            "AMANE",
+            "ABUNE",
+            "DEVEN",
+            "ESTAUNITTE"
+        ],
+        "Balrille": [
+            "DENINARD",
+            "HULMATE",
+            "ANNAGES",
+            "ONNE",
+            "VITRAUZE",
+            "PALMON"
+        ],
+        "Vieres": [
+            "VILLORE",
+            "ARANT",
+            "ALLAMOTTE",
+            "OBALYU",
+            "VIFREVAERT",
+            "PARTS",
+            "LADISTIER",
+            "OLD MAN STAR"
+        ],
+        "Peccanouette": [
+            "ARNON",
+            "LAURVIER",
+            "ADIRAIN",
+            "ATTYN",
+            "AERE",
+            "LISBAETANNE",
+            "AESCHEE"
+        ],
+        "Arand": [
+            "ALLEBIN",
+            "ATLULLE",
+            "DROSELORY",
+            "HAINE",
+            "PERCKHEVIN",
+            "ISENAN"
+        ],
+        "Thoulde": [
+            "SYNCHELLE",
+            "WYSALAN",
+            "YONA",
+            "NOGHERE",
+            "APORULIE",
+            "SEYLLIN",
+            "ADREL",
+            "ANE",
+            "CLORTELER",
+            "HENEBENE",
+            "MESOKEL"
+        ],
+        "Eustron": [
+            "ATLANGEINS",
+            "DERRIRINTEL",
+            "CAT",
+            "OMMARE",
+            "ANDOLE",
+            "HECARRIN"
+        ]
+    }
+}

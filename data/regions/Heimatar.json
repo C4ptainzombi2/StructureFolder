@@ -1,0 +1,112 @@
+{
+    "region": "Heimatar",
+    "constellations": {
+        "Ortner": [
+            "HULM",
+            "OSOGGUR",
+            "ABUDBAN",
+            "TRYTEDALD",
+            "ODATRIK",
+            "RENS",
+            "AMEINAKA",
+            "MALUKKER"
+        ],
+        "Huvilma": [
+            "ALAKGUR",
+            "DAMMALIN",
+            "BOSBOGER",
+            "OLFEIM",
+            "LULM",
+            "GULMOROGOD"
+        ],
+        "Osta": [
+            "EDMALBRURDUS",
+            "KRONSUR",
+            "DUMKIRINUR",
+            "SIST",
+            "OBROLBER",
+            "AUSTRAKA",
+            "TODEKO"
+        ],
+        "Odengsolf": [
+            "IVAR",
+            "MEIRAKULF",
+            "FRARN",
+            "ILLINFRIK",
+            "BALGINIA",
+            "GYNG",
+            "AVESBER",
+            "USTELI"
+        ],
+        "Wiedadur": [
+            "GEREK",
+            "TONGOFUR",
+            "GERBOLD",
+            "ROKOFUR",
+            "EBASGERDUR",
+            "EBODOLD"
+        ],
+        "Hed": [
+            "AMAMAKE",
+            "VARD",
+            "SISEIDE",
+            "LANTORN",
+            "DAL",
+            "AUGA"
+        ],
+        "Sveipar": [
+            "EYSTUR",
+            "PATOR",
+            "LUSTREVIK",
+            "ISENDELDIK",
+            "AMMOLD",
+            "EMOLGRANLAN",
+            "HADAUGAGO"
+        ],
+        "Akimamur": [
+            "OFFUGEN",
+            "RONIKO",
+            "ARALGRUND",
+            "EDDAR",
+            "BOGELEK",
+            "WISKEBER"
+        ],
+        "Evannater": [
+            "EIFER",
+            "GUSANDALL",
+            "ATGUR",
+            "ENDRULF",
+            "INGUNN",
+            "GULTRATREN",
+            "AUREN"
+        ],
+        "Urtfer": [
+            "TRER",
+            "EGMUR",
+            "JAVRENDEI",
+            "APPEN",
+            "KLIR",
+            "JORUS"
+        ],
+        "Erada": [
+            "ONGA",
+            "OSAUMUNI",
+            "MAGIKO",
+            "OREMMULF",
+            "HURJAFREN",
+            "VULLAT",
+            "KRILMOKENUR",
+            "LARKUGEI",
+            "LOGUTTUR"
+        ],
+        "Benurad": [
+            "HRONDEDIR",
+            "SOTRENZUR",
+            "HRONDMUND",
+            "BUNDINDUS",
+            "OTRAREN",
+            "HEDGIVITER",
+            "KATUGUMUR"
+        ]
+    }
+}

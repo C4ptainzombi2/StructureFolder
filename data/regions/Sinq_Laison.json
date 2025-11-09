@@ -1,0 +1,142 @@
+{
+    "region": "Sinq Laison",
+    "constellations": {
+        "Disier": [
+            "PETTINCK",
+            "DU ANNES",
+            "BALLE",
+            "DECON",
+            "GRINACANNE",
+            "METSEREL",
+            "SHARUVEIL",
+            "ADRELAND",
+            "ERME",
+            "AUFAY"
+        ],
+        "Gallente Border Zone": [
+            "IYEN-OURSTA",
+            "FAURENT",
+            "AMBEKE",
+            "CARROU",
+            "DIRERIE",
+            "IGNOITTON"
+        ],
+        "Spaen": [
+            "ARDENE",
+            "BOILLAIR",
+            "NEY",
+            "FASSE",
+            "GRATESIER",
+            "SCHOORASANA"
+        ],
+        "Coriault": [
+            "VYLADE",
+            "AUVERGNE",
+            "AUNIA",
+            "AGRALLARIER",
+            "DODIXIE",
+            "EGLENNAERT",
+            "BOTANE",
+            "ODOTTE"
+        ],
+        "Firille": [
+            "PULIN",
+            "FOVES",
+            "ALLES",
+            "MISNEDEN",
+            "BASGERIN",
+            "CHELIEN"
+        ],
+        "Jonenor": [
+            "TROSQUESERE",
+            "ANSONE",
+            "DUNRAELARE",
+            "NAUSSCHIE",
+            "INGHENGES",
+            "ESTENE",
+            "GALLAREUE",
+            "STAYME"
+        ],
+        "Algintal": [
+            "PARCHANIER",
+            "FLUEKELE",
+            "ALSOTTOBIER",
+            "JOLIA",
+            "AUGNAIS",
+            "DELTOLE",
+            "COLELIE",
+            "BARMALIE",
+            "AUDAERNE"
+        ],
+        "Lolbrerie": [
+            "DODENVALE",
+            "OLETTIERS",
+            "ARTISINE",
+            "CHAINELANT",
+            "SILEPERER",
+            "BAMIETTE",
+            "CRIELERE"
+        ],
+        "Stion": [
+            "JEL",
+            "EGGHELENDE",
+            "ODETTE",
+            "ATION",
+            "STEGETTE",
+            "RAVARIN",
+            "ALIETTE"
+        ],
+        "Wyllequet": [
+            "BRAPELILLE",
+            "BAWILAN",
+            "ATIER",
+            "BRYBIER",
+            "ADRALLEZOEN",
+            "CROLEUR"
+        ],
+        "Agiesseson": [
+            "DOUSSIVITTE",
+            "UNEL",
+            "CLAYSSON",
+            "AUBERULLE",
+            "ADIERE",
+            "STETILLE",
+            "OIRTLAIR",
+            "OLELON"
+        ],
+        "Nexus": [
+            "ALILLERE",
+            "ABENYNC",
+            "POZIRBLANT",
+            "BOURYNES",
+            "AURCEL",
+            "AYMAERNE"
+        ],
+        "Aeman": [
+            "RANCER",
+            "MIROITEM",
+            "THELAN",
+            "RORSINS",
+            "LAMADENT",
+            "OTOU"
+        ],
+        "Nadire": [
+            "ASSIETTES",
+            "GOINARD",
+            "RAEGHOSCON",
+            "ALLIPES",
+            "LERMIREVE",
+            "AETREE",
+            "ESMES"
+        ],
+        "Ambrye": [
+            "VITTENYN",
+            "MIRILENE",
+            "PUCHERIE",
+            "FRICOURE",
+            "CARETYN",
+            "AINAILLE",
+            "TROSSERE"
+        ]
+    }
+}

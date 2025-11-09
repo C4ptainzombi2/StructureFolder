@@ -1,0 +1,107 @@
+{
+    "region": "Aridia",
+    "constellations": {
+        "Anama": [
+            "VAN",
+            "SHAKASI",
+            "ZAYI",
+            "SHIRSHOCIN",
+            "MAALNA",
+            "MASEERA"
+        ],
+        "Afinoo": [
+            "YEHABA",
+            "KENAHEHAB",
+            "GENS",
+            "KAMIH",
+            "HIER",
+            "JASSON"
+        ],
+        "Mareerieh": [
+            "SADANA",
+            "ISID",
+            "ONANAM",
+            "UDIANOOR",
+            "VEHAN",
+            "MARMEHA"
+        ],
+        "Mayonhen": [
+            "HAIMEH",
+            "AVADA",
+            "CHIBI",
+            "MISHI",
+            "BAZADOD",
+            "PAHINEH"
+        ],
+        "Ombil": [
+            "FIHRNEH",
+            "PAROUZ",
+            "EDILKAM",
+            "HAKATIZ",
+            "KHNAR",
+            "ERTOO",
+            "YIRATAL",
+            "BALAS",
+            "PEMSAH",
+            "FESHUR",
+            "HOSEEN",
+            "YEKH",
+            "GESH"
+        ],
+        "Tid": [
+            "NEMA",
+            "SHENDA",
+            "RASHAGH",
+            "SAZILID",
+            "AFRAH",
+            "SOTA"
+        ],
+        "Helab": [
+            "SOLIARA",
+            "NIELEZ",
+            "TUKANAS",
+            "FAGERAS",
+            "AJNA",
+            "SHERI",
+            "AHRAGHEN"
+        ],
+        "Leseasesh": [
+            "NALNIFAN",
+            "JERHESH",
+            "GETRENJESA",
+            "SHAFRAK",
+            "DEFSUNUN",
+            "ZAZAMYE",
+            "YAHYERER",
+            "ESUBARA"
+        ],
+        "Maal": [
+            "GHEKON",
+            "VAINI",
+            "ZAVERAL",
+            "ANOHEL",
+            "SOZA",
+            "PSERZ",
+            "ILLI",
+            "KEBA",
+            "BAPRAYA"
+        ],
+        "Fabai": [
+            "EFU",
+            "TISOT",
+            "SAKHT",
+            "NAGA",
+            "ANATH",
+            "OMIGIAV"
+        ],
+        "Selonat": [
+            "FOBINER",
+            "HUNA",
+            "ESAEEL",
+            "KARAN",
+            "NOUTA",
+            "NED",
+            "HOPHIB"
+        ]
+    }
+}

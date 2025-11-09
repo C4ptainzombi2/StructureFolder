@@ -1,0 +1,38 @@
+{
+    "region": "Pochven",
+    "constellations": {
+        "Krai Perun": [
+            "OTELA",
+            "OTANUOMI",
+            "KINO",
+            "NALVULA",
+            "KRIRALD",
+            "KONOLA",
+            "IGNEBAENER",
+            "SAKENTA",
+            "KOMO"
+        ],
+        "Krai Svarog": [
+            "KUHARAH",
+            "NANI",
+            "HARVA",
+            "SKARKON",
+            "TUNUDAN",
+            "RARAVOSS",
+            "NIARJA",
+            "URHINICHI",
+            "AHTILA"
+        ],
+        "Krai Veles": [
+            "WIRASHODA",
+            "ARVASARAS",
+            "ALA",
+            "ARCHEE",
+            "KAUNOKKA",
+            "ANGYMONNE",
+            "VALE",
+            "SENDA",
+            "ICHORIYA"
+        ]
+    }
+}

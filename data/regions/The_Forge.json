@@ -1,0 +1,119 @@
+{
+    "region": "The Forge",
+    "constellations": {
+        "Ruomo": [
+            "ITAMO",
+            "MITSOLEN",
+            "JATATE",
+            "MAHTISTA",
+            "VAANKALEN",
+            "KYLMABE",
+            "AHTULAIMA"
+        ],
+        "Anttanen": [
+            "GERAS",
+            "SIRSESHIN",
+            "TUURIAINAS",
+            "UNPAS",
+            "SHIHUKEN",
+            "NOMAA",
+            "UITRA"
+        ],
+        "Ihilakken": [
+            "ANSILA",
+            "HIRTAMON",
+            "HYKKOTA",
+            "OUTUNI",
+            "OHMAHAILEN",
+            "ESKUNEN",
+            "IKUCHI",
+            "AOKANNITOH"
+        ],
+        "Kimotoro": [
+            "URLEN",
+            "MAURASI",
+            "KISOGO",
+            "JITA",
+            "NIYABAINEN",
+            "PERIMETER",
+            "NEW CALDARI"
+        ],
+        "Okomon": [
+            "SAISIO",
+            "ABAGAWA",
+            "JAKANERVA",
+            "GEKUTAMI",
+            "HURTOKEN",
+            "UOYONEN",
+            "HAMPINEN"
+        ],
+        "Onirvura": [
+            "POINEN",
+            "LIEKURI",
+            "OBANEN",
+            "JOSAMETO",
+            "OLO"
+        ],
+        "Ihatalo": [
+            "IKAMI",
+            "REISEN",
+            "PURJOLA",
+            "MAILA",
+            "AKORA",
+            "MESSOYA"
+        ],
+        "Okkelen": [
+            "ISHISOMO",
+            "AIRMIA",
+            "SAKKIKAINEN",
+            "FRIGGI",
+            "IHAKANA",
+            "VAHUNOMI",
+            "OTITOH",
+            "OTOMAINEN"
+        ],
+        "Otsabaira": [
+            "VATTUOLEN",
+            "ONUSE",
+            "SOSHIN",
+            "KEIKAKEN",
+            "UKKALEN",
+            "AKKILEN",
+            "SILEN"
+        ],
+        "Aulari": [
+            "OSMON",
+            "KORSIKI",
+            "INAYA",
+            "NUKEN",
+            "UMINAS",
+            "AIRAKEN",
+            "OIJANEN",
+            "WUOS"
+        ],
+        "Etsala": [
+            "HENTOGAIRA",
+            "KIAINTI",
+            "VASALA",
+            "WALVALIN",
+            "VOUSKIAHO",
+            "OTSELA"
+        ],
+        "Mivora": [
+            "TASTI",
+            "OTOSELA",
+            "UEMON",
+            "PAALA",
+            "FUSKUNEN",
+            "AKKIO"
+        ],
+        "Orpana": [
+            "UCHOSHI",
+            "MASTAKOMON",
+            "ERUKA",
+            "OHKUNEN",
+            "OBE",
+            "OSAA"
+        ]
+    }
+}

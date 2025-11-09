@@ -1,0 +1,129 @@
+{
+    "region": "Lonetrek",
+    "constellations": {
+        "Okunda": [
+            "DANTUMI",
+            "ANTIAINEN",
+            "OSSA",
+            "SEMIKI",
+            "KISKOKEN",
+            "AUROHUNEN"
+        ],
+        "Koichi": [
+            "VEISTO",
+            "SOBASEKI",
+            "FUNTANAINEN",
+            "ISIKEMI",
+            "UOSUSUOKKO",
+            "HAGEKEN",
+            "KAPPAS"
+        ],
+        "Haurala": [
+            "UEMISAISEN",
+            "SOTRENTAIRA",
+            "OURANIENEN",
+            "ERENTA",
+            "RAUSSINEN"
+        ],
+        "Okela": [
+            "IIDOKEN",
+            "TSUGUWA",
+            "NOURVUKAIKEN",
+            "SAREKUWA",
+            "EKURA",
+            "TUNTTARAS",
+            "JOUVULEN",
+            "HITANISHIO",
+            "ICHINUMI"
+        ],
+        "Kaala": [
+            "VELLAINE",
+            "AKONOINEN",
+            "VAAJAITA",
+            "AUTARIS",
+            "JAN"
+        ],
+        "Makiriemi": [
+            "SAATUBAN",
+            "ISIKANO",
+            "MARA",
+            "ISANAMO",
+            "PAKKONEN",
+            "PIEKURA"
+        ],
+        "Sela": [
+            "AMSEN",
+            "MALKALEN",
+            "KORAMA",
+            "YLANDOKI",
+            "AAKARI",
+            "ISSERAS"
+        ],
+        "Minnen": [
+            "AUNENEN",
+            "ELONAYA",
+            "LITIURA",
+            "NONNI",
+            "PASSARI",
+            "PIAK"
+        ],
+        "Karnola": [
+            "AIRKIO",
+            "KAKAKELA",
+            "KAMOKOR",
+            "TODAKI",
+            "RUVAS",
+            "UMOKKA",
+            "AKIAINAVAS"
+        ],
+        "Kainokai": [
+            "KIRRAS",
+            "AUTAMA",
+            "TSUKURAS",
+            "AJANEN",
+            "KUOKA"
+        ],
+        "Pietanen": [
+            "LIUKIKKA",
+            "RAUNTAKA",
+            "AIKANTOH",
+            "ATAI",
+            "DARAS",
+            "OTALIETO",
+            "IITANMADAN",
+            "JOTENEN"
+        ],
+        "Asalola": [
+            "HAAJINEN",
+            "OIPO",
+            "ISINOKKA",
+            "YOMA",
+            "IBURA",
+            "TORRINOS"
+        ],
+        "Malariya": [
+            "ENDATOH",
+            "AIVOLI",
+            "UESURO",
+            "OISHAMI",
+            "ELANODA",
+            "OHBOCHI",
+            "ISIE"
+        ],
+        "Umamon": [
+            "TAMO",
+            "NANNARAS",
+            "ANIN",
+            "KARJATAIMON",
+            "TARTOKEN",
+            "SARANEN"
+        ],
+        "Mito": [
+            "VUORRASSI",
+            "OIMMO",
+            "OTSASAI",
+            "TAISY",
+            "HAKONEN"
+        ]
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "region": "The Bleak Lands",
+    "constellations": {
+        "Sasen": [
+            "LAMAA",
+            "TUOMUTA",
+            "OTELEN",
+            "KUOMI",
+            "HUOLA",
+            "KOURMONEN",
+            "KAMELA"
+        ],
+        "Vaarma": [
+            "SOSALA",
+            "ANKA",
+            "IESA",
+            "NETSALAKKA",
+            "SASIEKKO",
+            "MYYHERA",
+            "GAMMEL",
+            "UUSANEN",
+            "ERKINEN",
+            "SAIKAMON"
+        ],
+        "Ichida": [
+            "JARKKOLEN",
+            "RONNE",
+            "HATORI",
+            "JUNSEN",
+            "MALPARA",
+            "HAKODAN"
+        ],
+        "Tandoiras": [
+            "SAHTOGAS",
+            "HARAS",
+            "OYONATA",
+            "KURNIAINEN",
+            "SAIDUSAIROS",
+            "TANNAKAN"
+        ],
+        "Ohvarainen": [
+            "KOMAA",
+            "AYEROILEN",
+            "IMATA",
+            "FURSKESHIN",
+            "KURMARU",
+            "SATALAMA"
+        ]
+    }
+}
