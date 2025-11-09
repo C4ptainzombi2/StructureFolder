@@ -39,10 +39,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         tr.innerHTML = `
           <td>${s["Nom du système"] || "-"}</td>
           <td>${s["Remarques"] || "-"}</td>
-          <td>${s["Type"] || "-"}</td>
-          <td>${s["Alliance / Corporation"] || "-"}</td>
           <td>${s["Région"] || "-"}</td>
           <td>${s["Constellation"] || "-"}</td>
+          <td>${s["Type"] || "-"}</td>
+          <td>${s["Alliance / Corporation"] || "-"}</td>
           <td>${s["Date"] || "-"}</td>
           <td>${s["Renforcée ?"] || s["Renforcé"] || "❌"}</td>
         `;
