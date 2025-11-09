@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${s["Nom du système"] || "-"}</td>
-          <td>${s["Nom de la structure"] || "-"}</td>
+          <td>${s["Remarques"] || "-"}</td>
           <td>${s["Type"] || "-"}</td>
           <td>${s["Alliance / Corporation"] || "-"}</td>
           <td>${s["Région"] || "-"}</td>
