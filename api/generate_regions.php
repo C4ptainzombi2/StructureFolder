@@ -1,13 +1,17 @@
 <?php
-/**
- * generate_regions.php
- * Génère automatiquement les fichiers région / constellation / système
- * via l’API EVE ESI : https://esi.evetech.net/latest/
- */
-
 header('Content-Type: application/json; charset=utf-8');
 
-$baseDir = realpath(__DIR__ . '/../data/regions');
+$rootDir = realpath(__DIR__ . '/..');
+$dataDir = $rootDir . '/data';
+$baseDir = $dataDir . '/regions';
+
+// ✅ Création automatique des dossiers manquants
+if (!is_dir($dataDir)) {
+    mkdir($dataDir, 0777, true);
+}
+if (!is_dir($baseDir)) {
+    mkdir($baseDir, 0777, true);
+}
 if (!is_dir($baseDir)) mkdir($baseDir, 0777, true);
 
 // ====================
