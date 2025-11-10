@@ -93,17 +93,20 @@ button:hover {
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   z-index: 1000;
+
+  /* 👇 Ces deux lignes centrent parfaitement le contenu */
+  display: flex;
   justify-content: center;
   align-items: center;
+
   animation: fadeIn 0.25s ease-in-out;
 }
 
-/* Classe "active" ajoutée via JS */
-#dotlanModal.active {
-  display: flex;
+/* Quand la modale est ouverte, on la rend visible avec Flex */
+#dotlanModal.hidden {
+  display: none;
 }
 
-/* Conteneur principal de la modale */
 .modal-content {
   background: #111;
   border-radius: 12px;
@@ -116,43 +119,6 @@ button:hover {
   position: relative;
   transform: scale(0.95);
   animation: zoomIn 0.3s ease-out forwards;
-}
-
-/* Titre dans la modale */
-#dotlanTitle {
-  color: #fff;
-  text-align: center;
-  margin: 8px 0;
-  font-size: 1.1em;
-  letter-spacing: 0.5px;
-}
-
-/* Iframe Dotlan */
-#dotlanFrame {
-  flex-grow: 1;
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-}
-
-/* Bouton de fermeture ✖ */
-#dotlanClose {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-#dotlanClose:hover {
-  background: #ff5c5c;
-  transform: scale(1.1);
 }
 
 /* === ANIMATIONS === */

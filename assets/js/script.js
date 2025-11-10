@@ -213,35 +213,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // === Ouvrir la modale DOTLAN ===
   function openDotlanModal(systemName) {
-    const modal = document.getElementById("dotlanModal");
-    const iframe = document.getElementById("dotlanFrame");
-    const title = document.getElementById("dotlanTitle");
-    const closeBtn = document.getElementById("dotlanClose");
+  const modal = document.getElementById("dotlanModal");
+  const iframe = document.getElementById("dotlanFrame");
+  const title = document.getElementById("dotlanTitle");
+  const closeBtn = document.getElementById("dotlanClose");
 
-    if (!modal || !iframe) {
-      console.error("Modale DOTLAN non trouvée.");
-      return;
-    }
+  const cleanSystem = systemName.trim();
+  const dotlanUrl = `https://evemaps.dotlan.net/system/${encodeURIComponent(cleanSystem)}`;
 
-    const cleanSystem = systemName.trim();
-    const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+  iframe.src = dotlanUrl;
+  title.textContent = `Carte du système : ${cleanSystem}`;
+  modal.classList.remove("hidden"); // Affiche la modale
 
-    iframe.src = dotlanUrl;
-    title.textContent = `Carte du système : ${cleanSystem}`;
-    modal.style.display = "block";
+  closeBtn.onclick = () => {
+    modal.classList.add("hidden");
+    iframe.src = "";
+  };
 
-    closeBtn.onclick = () => {
-      modal.style.display = "none";
+  window.onclick = (event) => {
+    if (event.target === modal) {
+      modal.classList.add("hidden");
       iframe.src = "";
-    };
+    }
+  };
+}
 
-    window.onclick = (event) => {
-      if (event.target === modal) {
-        modal.style.display = "none";
-        iframe.src = "";
-      }
-    };
-  }
 
   // === Initialisation ===
   await loadData();
