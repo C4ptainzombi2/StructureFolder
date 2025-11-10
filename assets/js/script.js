@@ -198,6 +198,69 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("🧩 Timers détectés :", timers);
     return timers;
   }
+// === 🔽 TRI DU TABLEAU (A-Z sauf Timers) ===
+document.querySelectorAll("#structuresTable th[data-sort]").forEach(th => {
+  th.addEventListener("click", () => {
+    const key = th.dataset.sort;
+    let isAsc = th.dataset.order !== "asc"; // alterne seulement si pas Timers
+
+    // Timers = toujours du plus court au plus long
+    if (key === "timer") {
+      isAsc = true; 
+    } else {
+      th.dataset.order = isAsc ? "asc" : "desc";
+    }
+
+    let sorted = [...allStructures];
+
+    sorted.sort((a, b) => {
+      let valA = "", valB = "";
+
+      switch (key) {
+        case "system":
+          valA = a["Nom du système"] || "";
+          valB = b["Nom du système"] || "";
+          break;
+        case "structure":
+          valA = a["Nom de la structure"] || "";
+          valB = b["Nom de la structure"] || "";
+          break;
+        case "region":
+          valA = a["Région"] || "";
+          valB = b["Région"] || "";
+          break;
+        case "constellation":
+          valA = a["Constellation"] || "";
+          valB = b["Constellation"] || "";
+          break;
+        case "type":
+          valA = a["Type"] || "";
+          valB = b["Type"] || "";
+          break;
+        case "alliance":
+          valA = a["Alliance / Corporation"] || "";
+          valB = b["Alliance / Corporation"] || "";
+          break;
+        case "date":
+          valA = new Date(a["Date"] || 0);
+          valB = new Date(b["Date"] || 0);
+          break;
+        case "timer":
+          // ⏳ Tri du plus court au plus long uniquement
+          const diffA = a["Date"] ? new Date(a["Date"]) - new Date() : Infinity;
+          const diffB = b["Date"] ? new Date(b["Date"]) - new Date() : Infinity;
+          return diffA - diffB;
+      }
+
+      // Comparaison générique
+      if (valA < valB) return isAsc ? -1 : 1;
+      if (valA > valB) return isAsc ? 1 : -1;
+      return 0;
+    });
+
+    renderTable(sorted);
+  });
+});
 
   // === Ajouter / Mettre à jour les timers ===
   if (addButton && pasteArea && pasteFeedback) {

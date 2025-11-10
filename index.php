@@ -34,14 +34,15 @@ include __DIR__ . '/includes/header.php';
   <table id="structuresTable">
     <thead>
       <tr>
-        <th>Nom du système</th>
-        <th>Nom de la structure</th>
-        <th>Région</th>
-        <th>Constellation</th>
-        <th>Type</th>
-        <th>Alliance / Corporation</th>
-        <th>Date</th>
-        <th id="countdownHeader" style="cursor:pointer;">Timers ⏳</th>
+        <th data-sort="system">Nom du système ⬍</th>
+        <th data-sort="structure">Nom de la structure ⬍</th>
+        <th data-sort="region">Région ⬍</th>
+        <th data-sort="constellation">Constellation ⬍</th>
+        <th data-sort="type">Type ⬍</th>
+        <th data-sort="alliance">Alliance / Corporation ⬍</th>
+        <th data-sort="date">Date ⬍</th>
+        <th data-sort="timer" id="countdownHeader" style="cursor:pointer;">Timers ⏳</th>
+
       </tr>
     </thead>
     <tbody id="tableBody">
