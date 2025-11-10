@@ -243,6 +243,7 @@ async function initStrategicMap(structures) {
       // ✅ Correction : récupérer le texte du <text> à l'intérieur du lien
       const textNode = link.querySelector("text");
       const sysName = textNode ? textNode.textContent.trim() : link.textContent.trim();
+      console.log("🌐 Système cliqué :", sysName);
       if (!sysName) return;
 
       timersList.innerHTML = "";
