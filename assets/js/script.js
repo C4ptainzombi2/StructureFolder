@@ -218,21 +218,26 @@ function openDotlanModal(systemName) {
   const title = document.getElementById("dotlanTitle");
   const closeBtn = document.getElementById("dotlanClose");
 
+  if (!modal || !iframe) {
+    console.error("⚠️ Modale DOTLAN introuvable.");
+    return;
+  }
+
   const cleanSystem = systemName.trim();
   const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
 
   iframe.src = dotlanUrl;
   title.textContent = `Carte du système : ${cleanSystem}`;
-  modal.classList.remove("hidden"); // Affiche la modale
+  modal.style.display = "flex"; // ✅ affiche et centre la modale
 
   closeBtn.onclick = () => {
-    modal.classList.add("hidden");
+    modal.style.display = "none";
     iframe.src = "";
   };
 
   window.onclick = (event) => {
     if (event.target === modal) {
-      modal.classList.add("hidden");
+      modal.style.display = "none";
       iframe.src = "";
     }
   };
