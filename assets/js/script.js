@@ -229,38 +229,46 @@ async function initStrategicMap(structures) {
 
   // === Gestion clic sur systèmes ===
   function attachRegionHandlers(regionName) {
-    const links = svgDoc.querySelectorAll("a");
-    timersList.innerHTML = "";
+  const links = svgDoc.querySelectorAll("a");
+  timersList.innerHTML = "";
 
-    links.forEach(link => {
-      link.removeAttribute("href");
-      link.removeAttribute("xlink:href");
+  links.forEach(link => {
+    link.removeAttribute("href");
+    link.removeAttribute("xlink:href");
 
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
 
-        const sysName = link.textContent.trim();
-        timersList.innerHTML = "";
+      // ✅ Correction : récupérer le texte du <text> à l'intérieur du lien
+      const textNode = link.querySelector("text");
+      const sysName = textNode ? textNode.textContent.trim() : link.textContent.trim();
+      if (!sysName) return;
 
-        const timers = structures.filter(s => s["Nom du système"]?.toUpperCase() === sysName.toUpperCase());
-        if (timers.length === 0) {
-          timersList.innerHTML = `<li>Aucun timer dans ${sysName}</li>`;
-          return;
-        }
+      timersList.innerHTML = "";
 
-        timers.forEach(s => {
-          const date = new Date(s["Date"]);
-          const now = new Date();
-          const expired = date < now;
-          const li = document.createElement("li");
-          li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
-          li.textContent = `${sysName} — ${s["Nom de la structure"]}`;
-          timersList.appendChild(li);
-        });
+      const timers = structures.filter(s => 
+        s["Nom du système"]?.toUpperCase().trim() === sysName.toUpperCase()
+      );
+
+      if (timers.length === 0) {
+        timersList.innerHTML = `<li>Aucun timer dans ${sysName}</li>`;
+        return;
+      }
+
+      timers.forEach(s => {
+        const date = new Date(s["Date"]);
+        const now = new Date();
+        const expired = date < now;
+        const li = document.createElement("li");
+        li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
+        li.textContent = `${sysName} — ${s["Nom de la structure"]} (${expired ? "expiré" : "actif"})`;
+        timersList.appendChild(li);
       });
     });
-  }
+  });
+}
+
 
   // === Bouton retour ===
   backButton.addEventListener("click", async () => {
