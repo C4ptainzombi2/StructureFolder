@@ -218,7 +218,7 @@ async function initStrategicMap() {
         currentRegion = regionName;
 
         // Charger la carte SVG de la région depuis Dotlan
-        const regionSvgPath = `https://evemaps.dotlan.net/svg/${encodeURIComponent(regionName)}.svg`;
+        const regionSvgPath = `/api/proxy_svg.php?url=${encodeURIComponent(`https://evemaps.dotlan.net/svg/${regionName}.svg`)}`;
         const regionSvg = await loadSVG(regionSvgPath);
         if (regionSvg) attachRegionHandlers(regionName);
       });
