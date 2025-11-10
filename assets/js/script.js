@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("📡 Chargement du module Structures — Drone Lands");
 
-  const JSON_URL = "api/manage_structures.php";
+  const JSON_URL = "/api/manage_structures.php";
 
   // === Sélecteurs DOM ===
   const regionFilter = document.getElementById("regionFilter");
