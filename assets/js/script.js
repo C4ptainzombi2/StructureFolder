@@ -171,71 +171,86 @@ async function initStrategicMap(structures) {
     });
   }
 
-  // === Nettoie & ajoute la légende personnalisée ===
-  function addCustomLegend(svg) {
-  if (!svg) return;
-
-  // === 🧹 Supprime les textes de souveraineté du type "S.R (3)" ===
-  const sovereigntyRegex = /^[A-Z]{1,3}\.[A-Z]{1,3}\s*\(\d+\)$/;
-  svg.querySelectorAll("text").forEach(text => {
-    const val = text.textContent.trim();
-    if (sovereigntyRegex.test(val)) text.remove();
-  });
-
-  // === 🧹 Supprime le bloc de légende Dotlan ===
-  svg.querySelectorAll("g").forEach(g => {
-    const texts = Array.from(g.querySelectorAll("text")).map(t => t.textContent.toLowerCase());
-    const toRemove = ["refinery", "factory", "research", "outpost", "wollari", "system", "cloning", "industry", "offices"];
-    if (texts.some(t => toRemove.some(w => t.includes(w)))) g.remove();
-  });
-
-  // === 🔧 Récupère les dimensions du SVG pour placer la légende ===
-  let vb = svg.viewBox?.baseVal;
-  if (!vb || vb.width === 0 || vb.height === 0) {
-    // Fallback : on utilise les dimensions réelles
-    const bbox = svg.getBBox();
-    vb = { width: bbox.width || 1000, height: bbox.height || 800 };
+  // === Légende personnalisée et nettoyage du SVG ===
+async function addCustomLegend(svg) {
+  if (!svg) {
+    console.warn("❌ SVG non trouvé, impossible d'ajouter la légende.");
+    return;
   }
 
-  // === 🧱 Création du groupe de légende personnalisé ===
-  const legend = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  legend.setAttribute("id", "custom-legend");
+  try {
+    // Supprimer les textes du type "S.R (3)" ou "M.O (5)"
+    const sovereigntyRegex = /^[A-Z]{1,3}\.[A-Z]{1,3}\s*\(\d+\)$/;
+    svg.querySelectorAll("text").forEach(text => {
+      const val = text.textContent.trim();
+      if (sovereigntyRegex.test(val)) text.remove();
+    });
 
-  const x = vb.width - 250;
-  const y = vb.height - 60;
+    // Supprimer les légendes Dotlan existantes
+    svg.querySelectorAll("g").forEach(g => {
+      const texts = Array.from(g.querySelectorAll("text")).map(t => t.textContent.toLowerCase());
+      const keywords = ["refinery", "factory", "research", "outpost", "wollari", "system", "industry", "offices", "cloning"];
+      if (texts.some(t => keywords.some(k => t.includes(k)))) {
+        g.remove();
+      }
+    });
 
-  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  bg.setAttribute("x", x);
-  bg.setAttribute("y", y);
-  bg.setAttribute("width", "230");
-  bg.setAttribute("height", "45");
-  bg.setAttribute("fill", "#111");
-  bg.setAttribute("stroke", "#333");
-  bg.setAttribute("rx", "6");
-  bg.setAttribute("ry", "6");
-  bg.setAttribute("opacity", "0.9");
-  legend.appendChild(bg);
+    // Récupérer les dimensions du SVG pour placer ta légende
+    let width = 1000, height = 800;
+    if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+      width = svg.viewBox.baseVal.width;
+      height = svg.viewBox.baseVal.height;
+    } else {
+      const bbox = svg.getBBox();
+      if (bbox.width > 0 && bbox.height > 0) {
+        width = bbox.width;
+        height = bbox.height;
+      }
+    }
 
-  const line1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  line1.setAttribute("x", x + 12);
-  line1.setAttribute("y", y + 18);
-  line1.setAttribute("fill", "#cccccc");
-  line1.setAttribute("font-size", "11");
-  line1.textContent = "⚙️ Gris = structures présentes";
-  legend.appendChild(line1);
+    // Groupe pour la légende personnalisée
+    const legend = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    legend.setAttribute("id", "custom-legend");
 
-  const line2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  line2.setAttribute("x", x + 12);
-  line2.setAttribute("y", y + 34);
-  line2.setAttribute("fill", "#ff5555");
-  line2.setAttribute("font-size", "11");
-  line2.textContent = "🔥 Rouge = structures renforcées";
-  legend.appendChild(line2);
+    const x = width - 240;
+    const y = height - 60;
 
-  svg.appendChild(legend);
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", x);
+    bg.setAttribute("y", y);
+    bg.setAttribute("width", "220");
+    bg.setAttribute("height", "40");
+    bg.setAttribute("fill", "#111");
+    bg.setAttribute("stroke", "#333");
+    bg.setAttribute("rx", "6");
+    bg.setAttribute("ry", "6");
+    bg.setAttribute("opacity", "0.9");
+    legend.appendChild(bg);
 
-  console.log("✅ Légende Dotlan supprimée et remplacée avec succès");
+    const line1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    line1.setAttribute("x", x + 10);
+    line1.setAttribute("y", y + 17);
+    line1.setAttribute("fill", "#ccc");
+    line1.setAttribute("font-size", "11");
+    line1.textContent = "⚙️ Gris = structures présentes";
+    legend.appendChild(line1);
+
+    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    line2.setAttribute("x", x + 10);
+    line2.setAttribute("y", y + 33);
+    line2.setAttribute("fill", "#ff5555");
+    line2.setAttribute("font-size", "11");
+    line2.textContent = "🔥 Rouge = structures renforcées";
+    legend.appendChild(line2);
+
+    svg.appendChild(legend);
+
+    console.log("✅ Nettoyage + légende personnalisée appliqués au SVG.");
+  } catch (err) {
+    console.error("⚠️ Erreur pendant le traitement du SVG :", err);
+  }
 }
+
 
 
   // === Chargement d’un SVG avec proxy ===
@@ -285,7 +300,13 @@ async function initStrategicMap(structures) {
 
         const dotlanURL = `https://evemaps.dotlan.net/svg/${regionName}.svg`;
         svgDoc = await loadSVG(dotlanURL);
-        if (svgDoc) attachRegionHandlers(name);
+        if (svgDoc) {
+        // ⚙️ Appliquer le nettoyage + ajout légende
+        await addCustomLegend(svgDoc);
+
+        // Réattacher les interactions sur les systèmes
+        attachRegionHandlers(name);
+}
       });
     });
   }
