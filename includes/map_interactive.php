@@ -1,5 +1,5 @@
 <div id="mapContainer">
-  <div id="strategicMapContainer" title="Carte Drone Lands"></div>
+  <div id="strategicMap" title="Carte Drone Lands"></div>
 
   <div id="mapSidebar">
     <h3 id="mapRegionTitle">🗺️ New Eden</h3>
