@@ -1,3 +1,157 @@
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("📡 Chargement du module Structures — Drone Lands");
+
+  const JSON_URL = "/api/manage_structures.php";
+
+  // === Sélecteurs DOM ===
+  const regionFilter = document.getElementById("regionFilter");
+  const typeFilter = document.getElementById("typeFilter");
+  const allianceFilter = document.getElementById("allianceFilter");
+  const constellationFilter = document.getElementById("constellationFilter");
+  const reinforcedFilter = document.getElementById("reinforcedFilter");
+  const searchInput = document.getElementById("searchInput");
+  const resetBtn = document.getElementById("resetFilters");
+  const tableBody = document.getElementById("tableBody");
+  const counter = document.getElementById("counter");
+
+  let allStructures = [];
+
+  // === Charger les données ===
+  async function loadData() {
+    try {
+      const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
+      const json = await res.json();
+      allStructures = json.structures || [];
+      renderTable(allStructures);
+      populateFilters();
+      console.log(`✅ ${allStructures.length} structures chargées.`);
+    } catch (e) {
+      console.error("Erreur de chargement :", e);
+      tableBody.innerHTML = `<tr><td colspan="9">❌ Impossible de charger les données</td></tr>`;
+    }
+  }
+
+  // === Filtres dynamiques ===
+  function populateFilters() {
+    const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
+
+    function fillSelect(select, items, label) {
+      if (!select) return;
+      select.innerHTML = `<option value="">${label}</option>`;
+      items.forEach(i => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i;
+        select.appendChild(opt);
+      });
+    }
+
+    fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
+    fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
+    fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
+    fillSelect(constellationFilter, uniques("Constellation"), "🌌 Toutes constellations");
+  }
+
+  // === Filtrage ===
+  function applyFilters() {
+    let filtered = [...allStructures];
+    const region = regionFilter.value;
+    const type = typeFilter.value;
+    const alliance = allianceFilter.value;
+    const constellation = constellationFilter.value;
+    const search = searchInput.value.trim().toLowerCase();
+
+    if (region) filtered = filtered.filter(s => s["Région"] === region);
+    if (type) filtered = filtered.filter(s => s["Type"] === type);
+    if (alliance) filtered = filtered.filter(s => s["Alliance / Corporation"] === alliance);
+    if (constellation) filtered = filtered.filter(s => s["Constellation"] === constellation);
+    if (search)
+      filtered = filtered.filter(s =>
+        Object.values(s).some(v => v?.toString().toLowerCase().includes(search))
+      );
+
+    renderTable(filtered);
+  }
+
+  [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(f =>
+    f?.addEventListener("change", applyFilters)
+  );
+  searchInput?.addEventListener("input", applyFilters);
+  resetBtn?.addEventListener("click", () => {
+    [regionFilter, typeFilter, allianceFilter, constellationFilter, searchInput].forEach(el => {
+      if (el) el.value = "";
+    });
+    renderTable(allStructures);
+  });
+
+  // === Compte à rebours ===
+  function formatCountdown(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const d = Math.floor(totalSeconds / 86400);
+    const h = Math.floor((totalSeconds % 86400) / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return d > 0
+      ? `${d}d ${h.toString().padStart(2, "0")}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`
+      : `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`;
+  }
+
+  function renderTable(structures) {
+    if (!structures.length) {
+      tableBody.innerHTML = `<tr><td colspan="9">Aucune structure trouvée</td></tr>`;
+      counter.textContent = "Total : 0";
+      return;
+    }
+
+    tableBody.innerHTML = "";
+    structures.forEach(s => {
+      const system = s["Nom du système"] || "-";
+      const structureName = s["Nom de la structure"] || s["Remarques"] || "-";
+      const date = s["Date"];
+      let countdownHTML = "-";
+
+      if (date && !isNaN(new Date(date))) {
+        const target = new Date(date);
+        const diff = target - new Date();
+        countdownHTML = diff > 0
+          ? `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`
+          : `<span class="expired">❌</span>`;
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${system}</td>
+        <td>${structureName}</td>
+        <td>${s["Région"] || "-"}</td>
+        <td>${s["Constellation"] || "-"}</td>
+        <td>${s["Type"] || "-"}</td>
+        <td>${s["Alliance / Corporation"] || "-"}</td>
+        <td>${date || "-"}</td>
+        <td>${countdownHTML}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    counter.textContent = `Total : ${structures.length}`;
+  }
+
+  setInterval(() => {
+    document.querySelectorAll(".countdown").forEach(el => {
+      const t = new Date(el.dataset.target);
+      const diff = t - new Date();
+      if (diff <= 0) {
+        el.textContent = "❌";
+        el.className = "expired";
+      } else el.textContent = formatCountdown(diff);
+    });
+  }, 1000);
+
+  await loadData();
+  await initStrategicMap(allStructures);
+});
+
+
+// === 🗺️ Carte stratégique ===
 async function initStrategicMap(structures) {
   console.log("🗺️ Initialisation de la carte stratégique…");
 
