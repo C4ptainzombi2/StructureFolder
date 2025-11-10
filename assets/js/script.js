@@ -62,17 +62,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-
-    if (days > 0) {
-      return `${days}d ${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
-    } else {
-      return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
-    }
+    return days > 0
+      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      : `${hours}h ${minutes}m ${seconds}s`;
   }
 
   // === Affichage du tableau ===
   function renderTable(structures) {
-    if (!structures || structures.length === 0) {
+    if (!structures?.length) {
       tableBody.innerHTML = `<tr><td colspan="9">Aucune structure trouvée</td></tr>`;
       counter.textContent = "Total : 0 structure";
       return;
@@ -87,13 +84,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       let countdownHTML = "-";
 
       if (date && !isNaN(new Date(date))) {
-        const target = new Date(date);
-        const diff = target - new Date();
-        if (diff > 0) {
-          countdownHTML = `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`;
-        } else {
-          countdownHTML = `<span class="expired">❌</span>`;
-        }
+        const diff = new Date(date) - new Date();
+        countdownHTML = diff > 0
+          ? `<span class="countdown" data-target="${new Date(date).toISOString()}">${formatCountdown(diff)}</span>`
+          : `<span class="expired">❌</span>`;
       }
 
       const tr = document.createElement("tr");
@@ -114,9 +108,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.querySelectorAll(".map-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const systemName = e.currentTarget.dataset.system;
-        openDotlanModal(systemName);
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        openDotlanModal(e.currentTarget.dataset.system);
       });
     });
 
@@ -126,31 +120,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Mise à jour du compte à rebours ===
   setInterval(() => {
     document.querySelectorAll(".countdown").forEach(el => {
-      const targetDate = new Date(el.dataset.target);
-      const diff = targetDate - new Date();
+      const target = new Date(el.dataset.target);
+      const diff = target - new Date();
 
       if (diff <= 0) {
         el.textContent = "❌";
-        el.classList.add("expired");
+        el.classList.replace("countdown", "expired");
         el.style.color = "#ff4444";
-        el.classList.remove("countdown");
       } else {
         el.textContent = formatCountdown(diff);
-        const totalHours = diff / 3600000;
-        if (totalHours < 1) el.style.color = "#ff5555";
-        else if (totalHours < 6) el.style.color = "#ffaa00";
-        else if (totalHours < 24) el.style.color = "#ffff66";
-        else el.style.color = "#00ff99";
       }
     });
   }, 1000);
 
-  // === Initialisation ===
   await loadData();
 });
 
 
-// === Carte stratégique interactive ===
+// === 🌌 Carte stratégique interactive ===
 async function initStrategicMap() {
   console.log("🗺️ Initialisation de la carte stratégique...");
 
@@ -164,9 +151,6 @@ async function initStrategicMap() {
     return;
   }
 
-  let currentLevel = "universe";
-  let currentRegion = null;
-
   const res = await fetch("/data/structures.json");
   const json = await res.json();
   const structures = json.structures || [];
@@ -178,37 +162,35 @@ async function initStrategicMap() {
       }
 
       const res = await fetch(svgPath);
-      if (!res.ok) {
-        console.error(`❌ Impossible de charger le SVG : ${svgPath} (${res.status})`);
-        return null;
-      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
       return mapContainer.querySelector("svg");
     } catch (err) {
-      console.error("⚠️ Erreur inattendue lors du chargement du SVG :", err);
+      console.error("❌ Erreur de chargement du SVG :", err);
+      mapContainer.innerHTML = `<p style="color:red;">Erreur lors du chargement du SVG : ${svgPath}</p>`;
       return null;
     }
   }
 
   // === Carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
-  if (!svgDoc) {
-    mapContainer.innerHTML = "❌ Impossible de charger la carte SVG principale.";
-    return;
-  }
+  if (!svgDoc) return;
 
   function attachUniverseHandlers() {
     const regions = svgDoc.querySelectorAll("g[id]");
     regions.forEach(region => {
       region.style.cursor = "pointer";
-      region.addEventListener("click", async () => {
+      region.addEventListener("click", async e => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const regionName = region.id.replace(/_/g, " ");
-        currentLevel = "region";
-        currentRegion = regionName;
         regionTitle.textContent = `🪐 ${regionName}`;
         backButton.style.display = "block";
+
+        console.log(`📍 Chargement de la région ${regionName}...`);
 
         const regionSvgPath = `https://evemaps.dotlan.net/svg/${encodeURIComponent(regionName)}.svg`;
         svgDoc = await loadSVG(regionSvgPath);
@@ -229,6 +211,7 @@ async function initStrategicMap() {
         s => s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
       );
 
+      // Coloration dynamique
       if (systemTimers.length > 0) {
         const now = new Date();
         const hasActive = systemTimers.some(s => new Date(s["Date"]) > now);
@@ -239,6 +222,8 @@ async function initStrategicMap() {
 
       link.addEventListener("click", e => {
         e.preventDefault();
+        e.stopPropagation();
+
         timersList.innerHTML = "";
 
         if (systemTimers.length === 0) {
@@ -261,7 +246,6 @@ async function initStrategicMap() {
   }
 
   backButton.addEventListener("click", async () => {
-    currentLevel = "universe";
     regionTitle.textContent = "🗺️ New Eden";
     backButton.style.display = "none";
     timersList.innerHTML = "";
