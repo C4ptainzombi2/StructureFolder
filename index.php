@@ -3,18 +3,27 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/functions.php';
 include __DIR__ . '/includes/header.php';
 ?>
-<button id="debugToggle" title="Basculer le mode debug" style="
+
+<!-- 🐞 Bouton Debug Mode -->
+<button id="debugToggle" title="Activer/Désactiver le mode debug" style="
   position:absolute; top:10px; right:10px;
-  background:${localStorage.getItem('debugMode')==='true' ? '#4caf50' : '#333'};
+  background: var(--debug-color, #333);
   color:white; border:none; border-radius:6px; padding:6px 10px;
   cursor:pointer;">🐞 Debug</button>
+
 <script>
-document.getElementById('debugToggle').addEventListener('click', () => {
-  const newState = localStorage.getItem('debugMode') !== 'true';
-  localStorage.setItem('debugMode', newState);
-  location.reload();
+document.addEventListener("DOMContentLoaded", () => {
+  const debugBtn = document.getElementById("debugToggle");
+  const isActive = localStorage.getItem("debugMode") === "true";
+  document.documentElement.style.setProperty("--debug-color", isActive ? "#4caf50" : "#333");
+  debugBtn.addEventListener("click", () => {
+    const newState = !(localStorage.getItem("debugMode") === "true");
+    localStorage.setItem("debugMode", newState);
+    location.reload();
+  });
 });
 </script>
+
 <div class="container">
   <header>
     <h1>📊 Structures — Drone Lands</h1>
@@ -30,10 +39,10 @@ document.getElementById('debugToggle').addEventListener('click', () => {
     <p id="counter">Total : 0 structure</p>
   </header>
 
-<textarea id="pasteArea" placeholder="Collez ici les infos (ex : R3P0-Z - Station ... Reinforced until ...)"></textarea>
-<button id="addButton">➕ Ajouter / Mettre à jour</button>
-<div id="pasteFeedback" style="margin-top:5px;color:#ccc;"></div>
-
+  <textarea id="pasteArea" placeholder="Collez ici : ex. ZJ-S1S - Stupid Moon Drilling Station
+Reinforced until 2025.11.12 11:44:35"></textarea>
+  <button id="addButton">➕ Ajouter / Mettre à jour</button>
+  <div id="pasteFeedback" style="margin-top:5px;color:#ccc;"></div>
 
   <table id="structuresTable">
     <thead>
@@ -56,3 +65,4 @@ document.getElementById('debugToggle').addEventListener('click', () => {
 
 <?php include __DIR__ . '/includes/modal_dotlan.php'; ?>
 <?php include __DIR__ . '/includes/footer.php'; ?>
+<script src="assets/js/script.js"></script>

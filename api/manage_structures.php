@@ -1,8 +1,9 @@
 <?php
 /**
  * manage_structures.php
- * Version fusionnée : stable + compatibilité ancienne
+ * Version fusionnée avec logs debug et compatibilité ancienne
  */
+
 require_once __DIR__ . '/../config_debug.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -17,7 +18,7 @@ $jsonPath = "$baseDir/structures.json";
 $regionsDir = "$baseDir/regions";
 $apiUrl = "https://script.google.com/macros/s/AKfycby5A8umWHXsxqHjSOQS6y6J3n-Kijdbj0g6uZyBkCmNl5niD5FcvM_Z7JiPwpQgZ9eT5A/exec";
 
-/** --- Fonctions utilitaires --- **/
+/** === UTILITAIRES === **/
 function normalize($str) {
     return strtolower(trim(preg_replace('/\s+/', '', $str ?? '')));
 }
@@ -30,7 +31,7 @@ function save_json($path, $data) {
     file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 }
 
-/** === GET : Synchronisation avec Google Sheets === **/
+/** === MODE GET : Synchronisation avec Google Sheets === **/
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $remote = @file_get_contents($apiUrl);
     if (!$remote) exit(json_encode(['success' => false, 'error' => 'Impossible de contacter Google Sheets']));
@@ -89,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-/** === POST : Ajout / Mise à jour renforcée === **/
+/** === MODE POST : Ajout / Mise à jour d’une structure === **/
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) exit(json_encode(['success' => false, 'error' => 'Requête JSON invalide']));
@@ -108,8 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             normalize($s['Nom du système']) === $sys &&
             normalize($s['Nom de la structure']) === $name
         ) {
-            // Mise à jour souple
-            if (isset($input['Date']) && $input['Date'] !== '') $s['Date'] = $input['Date'];
+            if (!empty($input['Date'])) $s['Date'] = $input['Date'];
             if (isset($input['Renforcé']) || isset($input['Renforcée ?'])) {
                 $s['Renforcé'] = ($input['Renforcé'] ?? $input['Renforcée ?']) ?: 'oui';
             }
@@ -117,20 +117,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
         }
     }
-debug_log("🔍 Recherche: system={$input['Nom du système']} | structure={$input['Nom de la structure']} | found=" . ($found ? 'oui' : 'non'));
 
-if (!$found) {
-    debug_log("⚠️ Structure non trouvée dans le JSON local.");
-} else {
-    debug_log("✅ Structure mise à jour. Date={$input['Date']}, Reinforcé={$input['Renforcé']}");
-}
+    debug_log("🔍 Recherche: system={$input['Nom du système']} | structure={$input['Nom de la structure']} | found=" . ($found ? 'oui' : 'non'));
+
     if (!$found) {
+        debug_log("⚠️ Structure non trouvée — ajout automatique.");
         $structures[] = [
             "Nom du système" => $input["Nom du système"],
             "Nom de la structure" => $input["Nom de la structure"],
             "Date" => $input["Date"] ?? "",
             "Renforcé" => $input["Renforcé"] ?? "oui"
         ];
+    } else {
+        debug_log("✅ Structure mise à jour. Date={$input['Date']}, Reinforcé={$input['Renforcé']}");
     }
 
     save_json($jsonPath, $data);
