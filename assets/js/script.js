@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const JSON_URL = "api/manage_structures.php";
 
-  // Sélecteurs DOM
+  // === Sélecteurs DOM ===
   const regionFilter = document.getElementById("regionFilter");
   const typeFilter = document.getElementById("typeFilter");
   const allianceFilter = document.getElementById("allianceFilter");
@@ -64,11 +64,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     tableBody.innerHTML = "";
+
     structures.forEach(s => {
+      const system = s["Nom du système"] || "-";
+      const structureName = s["Nom de la structure"] || s["Remarques"] || "-";
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${s["Nom du système"] || "-"}</td>
-        <td>${s["Nom de la structure"] || s["Remarques"] || "-"}</td>
+        <td>
+          ${system}
+          <button class="map-btn" data-system="${system}" title="Ouvrir dans Dotlan">🗺️</button>
+        </td>
+        <td>${structureName}</td>
         <td>${s["Région"] || "-"}</td>
         <td>${s["Constellation"] || "-"}</td>
         <td>${s["Type"] || "-"}</td>
@@ -77,6 +84,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${s["Renforcé"] || s["Renforcée ?"] || "❌"}</td>
       `;
       tableBody.appendChild(tr);
+    });
+
+    // === Boutons DOTLAN ===
+    document.querySelectorAll(".map-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const systemName = e.currentTarget.dataset.system;
+        openDotlanModal(systemName);
+      });
     });
 
     counter.textContent = `Total : ${structures.length} structures`;
@@ -117,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // === Fonction de parsing du texte collé ===
+  // === Analyse du texte collé ===
   function parsePastedText(text) {
     const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
     const firstLine = lines[0] || "";
@@ -196,5 +211,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // === Ouvrir la modale DOTLAN ===
+  function openDotlanModal(systemName) {
+    const modal = document.getElementById("dotlanModal");
+    const iframe = document.getElementById("dotlanFrame");
+    const title = document.getElementById("dotlanTitle");
+    const closeBtn = document.getElementById("dotlanClose");
+
+    if (!modal || !iframe) {
+      console.error("Modale DOTLAN non trouvée.");
+      return;
+    }
+
+    const cleanSystem = systemName.trim();
+    const dotlanUrl = `https://evemaps.dotlan.net/system/${encodeURIComponent(cleanSystem)}`;
+
+    iframe.src = dotlanUrl;
+    title.textContent = `Carte du système : ${cleanSystem}`;
+    modal.style.display = "block";
+
+    closeBtn.onclick = () => {
+      modal.style.display = "none";
+      iframe.src = "";
+    };
+
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+        iframe.src = "";
+      }
+    };
+  }
+
+  // === Initialisation ===
   await loadData();
 });
