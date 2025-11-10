@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Génération des filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
+
     function fillSelect(select, items, label) {
       if (!select) return;
       select.innerHTML = `<option value="">${label}</option>`;
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         select.appendChild(opt);
       });
     }
+
     fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
     fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
     fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
@@ -67,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const uniques = (key) => [...new Set(filteredStructures.map(s => s[key]).filter(Boolean))].sort();
+
     function fillSelect(select, items, label) {
       if (!select) return;
       const currentValue = select.value;
@@ -94,13 +97,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const seconds = totalSeconds % 60;
 
     if (days > 0) {
-      return `${days}d ${hours.toString().padStart(2, "0")}h ${minutes
-        .toString()
-        .padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
+      return `${days}d ${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
     } else {
-      return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds
-        .toString()
-        .padStart(2, "0")}s`;
+      return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
     }
   }
 
@@ -170,7 +169,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         el.classList.remove("countdown");
       } else {
         el.textContent = formatCountdown(diff);
-
         const totalHours = diff / 3600000;
         if (totalHours < 1) el.style.color = "#ff5555";
         else if (totalHours < 6) el.style.color = "#ffaa00";
@@ -180,54 +178,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }, 1000);
 
-  // === Filtres ===
-  function filterAndRender() {
-    const search = (searchInput.value || "").toUpperCase();
-    const region = regionFilter.value;
-    const type = typeFilter.value;
-    const alliance = allianceFilter.value;
-    const constellation = constellationFilter.value;
-    const reinforcedOnly = reinforcedFilter.checked;
-
-    const filtered = allStructures.filter(s => {
-      if (region && s["Région"] !== region) return false;
-      if (type && s["Type"] !== type) return false;
-      if (alliance && s["Alliance / Corporation"] !== alliance) return false;
-      if (constellation && s["Constellation"] !== constellation) return false;
-      if (reinforcedOnly && s["Renforcé"] !== "oui") return false;
-      if (search && !Object.values(s).some(v => String(v).toUpperCase().includes(search))) return false;
-      return true;
-    });
-
-    renderTable(filtered);
-  }
-
-  [regionFilter, typeFilter, allianceFilter, constellationFilter, reinforcedFilter, searchInput].forEach(el => {
-    if (el) el.addEventListener("input", filterAndRender);
-  });
-
-  [regionFilter, typeFilter, allianceFilter].forEach(el => {
-    if (el) el.addEventListener("change", () => {
-      updateDependentFilters();
-      filterAndRender();
-    });
-  });
-
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(el => el.value = "");
-      reinforcedFilter.checked = false;
-      searchInput.value = "";
-      populateFilters();
-      filterAndRender();
-    });
-  }
-
-  // === Analyse avancée de plusieurs timers ===
+  // === Analyse de plusieurs timers collés ===
   function parseMultipleTimers(text) {
     const timers = [];
+    text = text.replace(/\u202F/g, " ").replace(/\u00A0/g, " ").trim();
+    text = text.replace(/(?=[A-Z0-9-]{3,}\s*-\s*[A-Za-z0-9])/g, "\n");
+
     const blocks = text
-      .split(/(?=[A-Z0-9-]{3,}\s*-\s*[A-Za-z0-9]+)/g)
+      .split(/\n(?=[A-Z0-9-]{3,}\s*-\s*[A-Za-z0-9]+)/g)
       .map(b => b.trim())
       .filter(Boolean);
 
@@ -241,10 +199,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const date = reinforcedMatch ? reinforcedMatch[1].replace(/\./g, "-") : "";
       if (system && structureName && date) timers.push({ system, structureName, date });
     }
+
+    console.log("🧩 Timers détectés :", timers);
     return timers;
   }
 
-  // === Ajout / Mise à jour de plusieurs timers ===
+  // === Ajout / Mise à jour ===
   if (addButton) {
     addButton.addEventListener("click", async () => {
       const text = pasteArea.value.trim();
@@ -253,44 +213,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const parsedTimers = parseMultipleTimers(text);
-      if (parsedTimers.length === 0) {
-        feedback.textContent = "⚠️ Aucun timer valide trouvé.";
+      const timers = parseMultipleTimers(text);
+      if (timers.length === 0) {
+        feedback.textContent = "⚠️ Aucun timer valide détecté.";
         return;
       }
 
-      feedback.textContent = `⏳ Détection de ${parsedTimers.length} timer(s)...`;
+      feedback.textContent = "⏳ Vérification et mise à jour des structures...";
 
       try {
         const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
         const json = await res.json();
         const structures = json.structures || [];
+        let updatedCount = 0;
 
-        let updatedCount = 0, notFoundCount = 0;
-
-        for (const { system, structureName, date } of parsedTimers) {
+        for (const t of timers) {
           const existing = structures.find(s =>
-            s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
-            s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
+            s["Nom du système"]?.toLowerCase() === t.system.toLowerCase() &&
+            s["Nom de la structure"]?.toLowerCase() === t.structureName.toLowerCase()
           );
+          if (!existing) continue;
 
-          if (!existing) {
-            console.warn(`❌ Non trouvé : ${system} - ${structureName}`);
-            notFoundCount++;
-            continue;
-          }
+          const updated = { ...existing, "Renforcé": "oui", "Date": t.date };
 
-          const updated = { ...existing, "Renforcé": "oui", "Date": date };
           const postRes = await fetch(JSON_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updated)
           });
+
           const result = await postRes.json();
           if (result.success) updatedCount++;
         }
 
-        feedback.textContent = `✅ ${updatedCount} timer(s) mis à jour — ❌ ${notFoundCount} ignoré(s).`;
+        feedback.textContent = `✅ ${updatedCount}/${timers.length} timers mis à jour avec succès.`;
         pasteArea.value = "";
         await loadData();
       } catch (err) {
@@ -300,7 +256,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // === Modale DOTLAN ===
+  // === Modale Dotlan ===
   function closeDotlanModal() {
     const modal = document.getElementById("dotlanModal");
     const iframe = document.getElementById("dotlanFrame");
@@ -312,38 +268,39 @@ document.addEventListener("DOMContentLoaded", async () => {
   function openDotlanModal(systemName) {
     const modal = document.getElementById("dotlanModal");
     const iframe = document.getElementById("dotlanFrame");
-    const title = document.getElementById("dotlanTitle");
-    const closeBtn = document.getElementById("dotlanClose");
-    if (!modal || !iframe || !closeBtn) return;
+    const closeBtn = document.querySelector("#dotlanModal button");
+
+    if (!modal || !iframe) return;
 
     const cleanSystem = systemName.trim();
-    iframe.src = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
-    if (title) title.textContent = `Carte du système : ${cleanSystem}`;
+    const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+
+    iframe.src = dotlanUrl;
     modal.style.display = "flex";
-    closeBtn.onclick = closeDotlanModal;
+    if (closeBtn) closeBtn.onclick = closeDotlanModal;
 
-    if (modal._dotlanClickHandler) modal.removeEventListener("click", modal._dotlanClickHandler);
-    modal._dotlanClickHandler = e => { if (e.target === modal) closeDotlanModal(); };
-    modal.addEventListener("click", modal._dotlanClickHandler);
-
-    if (!modal._dotlanEscHandler) {
-      modal._dotlanEscHandler = e => { if (e.key === "Escape") closeDotlanModal(); };
-      document.addEventListener("keydown", modal._dotlanEscHandler);
-    }
+    modal.onclick = (e) => {
+      if (e.target === modal) closeDotlanModal();
+    };
   }
 
-  // === Tri par countdown ===
+  // === Tri par Countdown ===
   let countdownSortAsc = true;
   const countdownHeader = document.getElementById("countdownHeader");
   if (countdownHeader) {
     countdownHeader.addEventListener("click", () => {
       const filtered = [...allStructures].filter(s => s["Date"]);
-      filtered.sort((a, b) => countdownSortAsc ? new Date(a["Date"]) - new Date(b["Date"]) : new Date(b["Date"]) - new Date(a["Date"]));
+      filtered.sort((a, b) => {
+        const dateA = new Date(a["Date"]);
+        const dateB = new Date(b["Date"]);
+        return countdownSortAsc ? dateA - dateB : dateB - dateA;
+      });
       countdownSortAsc = !countdownSortAsc;
       countdownHeader.textContent = `Countdown ${countdownSortAsc ? "⏳↑" : "⏳↓"}`;
       renderTable(filtered);
     });
   }
 
+  // === Initialisation ===
   await loadData();
 });
