@@ -304,3 +304,107 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Initialisation ===
   await loadData();
 });
+// === Carte stratégique interactive ===
+async function initStrategicMap() {
+  const map = document.getElementById("strategicMap");
+  const timersList = document.getElementById("mapTimersList");
+  const regionTitle = document.getElementById("mapRegionTitle");
+  const backButton = document.getElementById("mapBackButton");
+
+  if (!map) return;
+
+  let currentLevel = "universe"; // "universe" ou "region"
+  let currentRegion = null;
+
+  const res = await fetch("data/structures.json");
+  const json = await res.json();
+  const structures = json.structures || [];
+
+  async function loadSVG(svgPath) {
+    map.src = svgPath;
+    return new Promise(resolve => {
+      map.onload = () => resolve(map.contentDocument);
+    });
+  }
+
+  // === Charger la carte principale (New Eden) ===
+  let svgDoc = await loadSVG("data/maps/New_Eden.svg");
+
+  function attachUniverseHandlers() {
+    const regions = svgDoc.querySelectorAll("g[id]");
+    regions.forEach(region => {
+      region.style.cursor = "pointer";
+      region.addEventListener("click", async () => {
+        const regionName = region.id.replace(/_/g, " ");
+        currentLevel = "region";
+        currentRegion = regionName;
+        regionTitle.textContent = `🪐 ${regionName}`;
+        backButton.style.display = "block";
+
+        // Charger la carte de la région en SVG
+        const regionSvgPath = `https://evemaps.dotlan.net/svg/${encodeURIComponent(regionName)}.svg`;
+        svgDoc = await loadSVG(regionSvgPath);
+
+        attachRegionHandlers(regionName);
+      });
+    });
+  }
+
+  function attachRegionHandlers(regionName) {
+    const svgSystems = svgDoc.querySelectorAll("a");
+    timersList.innerHTML = "";
+
+    svgSystems.forEach(link => {
+      const systemName = link.textContent.trim();
+      if (!systemName) return;
+
+      const systemTimers = structures.filter(
+        s => s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
+      );
+
+      // colorer les systèmes selon timers
+      if (systemTimers.length > 0) {
+        const now = new Date();
+        const hasActive = systemTimers.some(s => new Date(s["Date"]) > now);
+        const hasExpired = systemTimers.some(s => new Date(s["Date"]) < now);
+        const color = hasExpired ? "#ff5555" : hasActive ? "#ffaa00" : "#00ff99";
+        link.querySelector("circle, rect")?.setAttribute("fill", color);
+      }
+
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        timersList.innerHTML = "";
+
+        if (systemTimers.length === 0) {
+          timersList.innerHTML = `<li>Aucun timer dans ${systemName}</li>`;
+          return;
+        }
+
+        systemTimers.forEach(s => {
+          const date = s["Date"] ? new Date(s["Date"]) : null;
+          const now = new Date();
+          const color = date && date > now ? "#ffaa00" : "#ff4444";
+
+          const li = document.createElement("li");
+          li.style.borderLeft = `4px solid ${color}`;
+          li.textContent = `${systemName} — ${s["Nom de la structure"]}`;
+          timersList.appendChild(li);
+        });
+      });
+    });
+  }
+
+  // Bouton retour
+  backButton.addEventListener("click", async () => {
+    currentLevel = "universe";
+    regionTitle.textContent = "🗺️ New Eden";
+    backButton.style.display = "none";
+    timersList.innerHTML = "";
+    svgDoc = await loadSVG("data/maps/New_Eden.svg");
+    attachUniverseHandlers();
+  });
+
+  attachUniverseHandlers();
+}
+
+document.addEventListener("DOMContentLoaded", initStrategicMap);

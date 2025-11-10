@@ -387,3 +387,122 @@ button:hover {
 #countdownHeader:hover {
   color: #00c3ff;
 }
+/* === 🗺️ Carte stratégique interactive === */
+#strategicSection {
+  margin-top: 40px;
+  background: #1a1f2b;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+#strategicSection h2 {
+  margin-bottom: 15px;
+  color: #00d4ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+  text-align: center;
+}
+
+#mapContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#strategicMap {
+  width: 100%;
+  max-width: 950px;
+  height: 650px;
+  border: none;
+  background: #0f1520;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+
+#strategicMap:hover {
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
+}
+
+/* === Panneau latéral === */
+#mapSidebar {
+  flex: 1;
+  min-width: 300px;
+  background: #111722;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+  color: #ddd;
+}
+
+#mapRegionTitle {
+  color: #00e0a8;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+#mapTimersList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 540px;
+  overflow-y: auto;
+}
+
+#mapTimersList li {
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-left: 4px solid #00ff99;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #f0f0f0;
+  transition: background 0.2s ease;
+}
+
+#mapTimersList li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* === Bouton retour === */
+#mapBackButton {
+  display: none;
+  margin-top: 15px;
+  padding: 8px 14px;
+  background: #222b3a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  transition: background 0.25s ease;
+}
+
+#mapBackButton:hover {
+  background: #00d4ff;
+  color: #000;
+}
+
+/* === Responsive === */
+@media (max-width: 1000px) {
+  #mapContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #mapSidebar {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  #strategicMap {
+    max-width: 100%;
+    height: 500px;
+  }
+}

@@ -41,6 +41,11 @@ include __DIR__ . '/includes/header.php';
       <tr><td colspan="8">Chargement des données...</td></tr>
     </tbody>
   </table>
+  <!-- 🗺️ Ajout de la carte stratégique ici -->
+  <section id="strategicSection">
+    <h2>🗺️ Carte stratégique interactive</h2>
+    <?php include __DIR__ . '/includes/map_interactive.php'; ?>
+  </section>
 </div>
 
 <?php include __DIR__ . '/includes/modal_dotlan.php'; ?>
