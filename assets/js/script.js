@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // === Génération des filtres dynamiques ===
+  // === Génération des filtres ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
 
@@ -63,13 +63,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     return days > 0
-      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-      : `${hours}h ${minutes}m ${seconds}s`;
+      ? `${days}d ${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`
+      : `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
   }
 
-  // === Affichage du tableau ===
+  // === Rendu du tableau ===
   function renderTable(structures) {
-    if (!structures?.length) {
+    if (!structures || structures.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="9">Aucune structure trouvée</td></tr>`;
       counter.textContent = "Total : 0 structure";
       return;
@@ -84,18 +84,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       let countdownHTML = "-";
 
       if (date && !isNaN(new Date(date))) {
-        const diff = new Date(date) - new Date();
+        const target = new Date(date);
+        const diff = target - new Date();
         countdownHTML = diff > 0
-          ? `<span class="countdown" data-target="${new Date(date).toISOString()}">${formatCountdown(diff)}</span>`
+          ? `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`
           : `<span class="expired">❌</span>`;
       }
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>
-          ${system}
-          <button class="map-btn" data-system="${system}" title="Ouvrir dans Dotlan">🗺️</button>
-        </td>
+        <td>${system} <button class="map-btn" data-system="${system}" title="Ouvrir dans Dotlan">🗺️</button></td>
         <td>${structureName}</td>
         <td>${s["Région"] || "-"}</td>
         <td>${s["Constellation"] || "-"}</td>
@@ -107,163 +105,86 @@ document.addEventListener("DOMContentLoaded", async () => {
       tableBody.appendChild(tr);
     });
 
-    document.querySelectorAll(".map-btn").forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.preventDefault();
-        openDotlanModal(e.currentTarget.dataset.system);
-      });
-    });
-
     counter.textContent = `Total : ${structures.length} structures`;
   }
-
-  // === Mise à jour du compte à rebours ===
-  setInterval(() => {
-    document.querySelectorAll(".countdown").forEach(el => {
-      const target = new Date(el.dataset.target);
-      const diff = target - new Date();
-
-      if (diff <= 0) {
-        el.textContent = "❌";
-        el.classList.replace("countdown", "expired");
-        el.style.color = "#ff4444";
-      } else {
-        el.textContent = formatCountdown(diff);
-      }
-    });
-  }, 1000);
 
   await loadData();
 });
 
 
-// === Carte stratégique interactive ===
+// === 🌌 Carte stratégique interactive ===
 async function initStrategicMap() {
-  console.log("🗺️ Initialisation de la carte stratégique (version sans redirection)...");
+  console.log("🗺️ Initialisation de la carte stratégique...");
 
   const mapContainer = document.getElementById("strategicMapContainer");
   const timersList = document.getElementById("mapTimersList");
   const regionTitle = document.getElementById("mapRegionTitle");
   const backButton = document.getElementById("mapBackButton");
 
-  if (!mapContainer) {
-    console.warn("⚠️ Conteneur de carte introuvable !");
-    return;
-  }
-
-  let currentLevel = "universe";
-  let currentRegion = null;
+  if (!mapContainer) return;
 
   const res = await fetch("/data/structures.json");
   const json = await res.json();
   const structures = json.structures || [];
 
-  // === Chargement d’un SVG ===
   async function loadSVG(svgPath) {
     try {
-      if (!svgPath.startsWith("http")) {
-        svgPath = svgPath.startsWith("/") ? svgPath : "/" + svgPath;
-      }
-
       const res = await fetch(svgPath);
-      if (!res.ok) {
-        console.error(`❌ Impossible de charger le SVG : ${svgPath} (${res.status})`);
-        mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur lors du chargement du SVG : ${svgPath}</div>`;
-        return null;
-      }
+      if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
 
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
       return mapContainer.querySelector("svg");
     } catch (err) {
-      console.error("⚠️ Erreur inattendue lors du chargement du SVG :", err);
-      mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur de chargement : ${err.message}</div>`;
+      console.error("Erreur lors du chargement du SVG :", err);
+      mapContainer.innerHTML = `
+        <div style="color:red;background:#0b0f18;border:1px solid #222;padding:10px;border-radius:8px;">
+          Erreur lors du chargement du SVG : ${svgPath}
+        </div>`;
       return null;
     }
   }
 
-  // === Carte principale ===
+  // === Chargement de la carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
-  if (!svgDoc) {
-    mapContainer.innerHTML = "❌ Impossible de charger la carte SVG principale.";
-    return;
-  }
+  if (!svgDoc) return;
 
-  // === Rendre les régions cliquables ===
   function attachUniverseHandlers() {
-    console.log("🔍 Recherche des régions dans le SVG...");
-    const textElements = svgDoc.querySelectorAll("text");
+    const regions = svgDoc.querySelectorAll("text");
+    regions.forEach(region => {
+      const regionName = region.textContent.trim();
+      if (!regionName) return;
 
-    textElements.forEach(textEl => {
-      const regionName = textEl.textContent.trim();
-
-      // On ignore les textes inutiles
-      if (
-        !regionName ||
-        regionName.length < 3 ||
-        /system|constellation|region|sysuse|legend/i.test(regionName)
-      ) return;
-
-      textEl.style.cursor = "pointer";
-
-      textEl.addEventListener("click", async (e) => {
+      region.style.cursor = "pointer";
+      region.addEventListener("click", async (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        e.preventDefault(); // empêche toute redirection éventuelle
 
         console.log(`🪐 Chargement de la région : ${regionName}`);
-
         regionTitle.textContent = `🪐 ${regionName}`;
         backButton.style.display = "block";
-        currentLevel = "region";
-        currentRegion = regionName;
 
-        // Charger la carte SVG de la région depuis Dotlan
-        const regionSvgPath = `/api/proxy_svg.php?url=${encodeURIComponent(`https://evemaps.dotlan.net/svg/${regionName}.svg`)}`;
+        // Utilisation du proxy PHP
+        const regionSvgPath = `/api/proxy_svg.php?url=${encodeURIComponent(`https://evemaps.dotlan.net/svg/${regionName.replace(/ /g, "_")}.svg`)}`;
         const regionSvg = await loadSVG(regionSvgPath);
-        if (regionSvg) attachRegionHandlers(regionName);
+
+        if (regionSvg) {
+          attachRegionHandlers(regionName);
+        }
       });
     });
   }
 
-  // === Quand on est dans une région ===
   function attachRegionHandlers(regionName) {
-    const svgSystems = svgDoc.querySelectorAll("a");
+    const svgSystems = mapContainer.querySelectorAll("a");
     timersList.innerHTML = "";
 
     svgSystems.forEach(link => {
-      const systemName = link.textContent.trim();
-      if (!systemName) return;
-
-      const systemTimers = structures.filter(
-        s => s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
-      );
-
-      link.addEventListener("click", e => {
-        e.preventDefault(); // empêche navigation Dotlan
-        timersList.innerHTML = "";
-
-        if (systemTimers.length === 0) {
-          timersList.innerHTML = `<li>Aucun timer dans ${systemName}</li>`;
-          return;
-        }
-
-        systemTimers.forEach(s => {
-          const date = s["Date"] ? new Date(s["Date"]) : null;
-          const now = new Date();
-          const color = date && date > now ? "#ffaa00" : "#ff4444";
-
-          const li = document.createElement("li");
-          li.style.borderLeft = `4px solid ${color}`;
-          li.textContent = `${systemName} — ${s["Nom de la structure"]}`;
-          timersList.appendChild(li);
-        });
-      });
+      link.addEventListener("click", e => e.preventDefault()); // empêche toute redirection
     });
   }
 
-  // === Bouton retour ===
   backButton.addEventListener("click", async () => {
-    currentLevel = "universe";
     regionTitle.textContent = "🗺️ New Eden";
     backButton.style.display = "none";
     timersList.innerHTML = "";
@@ -275,4 +196,3 @@ async function initStrategicMap() {
 }
 
 document.addEventListener("DOMContentLoaded", initStrategicMap);
-
