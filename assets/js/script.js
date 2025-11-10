@@ -137,10 +137,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-// === 🌌 Carte stratégique interactive ===
 // === Carte stratégique interactive ===
 async function initStrategicMap() {
-  console.log("🗺️ Initialisation de la carte stratégique (version régions texte)...");
+  console.log("🗺️ Initialisation de la carte stratégique (version sans redirection)...");
 
   const mapContainer = document.getElementById("strategicMapContainer");
   const timersList = document.getElementById("mapTimersList");
@@ -159,6 +158,7 @@ async function initStrategicMap() {
   const json = await res.json();
   const structures = json.structures || [];
 
+  // === Chargement d’un SVG ===
   async function loadSVG(svgPath) {
     try {
       if (!svgPath.startsWith("http")) {
@@ -189,6 +189,7 @@ async function initStrategicMap() {
     return;
   }
 
+  // === Rendre les régions cliquables ===
   function attachUniverseHandlers() {
     console.log("🔍 Recherche des régions dans le SVG...");
     const textElements = svgDoc.querySelectorAll("text");
@@ -196,36 +197,27 @@ async function initStrategicMap() {
     textElements.forEach(textEl => {
       const regionName = textEl.textContent.trim();
 
-      // Filtrer les textes non pertinents
+      // On ignore les textes inutiles
       if (
         !regionName ||
         regionName.length < 3 ||
         /system|constellation|region|sysuse|legend/i.test(regionName)
       ) return;
 
-      // Rendre cliquable le texte
       textEl.style.cursor = "pointer";
-      textEl.style.fill = "#00d4ff";
-      textEl.style.fontWeight = "bold";
-
-      textEl.addEventListener("mouseenter", () => {
-        textEl.style.fill = "#00ffaa";
-      });
-
-      textEl.addEventListener("mouseleave", () => {
-        textEl.style.fill = "#00d4ff";
-      });
 
       textEl.addEventListener("click", async (e) => {
         e.stopPropagation();
-        const region = regionName.replace(/\s+/g, "_");
-        console.log(`🪐 Chargement de la région ${region}...`);
+        e.preventDefault(); // empêche toute redirection éventuelle
+
+        console.log(`🪐 Chargement de la région : ${regionName}`);
 
         regionTitle.textContent = `🪐 ${regionName}`;
         backButton.style.display = "block";
         currentLevel = "region";
         currentRegion = regionName;
 
+        // Charger la carte SVG de la région depuis Dotlan
         const regionSvgPath = `https://evemaps.dotlan.net/svg/${encodeURIComponent(regionName)}.svg`;
         const regionSvg = await loadSVG(regionSvgPath);
         if (regionSvg) attachRegionHandlers(regionName);
@@ -233,6 +225,7 @@ async function initStrategicMap() {
     });
   }
 
+  // === Quand on est dans une région ===
   function attachRegionHandlers(regionName) {
     const svgSystems = svgDoc.querySelectorAll("a");
     timersList.innerHTML = "";
@@ -245,16 +238,8 @@ async function initStrategicMap() {
         s => s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
       );
 
-      if (systemTimers.length > 0) {
-        const now = new Date();
-        const hasActive = systemTimers.some(s => new Date(s["Date"]) > now);
-        const hasExpired = systemTimers.some(s => new Date(s["Date"]) < now);
-        const color = hasExpired ? "#ff5555" : hasActive ? "#ffaa00" : "#00ff99";
-        link.querySelector("circle, rect")?.setAttribute("fill", color);
-      }
-
       link.addEventListener("click", e => {
-        e.preventDefault();
+        e.preventDefault(); // empêche navigation Dotlan
         timersList.innerHTML = "";
 
         if (systemTimers.length === 0) {
@@ -276,6 +261,7 @@ async function initStrategicMap() {
     });
   }
 
+  // === Bouton retour ===
   backButton.addEventListener("click", async () => {
     currentLevel = "universe";
     regionTitle.textContent = "🗺️ New Eden";
@@ -289,3 +275,4 @@ async function initStrategicMap() {
 }
 
 document.addEventListener("DOMContentLoaded", initStrategicMap);
+
