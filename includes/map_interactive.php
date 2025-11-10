@@ -1,5 +1,5 @@
 <div id="mapContainer">
-  <iframe id="strategicMap" src="data/maps/New_Eden.svg" title="Carte Drone Lands"></iframe>
+  <iframe id="strategicMap" src="./data/maps/New_Eden.svg" title="Carte Drone Lands"></iframe>
 
   <div id="mapSidebar">
     <h3 id="mapRegionTitle">🗺️ New Eden</h3>
