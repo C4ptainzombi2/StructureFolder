@@ -34,7 +34,7 @@ include __DIR__ . '/includes/header.php';
         <th>Type</th>
         <th>Alliance / Corporation</th>
         <th>Date</th>
-        <th>Renforcé</th>
+        <th>Countdown</th>
       </tr>
     </thead>
     <tbody id="tableBody">

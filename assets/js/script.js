@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(`✅ ${allStructures.length} structures chargées.`);
     } catch (e) {
       console.error("Erreur de chargement :", e);
-      tableBody.innerHTML = `<tr><td colspan="8">❌ Impossible de charger les données</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="9">❌ Impossible de charger les données</td></tr>`;
     }
   }
 
@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedType = typeFilter.value;
     const selectedAlliance = allianceFilter.value;
 
-    // Structures filtrées selon les sélections
     const filteredStructures = allStructures.filter(s => {
       if (selectedRegion && s["Région"] !== selectedRegion) return false;
       if (selectedType && s["Type"] !== selectedType) return false;
@@ -89,10 +88,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
   }
 
+  // === Format du compte à rebours ===
+  function formatCountdown(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
+  }
+
   // === Affichage du tableau ===
   function renderTable(structures) {
     if (!structures || structures.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="8">Aucune structure trouvée</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="9">Aucune structure trouvée</td></tr>`;
       counter.textContent = "Total : 0 structure";
       return;
     }
@@ -102,6 +110,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     structures.forEach(s => {
       const system = s["Nom du système"] || "-";
       const structureName = s["Nom de la structure"] || s["Remarques"] || "-";
+      const date = s["Date"] || "";
+      let countdownHTML = "-";
+
+      if (date && !isNaN(new Date(date))) {
+        const target = new Date(date);
+        const diff = target - new Date();
+        if (diff > 0) {
+          countdownHTML = `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`;
+        } else {
+          countdownHTML = `<span class="expired">Expiré</span>`;
+        }
+      }
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -114,8 +134,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${s["Constellation"] || "-"}</td>
         <td>${s["Type"] || "-"}</td>
         <td>${s["Alliance / Corporation"] || "-"}</td>
-        <td>${s["Date"] || "-"}</td>
-        <td>${s["Renforcé"] || s["Renforcée ?"] || "❌"}</td>
+        <td>${date || "-"}</td>
+        <td>${countdownHTML}</td>
       `;
       tableBody.appendChild(tr);
     });
@@ -130,6 +150,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     counter.textContent = `Total : ${structures.length} structures`;
   }
+
+  // === Mise à jour du compte à rebours en temps réel ===
+  setInterval(() => {
+    document.querySelectorAll(".countdown").forEach(el => {
+      const targetDate = new Date(el.dataset.target);
+      const diff = targetDate - new Date();
+
+      if (diff <= 0) {
+        el.textContent = "Expiré";
+        el.classList.add("expired");
+        el.classList.remove("countdown");
+      } else {
+        el.textContent = formatCountdown(diff);
+      }
+    });
+  }, 1000);
 
   // === Filtres ===
   function filterAndRender() {
@@ -256,8 +292,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function openDotlanModal(systemName) {
     const modal = document.getElementById("dotlanModal");
     const iframe = document.getElementById("dotlanFrame");
-    const title = document.getElementById("dotlanTitle");
-    const closeBtn = document.getElementById("dotlanClose");
 
     if (!modal || !iframe) {
       console.error("⚠️ Modale DOTLAN introuvable.");
@@ -268,20 +302,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
 
     iframe.src = dotlanUrl;
-    title.textContent = `Carte du système : ${cleanSystem}`;
     modal.style.display = "flex";
 
-    closeBtn.onclick = () => {
-      modal.style.display = "none";
-      iframe.src = "";
-    };
-
-    window.onclick = (event) => {
-      if (event.target === modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
         modal.style.display = "none";
         iframe.src = "";
       }
-    };
+    });
   }
 
   // === Initialisation ===

@@ -127,6 +127,16 @@ button:hover {
   border: none;
   border-radius: 8px;
 }
+.countdown {
+  color: #00ff99;
+  font-weight: 600;
+  font-family: monospace;
+}
+.expired {
+  color: #ff5555;
+  font-weight: 600;
+  font-family: monospace;
+}
 
 #dotlanClose {
   position: absolute;
