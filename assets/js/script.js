@@ -138,8 +138,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 // === 🌌 Carte stratégique interactive ===
+// === Carte stratégique interactive ===
 async function initStrategicMap() {
-  console.log("🗺️ Initialisation de la carte stratégique...");
+  console.log("🗺️ Initialisation de la carte stratégique (version régions texte)...");
 
   const mapContainer = document.getElementById("strategicMapContainer");
   const timersList = document.getElementById("mapTimersList");
@@ -150,6 +151,9 @@ async function initStrategicMap() {
     console.warn("⚠️ Conteneur de carte introuvable !");
     return;
   }
+
+  let currentLevel = "universe";
+  let currentRegion = null;
 
   const res = await fetch("/data/structures.json");
   const json = await res.json();
@@ -162,39 +166,69 @@ async function initStrategicMap() {
       }
 
       const res = await fetch(svgPath);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        console.error(`❌ Impossible de charger le SVG : ${svgPath} (${res.status})`);
+        mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur lors du chargement du SVG : ${svgPath}</div>`;
+        return null;
+      }
 
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
       return mapContainer.querySelector("svg");
     } catch (err) {
-      console.error("❌ Erreur de chargement du SVG :", err);
-      mapContainer.innerHTML = `<p style="color:red;">Erreur lors du chargement du SVG : ${svgPath}</p>`;
+      console.error("⚠️ Erreur inattendue lors du chargement du SVG :", err);
+      mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur de chargement : ${err.message}</div>`;
       return null;
     }
   }
 
   // === Carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
-  if (!svgDoc) return;
+  if (!svgDoc) {
+    mapContainer.innerHTML = "❌ Impossible de charger la carte SVG principale.";
+    return;
+  }
 
   function attachUniverseHandlers() {
-    const regions = svgDoc.querySelectorAll("g[id]");
-    regions.forEach(region => {
-      region.style.cursor = "pointer";
-      region.addEventListener("click", async e => {
-        e.preventDefault();
-        e.stopPropagation();
+    console.log("🔍 Recherche des régions dans le SVG...");
+    const textElements = svgDoc.querySelectorAll("text");
 
-        const regionName = region.id.replace(/_/g, " ");
+    textElements.forEach(textEl => {
+      const regionName = textEl.textContent.trim();
+
+      // Filtrer les textes non pertinents
+      if (
+        !regionName ||
+        regionName.length < 3 ||
+        /system|constellation|region|sysuse|legend/i.test(regionName)
+      ) return;
+
+      // Rendre cliquable le texte
+      textEl.style.cursor = "pointer";
+      textEl.style.fill = "#00d4ff";
+      textEl.style.fontWeight = "bold";
+
+      textEl.addEventListener("mouseenter", () => {
+        textEl.style.fill = "#00ffaa";
+      });
+
+      textEl.addEventListener("mouseleave", () => {
+        textEl.style.fill = "#00d4ff";
+      });
+
+      textEl.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const region = regionName.replace(/\s+/g, "_");
+        console.log(`🪐 Chargement de la région ${region}...`);
+
         regionTitle.textContent = `🪐 ${regionName}`;
         backButton.style.display = "block";
-
-        console.log(`📍 Chargement de la région ${regionName}...`);
+        currentLevel = "region";
+        currentRegion = regionName;
 
         const regionSvgPath = `https://evemaps.dotlan.net/svg/${encodeURIComponent(regionName)}.svg`;
-        svgDoc = await loadSVG(regionSvgPath);
-        if (svgDoc) attachRegionHandlers(regionName);
+        const regionSvg = await loadSVG(regionSvgPath);
+        if (regionSvg) attachRegionHandlers(regionName);
       });
     });
   }
@@ -211,7 +245,6 @@ async function initStrategicMap() {
         s => s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
       );
 
-      // Coloration dynamique
       if (systemTimers.length > 0) {
         const now = new Date();
         const hasActive = systemTimers.some(s => new Date(s["Date"]) > now);
@@ -222,8 +255,6 @@ async function initStrategicMap() {
 
       link.addEventListener("click", e => {
         e.preventDefault();
-        e.stopPropagation();
-
         timersList.innerHTML = "";
 
         if (systemTimers.length === 0) {
@@ -246,6 +277,7 @@ async function initStrategicMap() {
   }
 
   backButton.addEventListener("click", async () => {
+    currentLevel = "universe";
     regionTitle.textContent = "🗺️ New Eden";
     backButton.style.display = "none";
     timersList.innerHTML = "";
