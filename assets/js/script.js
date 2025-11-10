@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const cleanSystem = systemName.trim();
-    const dotlanUrl = `https://evemaps.dotlan.net/system/${encodeURIComponent(cleanSystem)}`;
+    const dotlanUrl = `https://evemaps.dotlan.net/route/C-J6MT:${encodeURIComponent(cleanSystem)}`;
 
     iframe.src = dotlanUrl;
     title.textContent = `Carte du système : ${cleanSystem}`;
