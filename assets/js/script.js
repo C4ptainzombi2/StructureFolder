@@ -320,37 +320,30 @@ async function initStrategicMap() {
   const json = await res.json();
   const structures = json.structures || [];
 
-  async function loadSVG(svgPath) {
+async function loadSVG(svgPath) {
   try {
-    // Ajoute un "/" devant le chemin si ce n’est pas une URL complète
+    // Force le bon chemin absolu
     if (!svgPath.startsWith("http")) {
       svgPath = svgPath.startsWith("/") ? svgPath : "/" + svgPath;
     }
 
-    // Vérifie si le SVG existe
     const res = await fetch(svgPath);
     if (!res.ok) {
       console.error(`❌ Impossible de charger le SVG : ${svgPath} (${res.status})`);
       return null;
     }
 
-    // Charge le SVG dans l'iframe
-    map.src = svgPath;
-    return new Promise(resolve => {
-      map.onload = () => {
-        try {
-          resolve(map.contentDocument);
-        } catch (err) {
-          console.error("⚠️ Impossible d'accéder au contenu du SVG :", err);
-          resolve(null);
-        }
-      };
-    });
+    const svgText = await res.text();
+    const mapContainer = document.getElementById("strategicMapContainer");
+    mapContainer.innerHTML = svgText;
+
+    return mapContainer.querySelector("svg");
   } catch (err) {
     console.error("⚠️ Erreur inattendue lors du chargement du SVG :", err);
     return null;
   }
 }
+
 
 // === Charger la carte principale (New Eden) ===
 let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
