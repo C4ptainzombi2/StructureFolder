@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const typeFilter = document.getElementById("typeFilter");
   const allianceFilter = document.getElementById("allianceFilter");
   const constellationFilter = document.getElementById("constellationFilter");
+  const reinforcedFilter = document.getElementById("reinforcedFilter");
   const searchInput = document.getElementById("searchInput");
   const resetBtn = document.getElementById("resetFilters");
   const tableBody = document.getElementById("tableBody");
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
+
     function fillSelect(select, items, label) {
       if (!select) return;
       select.innerHTML = `<option value="">${label}</option>`;
@@ -43,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         select.appendChild(opt);
       });
     }
+
     fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
     fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
     fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
@@ -150,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // === 🗺️ Carte stratégique ===
 async function initStrategicMap(structures) {
-  console.log("🗺️ Initialisation de la carte stratégique (version avec légende personnalisée)...");
+  console.log("🗺️ Initialisation de la carte stratégique…");
 
   const mapContainer = document.getElementById("strategicMap");
   const timersList = document.getElementById("mapTimersList");
@@ -159,16 +162,83 @@ async function initStrategicMap(structures) {
 
   if (!mapContainer) return;
 
-  // 🔧 Supprime les liens Dotlan
+  // === Nettoyage des liens du SVG ===
   function sanitizeSVG(svg) {
+    if (!svg) return;
     svg.querySelectorAll("a").forEach(a => {
       a.removeAttribute("href");
       a.removeAttribute("xlink:href");
-      a.addEventListener("click", e => e.preventDefault());
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
     });
   }
 
-  // 🔧 Charge un SVG depuis un fichier ou Dotlan (via proxy)
+  // === Suppression + ajout de la légende personnalisée ===
+  function addCustomLegend(svg) {
+    if (!svg) return;
+
+    // Supprimer les étiquettes "S.R (3)" / "M.O (4)" etc.
+    const sovereigntyPattern = /^[A-Z]{1,3}\.[A-Z]{1,3}\s*\(\d+\)$/i;
+    svg.querySelectorAll("text").forEach(t => {
+      const content = t.textContent.trim();
+      if (sovereigntyPattern.test(content)) t.remove();
+    });
+
+    // Supprimer le bloc de légende Dotlan d’origine
+    svg.querySelectorAll("g").forEach(g => {
+      const texts = Array.from(g.querySelectorAll("text")).map(t => t.textContent.toLowerCase());
+      const keywords = ["refinery", "factory", "research", "outpost", "wollari", "contested", "system"];
+      if (texts.some(txt => keywords.some(k => txt.includes(k)))) {
+        g.remove();
+      }
+    });
+
+    // Ajout de la légende personnalisée
+    let viewBox = svg.viewBox?.baseVal;
+    if (!viewBox || viewBox.width === 0) {
+      const bbox = svg.getBBox();
+      viewBox = { width: bbox.width || 1000, height: bbox.height || 800 };
+    }
+
+    const legendX = viewBox.width - 230;
+    const legendY = viewBox.height - 60;
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("id", "custom-legend");
+
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", legendX);
+    bg.setAttribute("y", legendY);
+    bg.setAttribute("width", "210");
+    bg.setAttribute("height", "40");
+    bg.setAttribute("fill", "#111");
+    bg.setAttribute("stroke", "#333");
+    bg.setAttribute("rx", "6");
+    bg.setAttribute("ry", "6");
+    bg.setAttribute("opacity", "0.9");
+    g.appendChild(bg);
+
+    const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt1.setAttribute("x", legendX + 10);
+    txt1.setAttribute("y", legendY + 16);
+    txt1.setAttribute("fill", "#ccc");
+    txt1.setAttribute("font-size", "11");
+    txt1.textContent = "⚙️  Gris = structures présentes";
+    g.appendChild(txt1);
+
+    const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt2.setAttribute("x", legendX + 10);
+    txt2.setAttribute("y", legendY + 32);
+    txt2.setAttribute("fill", "#ff5555");
+    txt2.setAttribute("font-size", "11");
+    txt2.textContent = "🔥  Rouge = structures renforcées";
+    g.appendChild(txt2);
+
+    svg.appendChild(g);
+  }
+
   async function loadSVG(svgPath) {
     try {
       if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
@@ -178,9 +248,9 @@ async function initStrategicMap(structures) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
-
       const svg = mapContainer.querySelector("svg");
       sanitizeSVG(svg);
+      addCustomLegend(svg);
       return svg;
     } catch (err) {
       mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}</div>`;
@@ -189,147 +259,77 @@ async function initStrategicMap(structures) {
     }
   }
 
-  // === Fonction pour ajouter la légende personnalisée ===
-  function addCustomLegend(svg) {
-  // === 🧹 Nettoyage des textes parasites (S.R, M.O, I.N, etc.) ===
-  const sovereigntyPattern = /\b([A-Z]\.[A-Z])\s*\(\d+\)/g;
-  svg.querySelectorAll("text").forEach(t => {
-    const original = t.textContent.trim();
-    // Supprime les index du type "S.R (3)" / "M.O (5)" / "R.E (2)" etc.
-    if (sovereigntyPattern.test(original)) {
-      t.textContent = original.replace(sovereigntyPattern, "").trim();
-    }
-  });
-
-  // === 🧹 Suppression complète du bloc de légende Dotlan ===
-  svg.querySelectorAll("g").forEach(g => {
-    const textNodes = [...g.querySelectorAll("text")].map(t => t.textContent.trim());
-    if (
-      textNodes.some(txt =>
-        txt.includes("Refinery") ||
-        txt.includes("Factory") ||
-        txt.includes("Research") ||
-        txt.includes("Outpost") ||
-        txt.includes("by Wollari") ||
-        txt.includes("System") ||
-        txt.includes("Outer Passage") ||
-        txt.includes("Contested")
-      )
-    ) {
-      g.remove(); // supprime tout le groupe de légende
-    }
-  });
-
-  // === 🧱 Insertion d'une légende personnalisée en bas à droite ===
-  const viewBox = svg.viewBox.baseVal;
-  const legendX = viewBox.width - 230;
-  const legendY = viewBox.height - 70;
-
-  const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  legendGroup.setAttribute("id", "custom-legend");
-
-  // fond
-  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  bg.setAttribute("x", legendX);
-  bg.setAttribute("y", legendY);
-  bg.setAttribute("width", "210");
-  bg.setAttribute("height", "45");
-  bg.setAttribute("fill", "#111");
-  bg.setAttribute("stroke", "#333");
-  bg.setAttribute("rx", "6");
-  bg.setAttribute("ry", "6");
-  legendGroup.appendChild(bg);
-
-  // texte 1 : structures présentes
-  const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  txt1.setAttribute("x", legendX + 15);
-  txt1.setAttribute("y", legendY + 18);
-  txt1.setAttribute("fill", "#ccc");
-  txt1.setAttribute("font-size", "11");
-  txt1.textContent = "⚙️ Gris = structures présentes";
-  legendGroup.appendChild(txt1);
-
-  // texte 2 : structures renforcées
-  const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  txt2.setAttribute("x", legendX + 15);
-  txt2.setAttribute("y", legendY + 34);
-  txt2.setAttribute("fill", "#ff5555");
-  txt2.setAttribute("font-size", "11");
-  txt2.textContent = "🔥 Rouge = structures renforcées";
-  legendGroup.appendChild(txt2);
-
-  svg.appendChild(legendGroup);
-}
-
-
-
-  // === Met à jour les systèmes avec les compteurs ===
-  function updateSystemIndicators(svg) {
-    const texts = svg.querySelectorAll("a text, text");
-
-    texts.forEach(text => {
-      const systemName = text.textContent.trim();
-      if (!systemName) return;
-
-      // Trouve les structures associées à ce système
-      const systemStructures = structures.filter(s =>
-        s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
-      );
-
-      if (systemStructures.length > 0) {
-        const reinforcedCount = systemStructures.filter(s => s["Renforcé"]?.toLowerCase() === "oui").length;
-
-        // Ajout du compteur sous le nom
-        const countText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        countText.setAttribute("x", text.getAttribute("x"));
-        countText.setAttribute("y", parseFloat(text.getAttribute("y")) + 10);
-        countText.setAttribute("font-size", "8");
-        countText.setAttribute("text-anchor", "middle");
-        countText.setAttribute("fill", "#aaa");
-        countText.textContent = `(${systemStructures.length}/${reinforcedCount})`;
-        text.parentNode.appendChild(countText);
-
-        // Coloration du fond du système
-        const shape = text.closest("a")?.querySelector("ellipse, rect, polygon") || text.closest("ellipse, rect, polygon");
-        if (shape) {
-          if (reinforcedCount > 0) {
-            shape.setAttribute("fill", "#ffb3b3"); // rouge clair
-          } else {
-            shape.setAttribute("fill", "#d9d9d9"); // gris clair
-          }
-        }
-      }
-    });
-  }
-
   // === Carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
   if (!svgDoc) return;
 
+  // === Gestion clic sur régions ===
   function attachUniverseHandlers() {
     const regions = svgDoc.querySelectorAll("text");
     regions.forEach(text => {
       const name = text.textContent.trim();
       if (!name) return;
       text.style.cursor = "pointer";
-      text.addEventListener("click", async e => {
+      text.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
 
         const regionName = name.replace(/ /g, "_");
+        console.log("🌌 Région cliquée :", regionName);
+
         regionTitle.textContent = `🪐 ${name}`;
         backButton.style.display = "block";
 
         const dotlanURL = `https://evemaps.dotlan.net/svg/${regionName}.svg`;
         svgDoc = await loadSVG(dotlanURL);
-        if (svgDoc) {
-          updateSystemIndicators(svgDoc);
-          addCustomLegend(svgDoc);
-        }
+        if (svgDoc) attachRegionHandlers(name);
       });
     });
   }
 
+  // === Gestion clic systèmes ===
+  function attachRegionHandlers(regionName) {
+    const links = svgDoc.querySelectorAll("a");
+    timersList.innerHTML = "";
+
+    links.forEach(link => {
+      link.removeAttribute("href");
+      link.removeAttribute("xlink:href");
+
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const textNode = link.querySelector("text");
+        const sysName = textNode ? textNode.textContent.trim() : link.textContent.trim();
+        console.log("🛰️ Système cliqué :", sysName);
+        if (!sysName) return;
+
+        timersList.innerHTML = "";
+
+        const timers = structures.filter(s =>
+          s["Nom du système"]?.toUpperCase().trim() === sysName.toUpperCase()
+        );
+
+        if (timers.length === 0) {
+          timersList.innerHTML = `<li>Aucune structure dans ${sysName}</li>`;
+          return;
+        }
+
+        timers.forEach(s => {
+          const date = new Date(s["Date"]);
+          const now = new Date();
+          const expired = date < now;
+          const li = document.createElement("li");
+          li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
+          li.textContent = `${sysName} — ${s["Nom de la structure"]}`;
+          timersList.appendChild(li);
+        });
+      });
+    });
+  }
+
+  // === Bouton retour ===
   backButton.addEventListener("click", async () => {
     regionTitle.textContent = "🪐 New Eden";
     backButton.style.display = "none";
