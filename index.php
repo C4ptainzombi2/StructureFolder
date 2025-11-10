@@ -55,7 +55,7 @@ include __DIR__ . '/includes/header.php';
 
     <div id="mapContainer">
       <!-- SVG principal de New Eden -->
-      <object id="strategicMap" type="image/svg+xml" data="assets/maps/New_Eden.svg">
+      <object id="strategicMap" type="image/svg+xml" data="/assets/maps/New_Eden.svg">
         Votre navigateur ne supporte pas les SVG interactifs.
       </object>
 
