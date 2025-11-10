@@ -1,44 +1,37 @@
 <?php
 /**
- * Génère le fichier data/structures.json à partir du Google Sheets (CSV)
- * et complète automatiquement la Région + Constellation
- * à partir des fichiers data/regions/*.json
- * ⚙️ Préserve les champs "Renforcé" et "Date" existants.
+ * Met à jour data/structures.json depuis Google Sheets
+ * ➕ Fusionne les nouvelles données
+ * ✅ Préserve tous les timers existants (Renforcé, Date)
+ * 🚫 Ne supprime plus rien du tout.
  */
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-// ⚠️ Lien Google Sheets public CSV :
 $googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRa7_5a2Ql2jUY7ToHlClU0X3hJB3ELIJnnLoPYhXdslYUhrwf5dxmTaowqM3DSV2K3cyyTNmnv1ljC/pub?gid=899915092&single=true&output=csv';
 
-// Dossiers et fichiers
 $dataDir = __DIR__ . '/../data/';
 $dataFile = $dataDir . 'structures.json';
 $regionsDir = $dataDir . 'regions/';
 
 try {
-    // --- 1️⃣ Charger les anciens timers existants ---
-    $oldData = [];
+    // --- 1️⃣ Charger le JSON existant ---
+    $existingData = [];
     if (file_exists($dataFile)) {
         $json = file_get_contents($dataFile);
         $decoded = json_decode($json, true);
-        $oldData = $decoded['structures'] ?? [];
+        $existingData = $decoded['structures'] ?? [];
     }
 
-    // --- 2️⃣ Récupérer le CSV depuis Google Sheets ---
+    // --- 2️⃣ Charger les données du Google Sheets ---
     $csv = file_get_contents($googleSheetUrl);
-    if (!$csv) {
-        throw new Exception("Impossible de récupérer les données depuis Google Sheets.");
-    }
+    if (!$csv) throw new Exception("Impossible de charger les données Google Sheets.");
 
     $lines = array_map('str_getcsv', explode("\n", trim($csv)));
-    if (count($lines) < 2) {
-        throw new Exception("Le fichier CSV est vide ou mal formaté.");
-    }
+    if (count($lines) < 2) throw new Exception("Le fichier CSV est vide ou mal formaté.");
 
     $headers = array_map('trim', array_shift($lines));
-    $structures = [];
 
     // --- 3️⃣ Charger les régions et constellations ---
     $systemToRegion = [];
@@ -58,7 +51,14 @@ try {
         }
     }
 
-    // --- 4️⃣ Conversion CSV → structures + fusion avec les anciens timers ---
+    // --- 4️⃣ Indexer les structures existantes ---
+    $indexedExisting = [];
+    foreach ($existingData as $s) {
+        $key = strtolower(($s['Nom du système'] ?? '') . '|' . ($s['Nom de la structure'] ?? ''));
+        $indexedExisting[$key] = $s;
+    }
+
+    // --- 5️⃣ Fusionner les données du Google Sheets ---
     foreach ($lines as $row) {
         if (empty(implode('', $row))) continue;
         $row = array_pad($row, count($headers), '');
@@ -70,58 +70,47 @@ try {
         $region = $systemToRegion[$system] ?? '';
         $constellation = $systemToConstellation[$system] ?? '';
 
-        $structure = [
+        $new = [
             "Nom du système" => $system,
             "Nom de la structure" => $item['Remarques'] ?? '',
             "Type" => $item['Type'] ?? '',
             "Région" => $region,
             "Constellation" => $constellation,
             "Alliance / Corporation" => $item['Alliance / Corporation'] ?? '',
-            "Renforcé" => $item['Renforcé'] ?? ($item['Renforcée ?'] ?? 'Non'),
+            "Renforcé" => $item['Renforcé'] ?? 'Non',
             "Date" => $item['Date'] ?? '',
         ];
 
-        // Nettoyage des valeurs
-        foreach ($structure as $k => $v) {
-            $structure[$k] = trim($v);
-        }
+        $key = strtolower($system . '|' . ($new['Nom de la structure'] ?? ''));
 
-        // 🔄 Fusion : préserver les timers existants
-        foreach ($oldData as $old) {
-            if (
-                strtolower($old['Nom du système'] ?? '') === strtolower($structure['Nom du système']) &&
-                strtolower($old['Nom de la structure'] ?? '') === strtolower($structure['Nom de la structure'])
-            ) {
-                if (!empty($old['Renforcé'])) {
-                    $structure['Renforcé'] = $old['Renforcé'];
-                }
-                if (!empty($old['Date'])) {
-                    $structure['Date'] = $old['Date'];
-                }
-                break;
-            }
-        }
+        // Si déjà existante, on fusionne
+        if (isset($indexedExisting[$key])) {
+            $old = $indexedExisting[$key];
 
-        $structures[] = $structure;
+            // Préserver les timers et la date
+            if (!empty($old['Renforcé'])) $new['Renforcé'] = $old['Renforcé'];
+            if (!empty($old['Date'])) $new['Date'] = $old['Date'];
+
+            $indexedExisting[$key] = array_merge($old, $new);
+        } else {
+            // Nouvelle structure
+            $indexedExisting[$key] = $new;
+        }
     }
 
-    // --- 5️⃣ Sauvegarde du fichier final ---
-    $jsonData = [
+    // --- 6️⃣ Sauvegarder sans rien supprimer ---
+    $finalData = array_values($indexedExisting);
+    file_put_contents($dataFile, json_encode([
         'success' => true,
-        'structures' => $structures
-    ];
-
-    file_put_contents($dataFile, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        'structures' => $finalData
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     echo json_encode([
         'success' => true,
-        'count' => count($structures),
-        'message' => 'structures.json mis à jour avec succès (timers conservés ✅)',
+        'count' => count($finalData),
+        'message' => '✅ Fusion réussie — Aucune donnée supprimée, timers conservés.'
     ]);
 
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
