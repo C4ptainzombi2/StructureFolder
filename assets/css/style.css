@@ -1,3 +1,4 @@
+/* === STYLE GLOBAL === */
 body {
   background: #141a23;
   color: #f5f5f5;
@@ -16,6 +17,7 @@ h1 {
   margin: auto;
 }
 
+/* === FILTRES ET FORMULAIRES === */
 .filters {
   display: flex;
   gap: 8px;
@@ -23,23 +25,29 @@ h1 {
   margin-bottom: 10px;
 }
 
-select, input, button {
-  padding: 5px 8px;
-  border-radius: 4px;
+select,
+input,
+button {
+  padding: 6px 10px;
+  border-radius: 6px;
   border: 1px solid #444;
   background: #1f2530;
   color: #f5f5f5;
+  transition: all 0.2s ease-in-out;
 }
 
 button:hover {
   background: #2e3a4c;
   cursor: pointer;
+  transform: translateY(-1px);
 }
 
+/* === TABLEAU STRUCTURES === */
 #structuresTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  font-size: 0.95em;
 }
 
 #structuresTable th {
@@ -47,41 +55,316 @@ button:hover {
   color: #fff;
   padding: 8px;
   text-align: left;
+  border-bottom: 2px solid #333;
 }
 
 #structuresTable td {
-  padding: 6px;
+  padding: 6px 8px;
   border-bottom: 1px solid #333;
 }
+
+#structuresTable tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* === BOUTON MAP (DOTLAN) === */
+.map-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 6px;
+  color: #a0c4ff;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.map-btn:hover {
+  color: #4ea8de;
+  transform: scale(1.2);
+}
+
+/* === MODALE DOTLAN === */
 #dotlanModal {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.75);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
   z-index: 1000;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   animation: fadeIn 0.25s ease-in-out;
 }
 
-#dotlanModal .modal-content {
-  background: #111;
-  border-radius: 12px;
-  padding: 10px;
-  width: 80%;
-  height: 80%;
-  position: relative;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
-  transform: scale(0.95);
-  animation: zoomIn 0.25s ease-in-out forwards;
+/* Classe "active" ajoutée via JS */
+#dotlanModal.active {
+  display: flex;
 }
 
+/* Conteneur principal de la modale */
+.modal-content {
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+  width: 85%;
+  max-width: 1100px;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transform: scale(0.95);
+  animation: zoomIn 0.3s ease-out forwards;
+}
+
+/* Titre dans la modale */
+#dotlanTitle {
+  color: #fff;
+  text-align: center;
+  margin: 8px 0;
+  font-size: 1.1em;
+  letter-spacing: 0.5px;
+}
+
+/* Iframe Dotlan */
+#dotlanFrame {
+  flex-grow: 1;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Bouton de fermeture ✖ */
+#dotlanClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#dotlanClose:hover {
+  background: #ff5c5c;
+  transform: scale(1.1);
+}
+
+/* === ANIMATIONS === */
 @keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes zoomIn {
-  from { transform: scale(0.95); opacity: 0; }
+  from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+/* === PETIT RAJOUT RESPONSIVE === */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    width: 95%;
+    height: 80%;
+  }
+
+  #structuresTable th,
+  #structuresTable td {
+    font-size: 0.9em;
+    padding: 5px;
+  }
+}
+/* === STYLE GLOBAL === */
+body {
+  background: #141a23;
+  color: #f5f5f5;
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 1.8em;
+  color: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* === FILTRES ET FORMULAIRES === */
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+select,
+input,
+button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1f2530;
+  color: #f5f5f5;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  background: #2e3a4c;
+  cursor: pointer;
+  transform: translateY(-1px);
+}
+
+/* === TABLEAU STRUCTURES === */
+#structuresTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.95em;
+}
+
+#structuresTable th {
+  background: #1e293b;
+  color: #fff;
+  padding: 8px;
+  text-align: left;
+  border-bottom: 2px solid #333;
+}
+
+#structuresTable td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #333;
+}
+
+#structuresTable tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* === BOUTON MAP (DOTLAN) === */
+.map-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  margin-left: 6px;
+  color: #a0c4ff;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.map-btn:hover {
+  color: #4ea8de;
+  transform: scale(1.2);
+}
+
+/* === MODALE DOTLAN === */
+#dotlanModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+/* Classe "active" ajoutée via JS */
+#dotlanModal.active {
+  display: flex;
+}
+
+/* Conteneur principal de la modale */
+.modal-content {
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+  width: 85%;
+  max-width: 1100px;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transform: scale(0.95);
+  animation: zoomIn 0.3s ease-out forwards;
+}
+
+/* Titre dans la modale */
+#dotlanTitle {
+  color: #fff;
+  text-align: center;
+  margin: 8px 0;
+  font-size: 1.1em;
+  letter-spacing: 0.5px;
+}
+
+/* Iframe Dotlan */
+#dotlanFrame {
+  flex-grow: 1;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Bouton de fermeture ✖ */
+#dotlanClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#dotlanClose:hover {
+  background: #ff5c5c;
+  transform: scale(1.1);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* === PETIT RAJOUT RESPONSIVE === */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    width: 95%;
+    height: 80%;
+  }
+
+  #structuresTable th,
+  #structuresTable td {
+    font-size: 0.9em;
+    padding: 5px;
+  }
 }
