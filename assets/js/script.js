@@ -191,44 +191,62 @@ async function initStrategicMap(structures) {
 
   // === Fonction pour ajouter la légende personnalisée ===
   function addCustomLegend(svg) {
-    // Supprime l’ancienne légende Dotlan
-    svg.querySelectorAll("text, rect, g").forEach(el => {
-      if (el.textContent?.includes("Outer Passage") || el.textContent?.includes("by Wollari")) {
-        el.remove();
-      }
-    });
+  // Supprimer uniquement la légende Dotlan sans toucher à la carte
+  const texts = [...svg.querySelectorAll("text")];
+  texts.forEach(t => {
+    const txt = t.textContent.trim();
+    if (
+      txt.includes("Outer Passage") ||
+      txt.includes("by Wollari") ||
+      txt.includes("Refinery") ||
+      txt.includes("Factory") ||
+      txt.includes("Research") ||
+      txt.includes("Contested")
+    ) {
+      // Supprime uniquement l'élément texte ou son groupe parent s’il s’agit d’un bloc de légende
+      const parent = t.closest("g");
+      if (parent && parent.querySelectorAll("text").length < 10) parent.remove();
+      else t.remove();
+    }
+  });
 
-    // Crée un groupe pour ta légende
-    const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  // Créer un groupe SVG pour la nouvelle légende
+  const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  legendGroup.setAttribute("id", "custom-legend");
 
-    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    bg.setAttribute("x", "20");
-    bg.setAttribute("y", "620");
-    bg.setAttribute("width", "250");
-    bg.setAttribute("height", "45");
-    bg.setAttribute("fill", "#1a1a1a");
-    bg.setAttribute("stroke", "#444");
-    bg.setAttribute("rx", "6");
-    legendGroup.appendChild(bg);
+  // Fond de la légende
+  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bg.setAttribute("x", "20");
+  bg.setAttribute("y", "640");
+  bg.setAttribute("width", "220");
+  bg.setAttribute("height", "42");
+  bg.setAttribute("fill", "#111");
+  bg.setAttribute("stroke", "#333");
+  bg.setAttribute("rx", "6");
+  bg.setAttribute("ry", "6");
+  legendGroup.appendChild(bg);
 
-    const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    txt1.setAttribute("x", "35");
-    txt1.setAttribute("y", "638");
-    txt1.setAttribute("fill", "#cccccc");
-    txt1.setAttribute("font-size", "11");
-    txt1.textContent = "⚙️ Gris = structures présentes";
-    legendGroup.appendChild(txt1);
+  // Texte 1
+  const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  txt1.setAttribute("x", "35");
+  txt1.setAttribute("y", "657");
+  txt1.setAttribute("fill", "#ccc");
+  txt1.setAttribute("font-size", "11");
+  txt1.textContent = "⚙️ Gris = structures présentes";
+  legendGroup.appendChild(txt1);
 
-    const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    txt2.setAttribute("x", "35");
-    txt2.setAttribute("y", "655");
-    txt2.setAttribute("fill", "#ff4444");
-    txt2.setAttribute("font-size", "11");
-    txt2.textContent = "🔥 Rouge = structures renforcées";
-    legendGroup.appendChild(txt2);
+  // Texte 2
+  const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  txt2.setAttribute("x", "35");
+  txt2.setAttribute("y", "672");
+  txt2.setAttribute("fill", "#ff4444");
+  txt2.setAttribute("font-size", "11");
+  txt2.textContent = "🔥 Rouge = structures renforcées";
+  legendGroup.appendChild(txt2);
 
-    svg.appendChild(legendGroup);
-  }
+  svg.appendChild(legendGroup);
+}
+
 
   // === Met à jour les systèmes avec les compteurs ===
   function updateSystemIndicators(svg) {
