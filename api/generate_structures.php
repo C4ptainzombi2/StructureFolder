@@ -7,7 +7,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
 // ⚠️ Remplace cette URL par ton lien CSV Google Sheets
-$googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-XXXXX/pub?output=csv';
+$googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRa7_5a2Ql2jUY7ToHlClU0X3hJB3ELIJnnLoPYhXdslYUhrwf5dxmTaowqM3DSV2K3cyyTNmnv1ljC/pub?gid=899915092&single=true&output=csv';
 
 // Chemin du fichier JSON local à mettre à jour
 $dataFile = __DIR__ . '/../data/structures.json';
