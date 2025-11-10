@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("📡 Chargement du module Structures — Drone Lands");
 
-  // === CONFIG ===
-const JSON_URL = "api/manage_structures.php";
-  const API_URL = "api/manage_structures.php";
+  const JSON_URL = "api/manage_structures.php";
 
-  // === Sélecteurs DOM ===
+  // Sélecteurs DOM
   const regionFilter = document.getElementById("regionFilter");
   const typeFilter = document.getElementById("typeFilter");
   const allianceFilter = document.getElementById("allianceFilter");
@@ -15,6 +13,9 @@ const JSON_URL = "api/manage_structures.php";
   const resetBtn = document.getElementById("resetFilters");
   const tableBody = document.getElementById("tableBody");
   const counter = document.getElementById("counter");
+  const addButton = document.getElementById("addButton");
+  const pasteArea = document.getElementById("pasteArea");
+  const feedback = document.getElementById("pasteFeedback");
 
   let allStructures = [];
 
@@ -24,16 +25,16 @@ const JSON_URL = "api/manage_structures.php";
       const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
       const json = await res.json();
       allStructures = json.structures || [];
-      console.log(`✅ Données chargées : ${allStructures.length}`);
-      populateFilters();
       renderTable(allStructures);
+      populateFilters();
+      console.log(`✅ ${allStructures.length} structures chargées.`);
     } catch (e) {
       console.error("Erreur de chargement :", e);
       tableBody.innerHTML = `<tr><td colspan="8">❌ Impossible de charger les données</td></tr>`;
     }
   }
 
-  // === Filtres dynamiques ===
+  // === Génération des filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
 
@@ -63,7 +64,6 @@ const JSON_URL = "api/manage_structures.php";
     }
 
     tableBody.innerHTML = "";
-
     structures.forEach(s => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -74,7 +74,7 @@ const JSON_URL = "api/manage_structures.php";
         <td>${s["Type"] || "-"}</td>
         <td>${s["Alliance / Corporation"] || "-"}</td>
         <td>${s["Date"] || "-"}</td>
-        <td>${s["Renforcée ?"] || s["Renforcé"] || "❌"}</td>
+        <td>${s["Renforcé"] || s["Renforcée ?"] || "❌"}</td>
       `;
       tableBody.appendChild(tr);
     });
@@ -82,7 +82,7 @@ const JSON_URL = "api/manage_structures.php";
     counter.textContent = `Total : ${structures.length} structures`;
   }
 
-  // === Filtres dynamiques ===
+  // === Filtres ===
   function filterAndRender() {
     const search = (searchInput.value || "").toUpperCase();
     const region = regionFilter.value;
@@ -96,7 +96,7 @@ const JSON_URL = "api/manage_structures.php";
       if (type && s["Type"] !== type) return false;
       if (alliance && s["Alliance / Corporation"] !== alliance) return false;
       if (constellation && s["Constellation"] !== constellation) return false;
-      if (reinforcedOnly && (s["Renforcée ?"] !== "oui" && s["Renforcé"] !== "oui")) return false;
+      if (reinforcedOnly && s["Renforcé"] !== "oui") return false;
       if (search && !Object.values(s).some(v => String(v).toUpperCase().includes(search))) return false;
       return true;
     });
@@ -104,7 +104,6 @@ const JSON_URL = "api/manage_structures.php";
     renderTable(filtered);
   }
 
-  // === Événements ===
   [regionFilter, typeFilter, allianceFilter, constellationFilter, reinforcedFilter, searchInput].forEach(el => {
     if (el) el.addEventListener("input", filterAndRender);
   });
@@ -112,20 +111,29 @@ const JSON_URL = "api/manage_structures.php";
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
       [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(el => el.value = "");
-      if (reinforcedFilter) reinforcedFilter.checked = false;
+      reinforcedFilter.checked = false;
       searchInput.value = "";
       filterAndRender();
     });
   }
 
-  // === Initialisation ===
-  await loadData();
+  // === Fonction de parsing du texte collé ===
+  function parsePastedText(text) {
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+    const firstLine = lines[0] || "";
+    const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
+    const system = match ? match[1].trim() : "";
+    const structureName = match ? match[2].trim() : "";
 
-  // --- AJOUT / MISE À JOUR D’UNE STRUCTURE ---
-  const addButton = document.getElementById("addButton");
-  const pasteArea = document.getElementById("pasteArea");
-  const feedback = document.getElementById("pasteFeedback");
+    const reinforcedMatch = text.match(/Reinforced until\s+(\d{4}\.\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2})/i);
+    const date = reinforcedMatch
+      ? reinforcedMatch[1].replace(/\./g, "-")
+      : "";
 
+    return { system, structureName, date };
+  }
+
+  // === Ajout / Mise à jour ===
   if (addButton) {
     addButton.addEventListener("click", async () => {
       const text = pasteArea.value.trim();
@@ -134,58 +142,46 @@ const JSON_URL = "api/manage_structures.php";
         return;
       }
 
-      // Extraction des infos depuis le texte collé
-      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-      const firstLine = lines[0] || "";
-      const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
-      const system = match ? match[1].trim() : "";
-      const structureName = match ? match[2].trim() : firstLine;
+      const { system, structureName, date } = parsePastedText(text);
 
-      // Extraction de la date
-      let date = "";
-      const dateMatch = text.match(/(\d{4}[.\-\/]\d{2}[.\-\/]\d{2})[^\d]*(\d{2}:\d{2}:\d{2})/);
-      if (dateMatch) {
-        date = dateMatch[1].replace(/[.\/]/g, "-") + " " + dateMatch[2];
-      }
-
-      // Détection du statut renforcé
-      const isReinforced = /reinforced/i.test(text);
-
-      // Charger les structures existantes
-      const res = await fetch("data/structures.json");
-      const data = await res.json();
-      const structures = data.structures || [];
-
-      // Recherche d'une correspondance
-      const existing = structures.find(s =>
-        s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
-        s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
-      );
-
-      if (!existing) {
-        feedback.textContent = "❌ Structure non trouvée dans les données existantes.";
+      if (!system || !structureName || !date) {
+        feedback.textContent = "⚠️ Format invalide ou timer manquant.";
         return;
       }
 
-      // Préparation des données mises à jour
-      const updated = {
-        ...existing,
-        "Nom du système": system,
-        "Nom de la structure": structureName,
-        "Date": date || existing["Date"] || "",
-        "Renforcé": isReinforced ? "oui" : "non"
-      };
-
-      feedback.textContent = "⏳ Mise à jour en cours...";
+      feedback.textContent = "⏳ Vérification de la structure...";
 
       try {
-        const postRes = await fetch("api/manage_structures.php", {
+        const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
+        const json = await res.json();
+        const structures = json.structures || [];
+
+        const existing = structures.find(s =>
+          s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
+          s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
+        );
+
+        if (!existing) {
+          feedback.textContent = "❌ Structure non trouvée sur le serveur.";
+          return;
+        }
+
+        const updated = {
+          ...existing,
+          "Renforcé": "oui",
+          "Date": date
+        };
+
+        feedback.textContent = "⏳ Mise à jour sur le serveur...";
+
+        const postRes = await fetch(JSON_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated)
         });
 
         const result = await postRes.json();
+
         if (result.success) {
           feedback.textContent = "✅ Structure mise à jour avec succès.";
           pasteArea.value = "";
@@ -194,9 +190,11 @@ const JSON_URL = "api/manage_structures.php";
           feedback.textContent = "❌ Erreur : " + (result.error || "mise à jour impossible.");
         }
       } catch (err) {
-        console.error("Erreur lors de la mise à jour :", err);
+        console.error(err);
         feedback.textContent = "❌ Erreur réseau ou serveur.";
       }
     });
   }
+
+  await loadData();
 });
