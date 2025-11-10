@@ -381,3 +381,9 @@ button:hover {
     padding: 5px;
   }
 }
+#countdownHeader {
+  transition: color 0.2s ease;
+}
+#countdownHeader:hover {
+  color: #00c3ff;
+}

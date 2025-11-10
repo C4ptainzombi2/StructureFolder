@@ -333,7 +333,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+   // === Tri par Countdown ===
+  let countdownSortAsc = true;
 
+  const countdownHeader = document.getElementById("countdownHeader");
+  if (countdownHeader) {
+    countdownHeader.addEventListener("click", () => {
+      const filtered = [...allStructures].filter(s => s["Date"]); // on évite les lignes vides
+
+      filtered.sort((a, b) => {
+        const dateA = new Date(a["Date"]);
+        const dateB = new Date(b["Date"]);
+        return countdownSortAsc ? dateA - dateB : dateB - dateA;
+      });
+
+      countdownSortAsc = !countdownSortAsc;
+
+      // Change la flèche visuelle
+      countdownHeader.textContent = `Countdown ${countdownSortAsc ? "⏳↑" : "⏳↓"}`;
+
+      renderTable(filtered);
+    });
+  }
   // === Initialisation ===
   await loadData();
 });
