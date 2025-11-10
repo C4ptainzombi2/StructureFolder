@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const typeFilter = document.getElementById("typeFilter");
   const allianceFilter = document.getElementById("allianceFilter");
   const constellationFilter = document.getElementById("constellationFilter");
-  const reinforcedFilter = document.getElementById("reinforcedFilter");
   const searchInput = document.getElementById("searchInput");
   const resetBtn = document.getElementById("resetFilters");
   const tableBody = document.getElementById("tableBody");
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
-
     function fillSelect(select, items, label) {
       if (!select) return;
       select.innerHTML = `<option value="">${label}</option>`;
@@ -45,7 +43,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         select.appendChild(opt);
       });
     }
-
     fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
     fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
     fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
@@ -153,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // === 🗺️ Carte stratégique ===
 async function initStrategicMap(structures) {
-  console.log("🗺️ Initialisation de la carte stratégique (version sans redirection)...");
+  console.log("🗺️ Initialisation de la carte stratégique (avec légende personnalisée)");
 
   const mapContainer = document.getElementById("strategicMap");
   const timersList = document.getElementById("mapTimersList");
@@ -162,25 +159,8 @@ async function initStrategicMap(structures) {
 
   if (!mapContainer) return;
 
-  let currentLevel = "universe";
-  let currentRegion = null;
-
-  // 🔧 Neutralisation des liens du SVG
-  function sanitizeSVG(svg) {
-    if (!svg) return;
-    svg.querySelectorAll("a").forEach(a => {
-      a.removeAttribute("href");
-      a.removeAttribute("xlink:href");
-      a.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-    });
-  }
-
   async function loadSVG(svgPath) {
     try {
-      // Proxy si lien Dotlan
       if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
         svgPath = `/api/proxy_svg.php?url=${encodeURIComponent(svgPath)}`;
       }
@@ -198,11 +178,18 @@ async function initStrategicMap(structures) {
     }
   }
 
+  function sanitizeSVG(svg) {
+    if (!svg) return;
+    svg.querySelectorAll("a").forEach(a => {
+      a.removeAttribute("href");
+      a.removeAttribute("xlink:href");
+    });
+  }
+
   // === Carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
   if (!svgDoc) return;
 
-  // === Gestion clic sur régions ===
   function attachUniverseHandlers() {
     const regions = svgDoc.querySelectorAll("text");
     regions.forEach(text => {
@@ -212,71 +199,117 @@ async function initStrategicMap(structures) {
       text.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const regionName = name.replace(/ /g, "_");
-        console.log("🌌 Chargement de la région :", regionName);
 
-        currentLevel = "region";
-        currentRegion = regionName;
+        const regionName = name.replace(/ /g, "_");
         regionTitle.textContent = `🪐 ${name}`;
         backButton.style.display = "block";
 
         const dotlanURL = `https://evemaps.dotlan.net/svg/${regionName}.svg`;
         svgDoc = await loadSVG(dotlanURL);
-        if (svgDoc) attachRegionHandlers(name);
+        if (svgDoc) {
+          attachRegionHandlers(name);
+          addCustomLegend(svgDoc);
+        }
       });
     });
   }
 
-  // === Gestion clic sur systèmes ===
   function attachRegionHandlers(regionName) {
-  const links = svgDoc.querySelectorAll("a");
-  timersList.innerHTML = "";
+    const links = svgDoc.querySelectorAll("a");
+    timersList.innerHTML = "";
 
-  links.forEach(link => {
-    link.removeAttribute("href");
-    link.removeAttribute("xlink:href");
-
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      // ✅ Correction : récupérer le texte du <text> à l'intérieur du lien
+    links.forEach(link => {
       const textNode = link.querySelector("text");
       const sysName = textNode ? textNode.textContent.trim() : link.textContent.trim();
-      console.log("🌐 Système cliqué :", sysName);
       if (!sysName) return;
 
-      timersList.innerHTML = "";
-
-      const timers = structures.filter(s => 
-        s["Nom du système"]?.toUpperCase().trim() === sysName.toUpperCase()
+      const systemTimers = structures.filter(s =>
+        s["Nom du système"]?.toUpperCase() === sysName.toUpperCase()
       );
+      const total = systemTimers.length;
+      const reinforced = systemTimers.filter(s => {
+        const d = new Date(s["Date"]);
+        return !isNaN(d) && d > new Date();
+      }).length;
 
-      if (timers.length === 0) {
-        timersList.innerHTML = `<li>Aucun timer dans ${sysName}</li>`;
-        return;
+      // Supprime anciens tspan
+      link.querySelectorAll("tspan").forEach(t => t.remove());
+
+      if (textNode) {
+        const custom = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+        custom.setAttribute("x", textNode.getAttribute("x"));
+        custom.setAttribute("dy", "10");
+        custom.setAttribute("font-size", "8");
+        custom.setAttribute("fill", reinforced > 0 ? "#ff5555" : "#aaa");
+        custom.textContent = `(${total} / ${reinforced})`;
+        textNode.appendChild(custom);
       }
 
-      timers.forEach(s => {
-        const date = new Date(s["Date"]);
-        const now = new Date();
-        const expired = date < now;
-        const li = document.createElement("li");
-        li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
-        li.textContent = `${sysName} — ${s["Nom de la structure"]} (${expired ? "expiré" : "actif"})`;
-        timersList.appendChild(li);
+      const shape = link.querySelector("circle, rect, polygon, path");
+      if (shape) {
+        if (reinforced > 0) shape.setAttribute("stroke", "#ff3333");
+        else if (total > 0) shape.setAttribute("stroke", "#888");
+      }
+
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        timersList.innerHTML = "";
+        if (systemTimers.length === 0) {
+          timersList.innerHTML = `<li>Aucune structure dans ${sysName}</li>`;
+          return;
+        }
+
+        systemTimers.forEach(s => {
+          const date = new Date(s["Date"]);
+          const now = new Date();
+          const expired = date < now;
+          const li = document.createElement("li");
+          li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
+          li.textContent = `${sysName} — ${s["Nom de la structure"]}`;
+          timersList.appendChild(li);
+        });
       });
     });
-  });
-}
+  }
 
+  function addCustomLegend(svg) {
+    svg.querySelectorAll("text").forEach(t => {
+      if (t.textContent.includes("Outer Passage")) return;
+    });
+    const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    legendGroup.setAttribute("transform", "translate(20, 630)");
 
-  // === Bouton retour ===
+    const legendBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    legendBg.setAttribute("width", "200");
+    legendBg.setAttribute("height", "50");
+    legendBg.setAttribute("fill", "#0e141f");
+    legendBg.setAttribute("stroke", "#00d4ff");
+    legendBg.setAttribute("rx", "6");
+    legendGroup.appendChild(legendBg);
+
+    const line1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    line1.setAttribute("x", "10");
+    line1.setAttribute("y", "20");
+    line1.setAttribute("fill", "#ccc");
+    line1.textContent = "⚙️ Gris = structures présentes";
+    legendGroup.appendChild(line1);
+
+    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    line2.setAttribute("x", "10");
+    line2.setAttribute("y", "40");
+    line2.setAttribute("fill", "#ff6666");
+    line2.textContent = "🔥 Rouge = structures renforcées";
+    legendGroup.appendChild(line2);
+
+    svg.appendChild(legendGroup);
+  }
+
   backButton.addEventListener("click", async () => {
     regionTitle.textContent = "🪐 New Eden";
     backButton.style.display = "none";
     timersList.innerHTML = "";
-    currentLevel = "universe";
     svgDoc = await loadSVG("/data/maps/New_Eden.svg");
     if (svgDoc) attachUniverseHandlers();
   });
