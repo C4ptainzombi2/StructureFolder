@@ -321,11 +321,29 @@ async function initStrategicMap() {
   const structures = json.structures || [];
 
   async function loadSVG(svgPath) {
-    map.src = svgPath;
-    return new Promise(resolve => {
-      map.onload = () => resolve(map.contentDocument);
-    });
+  const map = document.getElementById("strategicMap");
+
+  // Teste d'abord que le SVG existe
+  const res = await fetch(svgPath);
+  if (!res.ok) {
+    console.error(`❌ Impossible de charger le SVG : ${svgPath} (${res.status})`);
+    return null;
   }
+
+  // Charge le SVG dans l'iframe
+  map.src = svgPath;
+  return new Promise(resolve => {
+    map.onload = () => {
+      try {
+        resolve(map.contentDocument);
+      } catch (err) {
+        console.error("⚠️ Impossible d'accéder au contenu du SVG :", err);
+        resolve(null);
+      }
+    };
+  });
+}
+
 
   // === Charger la carte principale (New Eden) ===
   let svgDoc = await loadSVG("data/maps/New_Eden.svg");
