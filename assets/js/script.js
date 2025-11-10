@@ -165,13 +165,32 @@ async function initStrategicMap(structures) {
   let currentLevel = "universe";
   let currentRegion = null;
 
+  // 🔧 Neutralisation des liens du SVG
+  function sanitizeSVG(svg) {
+    if (!svg) return;
+    svg.querySelectorAll("a").forEach(a => {
+      a.removeAttribute("href");
+      a.removeAttribute("xlink:href");
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+  }
+
   async function loadSVG(svgPath) {
     try {
+      // Proxy si lien Dotlan
+      if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
+        svgPath = `/api/proxy_svg.php?url=${encodeURIComponent(svgPath)}`;
+      }
       const res = await fetch(svgPath);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
-      return mapContainer.querySelector("svg");
+      const svg = mapContainer.querySelector("svg");
+      sanitizeSVG(svg);
+      return svg;
     } catch (err) {
       mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}</div>`;
       console.error("Erreur SVG :", err);
@@ -179,43 +198,44 @@ async function initStrategicMap(structures) {
     }
   }
 
-  // === Chargement carte univers ===
+  // === Carte principale ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
   if (!svgDoc) return;
 
-  // === Interaction sur les régions ===
+  // === Gestion clic sur régions ===
   function attachUniverseHandlers() {
     const regions = svgDoc.querySelectorAll("text");
     regions.forEach(text => {
       const name = text.textContent.trim();
       if (!name) return;
-
       text.style.cursor = "pointer";
       text.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
-
         const regionName = name.replace(/ /g, "_");
         console.log("🌌 Chargement de la région :", regionName);
 
         currentLevel = "region";
         currentRegion = regionName;
-        regionTitle.textContent = `🥔 ${name}`;
+        regionTitle.textContent = `🪐 ${name}`;
         backButton.style.display = "block";
 
-        const proxied = `/api/proxy_svg.php?url=${encodeURIComponent(`https://evemaps.dotlan.net/svg/${regionName}.svg`)}`;
-        svgDoc = await loadSVG(proxied);
+        const dotlanURL = `https://evemaps.dotlan.net/svg/${regionName}.svg`;
+        svgDoc = await loadSVG(dotlanURL);
         if (svgDoc) attachRegionHandlers(name);
       });
     });
   }
 
-  // === Interaction sur les systèmes ===
+  // === Gestion clic sur systèmes ===
   function attachRegionHandlers(regionName) {
     const links = svgDoc.querySelectorAll("a");
     timersList.innerHTML = "";
 
     links.forEach(link => {
+      link.removeAttribute("href");
+      link.removeAttribute("xlink:href");
+
       link.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
@@ -242,6 +262,7 @@ async function initStrategicMap(structures) {
     });
   }
 
+  // === Bouton retour ===
   backButton.addEventListener("click", async () => {
     regionTitle.textContent = "🪐 New Eden";
     backButton.style.display = "none";
