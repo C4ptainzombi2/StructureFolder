@@ -212,14 +212,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // === Ouvrir la modale DOTLAN ===
-  function openDotlanModal(systemName) {
+function openDotlanModal(systemName) {
   const modal = document.getElementById("dotlanModal");
   const iframe = document.getElementById("dotlanFrame");
   const title = document.getElementById("dotlanTitle");
   const closeBtn = document.getElementById("dotlanClose");
 
   const cleanSystem = systemName.trim();
-  const dotlanUrl = `https://evemaps.dotlan.net/system/${encodeURIComponent(cleanSystem)}`;
+  const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
 
   iframe.src = dotlanUrl;
   title.textContent = `Carte du système : ${cleanSystem}`;
@@ -237,7 +237,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 }
-
 
   // === Initialisation ===
   await loadData();
