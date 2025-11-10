@@ -2,10 +2,10 @@
 /**
  * manage_structures.php
  * Gère la synchronisation des structures avec Google Sheets
- * et la sauvegarde dans /data/structures.json
+ * et la mise à jour locale des structures renforcées.
  */
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -14,34 +14,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit(0);
 
 $baseDir = realpath(__DIR__ . '/../data');
 $jsonPath = "$baseDir/structures.json";
-$regionsDir = "$baseDir/regions"; // si tu as les fichiers régions ici
+$regionsDir = "$baseDir/regions";
 $apiUrl = "https://script.google.com/macros/s/AKfycby5A8umWHXsxqHjSOQS6y6J3n-Kijdbj0g6uZyBkCmNl5niD5FcvM_Z7JiPwpQgZ9eT5A/exec";
 
-// ==============================
-// ===  SYNCHRONISATION (GET) ===
-// ==============================
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+/**
+ * Chargement JSON local
+ */
+function load_json($path) {
+    if (!file_exists($path)) return ['structures' => []];
+    $data = json_decode(file_get_contents($path), true);
+    return is_array($data) ? $data : ['structures' => []];
+}
 
+/**
+ * Sauvegarde JSON local
+ */
+function save_json($path, $data) {
+    file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
+
+/**
+ * Normalisation des chaînes (pour comparaison insensible)
+ */
+function normalize($str) {
+    return strtolower(trim(preg_replace('/\s+/', '', $str ?? '')));
+}
+
+/**
+ * ===== GET : Synchronisation avec Google Sheets =====
+ */
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $remote = @file_get_contents($apiUrl);
     if (!$remote) {
-        echo json_encode(["error" => "Impossible de contacter Google Sheets."]);
+        echo json_encode(['success' => false, 'error' => 'Impossible de contacter Google Sheets']);
         exit;
     }
 
     $json = json_decode($remote, true);
     if (!$json || !isset($json['structures'])) {
-        echo json_encode(["error" => "Données invalides reçues depuis l'API."]);
+        echo json_encode(['success' => false, 'error' => 'Données invalides depuis Google Sheets']);
         exit;
     }
 
     $newStructures = $json['structures'];
+    $oldData = load_json($jsonPath);
 
-    // Charger l'ancien fichier JSON local
-    $oldData = file_exists($jsonPath)
-        ? json_decode(file_get_contents($jsonPath), true)
-        : ['structures' => []];
-
-    // Charger les régions
+    // Charger les régions (si dispo)
     $regions = [];
     if (is_dir($regionsDir)) {
         foreach (glob("$regionsDir/*.json") as $file) {
@@ -59,12 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    // Fusion complète des structures
+    // Fusion région + ancienne donnée
     foreach ($newStructures as &$s) {
         $sys = strtoupper(trim($s['Nom du système'] ?? ''));
         $nomStructure = trim($s['Nom de la structure'] ?? '');
 
-        // Ajout région / constellation
         if (isset($regions[$sys])) {
             $s['Région'] = $regions[$sys]['region'];
             $s['Constellation'] = $regions[$sys]['constellation'];
@@ -73,20 +90,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $s['Constellation'] = $s['Constellation'] ?? "Inconnue";
         }
 
-        // Fusion avec ancienne version
+        // Fusion douce avec les anciennes données
         foreach ($oldData['structures'] as $old) {
             if (
-                $old['Nom du système'] === $s['Nom du système'] &&
-                $old['Nom de la structure'] === $nomStructure
+                normalize($old['Nom du système']) === normalize($sys) &&
+                normalize($old['Nom de la structure']) === normalize($nomStructure)
             ) {
                 foreach ($old as $key => $val) {
                     if (
                         !isset($s[$key]) ||
                         $s[$key] === "" ||
                         $s[$key] === "-" ||
-                        $s[$key] === "." ||
-                        $s[$key] === "Inconnu" ||
-                        $s[$key] === "Inconnue"
+                        $s[$key] === "Inconnu"
                     ) {
                         $s[$key] = $val;
                     }
@@ -94,20 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        // Toujours avoir la clé Date
         if (!isset($s['Date'])) $s['Date'] = "";
     }
 
-    // Sauvegarde fusionnée
-    file_put_contents($jsonPath, json_encode(['structures' => $newStructures], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
+    save_json($jsonPath, ['structures' => $newStructures]);
     echo json_encode(['success' => true, 'structures' => $newStructures]);
     exit;
 }
 
-// ==============================
-// ===  AJOUT / MISE À JOUR (POST)
-// ==============================
+/**
+ * ===== POST : Ajout / Mise à jour renforcée =====
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) {
@@ -115,32 +127,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $data = file_exists($jsonPath)
-        ? json_decode(file_get_contents($jsonPath), true)
-        : ['structures' => []];
+    $data = load_json($jsonPath);
+    $structures = &$data['structures'];
+
+    $sys = normalize($input['Nom du système'] ?? '');
+    $name = normalize($input['Nom de la structure'] ?? '');
+
+    if (!$sys || !$name) {
+        echo json_encode(['success' => false, 'error' => 'Système ou structure manquant.']);
+        exit;
+    }
 
     $found = false;
-    foreach ($data['structures'] as &$structure) {
+    foreach ($structures as &$s) {
         if (
-            $structure['Nom du système'] === $input['Nom du système'] &&
-            $structure['Nom de la structure'] === $input['Nom de la structure']
+            normalize($s['Nom du système']) === $sys &&
+            normalize($s['Nom de la structure']) === $name
         ) {
-            foreach ($input as $k => $v) {
-                if ($v !== "" && $v !== "Inconnu" && $v !== "Inconnue") {
-                    $structure[$k] = $v;
-                }
-            }
+            // Mise à jour de la date et du renforcement
+            $s['Date'] = $input['Date'] ?? $s['Date'] ?? "";
+            $s['Renforcé'] = $input['Renforcé'] ?? $s['Renforcé'] ?? "non";
             $found = true;
             break;
         }
     }
 
-    if (!$found) $data['structures'][] = $input;
+    if (!$found) {
+        // Ajout si inexistant (sécurité)
+        $structures[] = [
+            "Nom du système" => $input["Nom du système"],
+            "Nom de la structure" => $input["Nom de la structure"],
+            "Date" => $input["Date"] ?? "",
+            "Renforcé" => $input["Renforcé"] ?? "oui"
+        ];
+    }
 
-    file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    echo json_encode(['success' => true, 'updated' => $found]);
+    save_json($jsonPath, $data);
+    echo json_encode(["success" => true, "updated" => $found]);
     exit;
 }
 
-echo json_encode(["error" => "Méthode non supportée"]);
-?>
+echo json_encode(["success" => false, "error" => "Méthode non supportée"]);

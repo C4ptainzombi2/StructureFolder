@@ -128,28 +128,38 @@ const JSON_URL = "api/manage_structures.php";
 
   if (addButton) {
     addButton.addEventListener("click", async () => {
-      const text = pasteArea.value.trim();
-      if (!text) {
-        feedback.textContent = "⚠️ Veuillez coller un texte avant d’ajouter.";
+      // --- Extraction des infos depuis le texte collé ---
+        const text = pasteArea.value.trim();
+        const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+
+        // ✅ Ligne 1 : système et nom de structure
+        let system = "";
+        let structureName = "";
+        const match = lines[0]?.match(/^([A-Z0-9\-]+)\s*-\s*(.+)$/i);
+        if (match) {
+        system = match[1].trim();
+        structureName = match[2].trim();
+        }
+
+        // ✅ Ligne contenant la date “Reinforced until”
+        let date = "";
+        for (const line of lines) {
+        const dateMatch = line.match(/Reinforced\s+until\s+(\d{4})[.\-\/](\d{2})[.\-\/](\d{2})\s+(\d{2}:\d{2}:\d{2})/i);
+        if (dateMatch) {
+            date = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]} ${dateMatch[4]}`;
+            break;
+        }
+        }
+
+        // ✅ Détection du statut renforcé
+        const isReinforced = /Reinforced\s+until/i.test(text);
+
+        // Vérification finale
+        if (!system || !structureName) {
+        feedback.textContent = "⚠️ Format invalide. Exemple : ZJ-S1S - My Station\nReinforced until 2025.11.12 12:49:50";
         return;
-      }
+        }
 
-      // Extraction des infos depuis le texte collé
-      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-      const firstLine = lines[0] || "";
-      const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
-      const system = match ? match[1].trim() : "";
-      const structureName = match ? match[2].trim() : firstLine;
-
-      // Extraction de la date
-      let date = "";
-      const dateMatch = text.match(/(\d{4}[.\-\/]\d{2}[.\-\/]\d{2})[^\d]*(\d{2}:\d{2}:\d{2})/);
-      if (dateMatch) {
-        date = dateMatch[1].replace(/[.\/]/g, "-") + " " + dateMatch[2];
-      }
-
-      // Détection du statut renforcé
-      const isReinforced = /reinforced/i.test(text);
 
       // Charger les structures existantes
       const res = await fetch("data/structures.json");
