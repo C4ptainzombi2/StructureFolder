@@ -49,16 +49,22 @@ include __DIR__ . '/includes/header.php';
     </tbody>
   </table>
 
-  <!-- 🗺️ Carte stratégique interactive -->
-  <div id="mapContainer">
-  <div id="strategicMapContainer" title="Carte Drone Lands"></div>
+<!-- 🗺️ Carte stratégique interactive -->
+<section id="strategicSection">
+  <h2>🗺️ Carte stratégique</h2>
 
-  <div id="mapSidebar">
-    <h3 id="mapRegionTitle">🗺️ New Eden</h3>
-    <ul id="mapTimersList"></ul>
-    <button id="mapBackButton" style="display:none;">⬅️ Retour</button>
+  <div id="mapContainer">
+    <!-- ⚠️ L’élément dans lequel le SVG sera injecté -->
+    <div id="strategicMap" title="Carte Drone Lands"></div>
+
+    <!-- 📋 Panneau latéral -->
+    <aside id="mapSidebar">
+      <h3 id="mapRegionTitle">🪐 New Eden</h3>
+      <ul id="mapTimersList"></ul>
+      <button id="mapBackButton" style="display:none;">⬅️ Retour</button>
+    </aside>
   </div>
-</div>
+</section>
 
 <?php include __DIR__ . '/includes/modal_dotlan.php'; ?>
 <?php include __DIR__ . '/includes/footer.php'; ?>
