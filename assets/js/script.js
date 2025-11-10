@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Génération des filtres dynamiques ===
   function populateFilters() {
     const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
-
     function fillSelect(select, items, label) {
       if (!select) return;
       select.innerHTML = `<option value="">${label}</option>`;
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         select.appendChild(opt);
       });
     }
-
     fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
     fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
     fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
@@ -69,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const uniques = (key) => [...new Set(filteredStructures.map(s => s[key]).filter(Boolean))].sort();
-
     function fillSelect(select, items, label) {
       if (!select) return;
       const currentValue = select.value;
@@ -150,7 +147,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       tableBody.appendChild(tr);
     });
 
-    // === Boutons DOTLAN ===
     document.querySelectorAll(".map-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
         const systemName = e.currentTarget.dataset.system;
@@ -176,15 +172,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         el.textContent = formatCountdown(diff);
 
         const totalHours = diff / 3600000;
-        if (totalHours < 1) {
-          el.style.color = "#ff5555"; // Rouge vif si < 1h
-        } else if (totalHours < 6) {
-          el.style.color = "#ffaa00"; // Orange si < 6h
-        } else if (totalHours < 24) {
-          el.style.color = "#ffff66"; // Jaune si < 24h
-        } else {
-          el.style.color = "#00ff99"; // Vert sinon
-        }
+        if (totalHours < 1) el.style.color = "#ff5555";
+        else if (totalHours < 6) el.style.color = "#ffaa00";
+        else if (totalHours < 24) el.style.color = "#ffff66";
+        else el.style.color = "#00ff99";
       }
     });
   }, 1000);
@@ -215,7 +206,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (el) el.addEventListener("input", filterAndRender);
   });
 
-  // 🔄 Ajout des événements pour les filtres dépendants
   [regionFilter, typeFilter, allianceFilter].forEach(el => {
     if (el) el.addEventListener("change", () => {
       updateDependentFilters();
@@ -233,21 +223,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // === Analyse du texte collé ===
-  function parsePastedText(text) {
-    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-    const firstLine = lines[0] || "";
-    const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
-    const system = match ? match[1].trim() : "";
-    const structureName = match ? match[2].trim() : "";
+  // === Analyse avancée de plusieurs timers ===
+  function parseMultipleTimers(text) {
+    const timers = [];
+    const blocks = text
+      .split(/(?=[A-Z0-9-]{3,}\s*-\s*[A-Za-z0-9]+)/g)
+      .map(b => b.trim())
+      .filter(Boolean);
 
-    const reinforcedMatch = text.match(/Reinforced until\s+(\d{4}\.\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2})/i);
-    const date = reinforcedMatch ? reinforcedMatch[1].replace(/\./g, "-") : "";
-
-    return { system, structureName, date };
+    for (const block of blocks) {
+      const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+      const firstLine = lines[0] || "";
+      const match = firstLine.match(/^([A-Z0-9-]+)\s*-\s*(.+)$/i);
+      const system = match ? match[1].trim() : "";
+      const structureName = match ? match[2].trim() : "";
+      const reinforcedMatch = block.match(/Reinforced until\s+(\d{4}\.\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2})/i);
+      const date = reinforcedMatch ? reinforcedMatch[1].replace(/\./g, "-") : "";
+      if (system && structureName && date) timers.push({ system, structureName, date });
+    }
+    return timers;
   }
 
-  // === Ajout / Mise à jour ===
+  // === Ajout / Mise à jour de plusieurs timers ===
   if (addButton) {
     addButton.addEventListener("click", async () => {
       const text = pasteArea.value.trim();
@@ -256,53 +253,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const { system, structureName, date } = parsePastedText(text);
-
-      if (!system || !structureName || !date) {
-        feedback.textContent = "⚠️ Format invalide ou timer manquant.";
+      const parsedTimers = parseMultipleTimers(text);
+      if (parsedTimers.length === 0) {
+        feedback.textContent = "⚠️ Aucun timer valide trouvé.";
         return;
       }
 
-      feedback.textContent = "⏳ Vérification de la structure...";
+      feedback.textContent = `⏳ Détection de ${parsedTimers.length} timer(s)...`;
 
       try {
         const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
         const json = await res.json();
         const structures = json.structures || [];
 
-        const existing = structures.find(s =>
-          s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
-          s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
-        );
+        let updatedCount = 0, notFoundCount = 0;
 
-        if (!existing) {
-          feedback.textContent = "❌ Structure non trouvée sur le serveur.";
-          return;
+        for (const { system, structureName, date } of parsedTimers) {
+          const existing = structures.find(s =>
+            s["Nom du système"]?.toLowerCase() === system.toLowerCase() &&
+            s["Nom de la structure"]?.toLowerCase() === structureName.toLowerCase()
+          );
+
+          if (!existing) {
+            console.warn(`❌ Non trouvé : ${system} - ${structureName}`);
+            notFoundCount++;
+            continue;
+          }
+
+          const updated = { ...existing, "Renforcé": "oui", "Date": date };
+          const postRes = await fetch(JSON_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updated)
+          });
+          const result = await postRes.json();
+          if (result.success) updatedCount++;
         }
 
-        const updated = {
-          ...existing,
-          "Renforcé": "oui",
-          "Date": date
-        };
-
-        feedback.textContent = "⏳ Mise à jour sur le serveur...";
-
-        const postRes = await fetch(JSON_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated)
-        });
-
-        const result = await postRes.json();
-
-        if (result.success) {
-          feedback.textContent = "✅ Structure mise à jour avec succès.";
-          pasteArea.value = "";
-          await loadData();
-        } else {
-          feedback.textContent = "❌ Erreur : " + (result.error || "mise à jour impossible.");
-        }
+        feedback.textContent = `✅ ${updatedCount} timer(s) mis à jour — ❌ ${notFoundCount} ignoré(s).`;
+        pasteArea.value = "";
+        await loadData();
       } catch (err) {
         console.error(err);
         feedback.textContent = "❌ Erreur réseau ou serveur.";
@@ -310,77 +300,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
- // --- Fonctions d'ouverture / fermeture centralisées pour la modale DOTLAN ---
-function closeDotlanModal() {
-  const modal = document.getElementById("dotlanModal");
-  const iframe = document.getElementById("dotlanFrame");
-  if (!modal) return;
-  modal.style.display = "none";
-  if (iframe) iframe.src = "";
-}
-
-function openDotlanModal(systemName) {
-  const modal = document.getElementById("dotlanModal");
-  const iframe = document.getElementById("dotlanFrame");
-  const title = document.getElementById("dotlanTitle");
-  const closeBtn = document.getElementById("dotlanClose");
-
-  if (!modal || !iframe || !closeBtn) {
-    console.error("⚠️ Modale DOTLAN introuvable ou éléments manquants.");
-    return;
+  // === Modale DOTLAN ===
+  function closeDotlanModal() {
+    const modal = document.getElementById("dotlanModal");
+    const iframe = document.getElementById("dotlanFrame");
+    if (!modal) return;
+    modal.style.display = "none";
+    if (iframe) iframe.src = "";
   }
 
-  const cleanSystem = systemName.trim();
-  const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+  function openDotlanModal(systemName) {
+    const modal = document.getElementById("dotlanModal");
+    const iframe = document.getElementById("dotlanFrame");
+    const title = document.getElementById("dotlanTitle");
+    const closeBtn = document.getElementById("dotlanClose");
+    if (!modal || !iframe || !closeBtn) return;
 
-  iframe.src = dotlanUrl;
-  if (title) title.textContent = `Carte du système : ${cleanSystem}`;
-  modal.style.display = "flex";
+    const cleanSystem = systemName.trim();
+    iframe.src = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+    if (title) title.textContent = `Carte du système : ${cleanSystem}`;
+    modal.style.display = "flex";
+    closeBtn.onclick = closeDotlanModal;
 
-  // Affecte un seul handler au bouton de fermeture (remplace l'ancien)
-  closeBtn.onclick = closeDotlanModal;
+    if (modal._dotlanClickHandler) modal.removeEventListener("click", modal._dotlanClickHandler);
+    modal._dotlanClickHandler = e => { if (e.target === modal) closeDotlanModal(); };
+    modal.addEventListener("click", modal._dotlanClickHandler);
 
-  // click en dehors → fermer (on attache un handler unique en le stockant pour pouvoir le retirer si besoin)
-  // évite d'empiler les listeners : on supprime l'ancien si présent, puis on en ajoute un.
-  if (modal._dotlanClickHandler) {
-    modal.removeEventListener("click", modal._dotlanClickHandler);
+    if (!modal._dotlanEscHandler) {
+      modal._dotlanEscHandler = e => { if (e.key === "Escape") closeDotlanModal(); };
+      document.addEventListener("keydown", modal._dotlanEscHandler);
+    }
   }
-  modal._dotlanClickHandler = function(e) {
-    if (e.target === modal) closeDotlanModal();
-  };
-  modal.addEventListener("click", modal._dotlanClickHandler);
 
-  // Fermer à l'Esc — on ajoute une fois et on stocke la référence
-  if (!modal._dotlanEscHandler) {
-    modal._dotlanEscHandler = function(e) {
-      if (e.key === "Escape") closeDotlanModal();
-    };
-    document.addEventListener("keydown", modal._dotlanEscHandler);
-  }
-}
-
-   // === Tri par Countdown ===
+  // === Tri par countdown ===
   let countdownSortAsc = true;
-
   const countdownHeader = document.getElementById("countdownHeader");
   if (countdownHeader) {
     countdownHeader.addEventListener("click", () => {
-      const filtered = [...allStructures].filter(s => s["Date"]); // on évite les lignes vides
-
-      filtered.sort((a, b) => {
-        const dateA = new Date(a["Date"]);
-        const dateB = new Date(b["Date"]);
-        return countdownSortAsc ? dateA - dateB : dateB - dateA;
-      });
-
+      const filtered = [...allStructures].filter(s => s["Date"]);
+      filtered.sort((a, b) => countdownSortAsc ? new Date(a["Date"]) - new Date(b["Date"]) : new Date(b["Date"]) - new Date(a["Date"]));
       countdownSortAsc = !countdownSortAsc;
-
-      // Change la flèche visuelle
       countdownHeader.textContent = `Countdown ${countdownSortAsc ? "⏳↑" : "⏳↓"}`;
-
       renderTable(filtered);
     });
   }
-  // === Initialisation ===
+
   await loadData();
 });
