@@ -353,7 +353,7 @@ async function initStrategicMap() {
 }
 
 // === Charger la carte principale (New Eden) ===
-let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
+let svgDoc = await loadSVG("data/maps/New_Eden.svg");
 
   function attachUniverseHandlers() {
     const regions = svgDoc.querySelectorAll("g[id]");
