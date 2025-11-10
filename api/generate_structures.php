@@ -1,63 +1,90 @@
 <?php
 /**
- * Génère le fichier data/structures.json à partir d'un Google Sheets
- * CSV public.
+ * Génère le fichier data/structures.json à partir du Google Sheets (CSV)
+ * et complète automatiquement la Région + Constellation
+ * à partir des fichiers data/regions/*.json
  */
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-// ⚠️ Remplace cette URL par ton lien CSV Google Sheets
-$googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRa7_5a2Ql2jUY7ToHlClU0X3hJB3ELIJnnLoPYhXdslYUhrwf5dxmTaowqM3DSV2K3cyyTNmnv1ljC/pub?gid=899915092&single=true&output=csv';
+// ⚠️ Mets ici ton lien CSV public Google Sheets :
+$googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-XXXXX/pub?output=csv';
 
-// Chemin du fichier JSON local à mettre à jour
-$dataFile = __DIR__ . '/../data/structures.json';
+// Dossier et fichiers
+$dataDir = __DIR__ . '/../data/';
+$dataFile = $dataDir . 'structures.json';
+$regionsDir = $dataDir . 'regions/';
 
 try {
-    // --- 1️⃣ Télécharger le CSV ---
+    // --- 1️⃣ Récupération du CSV depuis Google Sheets ---
     $csv = file_get_contents($googleSheetUrl);
     if (!$csv) {
         throw new Exception("Impossible de récupérer les données depuis Google Sheets.");
     }
 
-    // --- 2️⃣ Conversion CSV → tableau associatif ---
     $lines = array_map('str_getcsv', explode("\n", trim($csv)));
     if (count($lines) < 2) {
-        throw new Exception("Le fichier CSV semble vide ou mal formaté.");
+        throw new Exception("Le fichier CSV est vide ou mal formaté.");
     }
 
-    $headers = array_map('trim', array_shift($lines)); // première ligne = noms de colonnes
+    $headers = array_map('trim', array_shift($lines));
     $structures = [];
 
+    // --- 2️⃣ Charger les régions et constellations depuis /data/regions/*.json ---
+    $systemToRegion = [];
+    $systemToConstellation = [];
+
+    foreach (glob($regionsDir . '*.json') as $file) {
+        $regionData = json_decode(file_get_contents($file), true);
+        if (!$regionData || empty($regionData['region']) || empty($regionData['constellations'])) {
+            continue;
+        }
+
+        $regionName = $regionData['region'];
+        foreach ($regionData['constellations'] as $constellationName => $systems) {
+            foreach ($systems as $system) {
+                $systemToRegion[strtoupper(trim($system))] = $regionName;
+                $systemToConstellation[strtoupper(trim($system))] = $constellationName;
+            }
+        }
+    }
+
+    // --- 3️⃣ Convertir CSV → structures.json ---
     foreach ($lines as $row) {
-        if (empty(implode('', $row))) continue; // ignore les lignes vides
+        if (empty(implode('', $row))) continue;
 
         $row = array_pad($row, count($headers), '');
         $item = array_combine($headers, array_map('trim', $row));
 
-        // --- 3️⃣ Mappage des colonnes Google Sheets vers ton format JSON ---
+        $system = strtoupper($item['Nom du système'] ?? '');
+        if (!$system) continue;
+
+        // Déterminer Région et Constellation automatiquement
+        $region = $systemToRegion[$system] ?? '';
+        $constellation = $systemToConstellation[$system] ?? '';
+
         $structure = [
-            "Nom du système" => $item['Nom du système'] ?? '',
-            "Nom de la structure" => $item['Remarques'] ?? '', // remarque = nom structure
+            "Nom du système" => $system,
+            "Nom de la structure" => $item['Remarques'] ?? '',
             "Type" => $item['Type'] ?? '',
-            "Région" => $item['Région'] ?? '',
-            "Constellation" => $item['Constellation'] ?? '',
+            "Région" => $region,
+            "Constellation" => $constellation,
             "Alliance / Corporation" => $item['Alliance / Corporation'] ?? '',
-            "Renforcé" => $item['Renforcé'] ?? ($item['Renforcée ?'] ?? 'non'),
+            "Renforcé" => $item['Renforcé'] ?? ($item['Renforcée ?'] ?? 'Non'),
             "Date" => $item['Date'] ?? '',
         ];
 
-        // --- 4️⃣ Nettoyage minimal ---
         foreach ($structure as $k => $v) {
             $structure[$k] = trim($v);
         }
 
-        // Ne pas enregistrer les lignes vides
-        if (!empty($structure["Nom du système"]) && !empty($structure["Nom de la structure"])) {
+        if (!empty($structure["Nom du système"])) {
             $structures[] = $structure;
         }
     }
 
-    // --- 5️⃣ Écriture dans data/structures.json ---
+    // --- 4️⃣ Sauvegarde finale ---
     $jsonData = [
         'success' => true,
         'structures' => $structures
@@ -68,7 +95,7 @@ try {
     echo json_encode([
         'success' => true,
         'count' => count($structures),
-        'message' => 'structures.json mis à jour avec succès'
+        'message' => 'structures.json mis à jour avec succès avec régions et constellations auto-détectées'
     ]);
 } catch (Exception $e) {
     echo json_encode([
