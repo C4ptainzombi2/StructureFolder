@@ -310,29 +310,55 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // === Ouvrir la modale DOTLAN ===
-  function openDotlanModal(systemName) {
-    const modal = document.getElementById("dotlanModal");
-    const iframe = document.getElementById("dotlanFrame");
+ // --- Fonctions d'ouverture / fermeture centralisées pour la modale DOTLAN ---
+function closeDotlanModal() {
+  const modal = document.getElementById("dotlanModal");
+  const iframe = document.getElementById("dotlanFrame");
+  if (!modal) return;
+  modal.style.display = "none";
+  if (iframe) iframe.src = "";
+}
 
-    if (!modal || !iframe) {
-      console.error("⚠️ Modale DOTLAN introuvable.");
-      return;
-    }
+function openDotlanModal(systemName) {
+  const modal = document.getElementById("dotlanModal");
+  const iframe = document.getElementById("dotlanFrame");
+  const title = document.getElementById("dotlanTitle");
+  const closeBtn = document.getElementById("dotlanClose");
 
-    const cleanSystem = systemName.trim();
-    const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
-
-    iframe.src = dotlanUrl;
-    modal.style.display = "flex";
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.style.display = "none";
-        iframe.src = "";
-      }
-    });
+  if (!modal || !iframe || !closeBtn) {
+    console.error("⚠️ Modale DOTLAN introuvable ou éléments manquants.");
+    return;
   }
+
+  const cleanSystem = systemName.trim();
+  const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+
+  iframe.src = dotlanUrl;
+  if (title) title.textContent = `Carte du système : ${cleanSystem}`;
+  modal.style.display = "flex";
+
+  // Affecte un seul handler au bouton de fermeture (remplace l'ancien)
+  closeBtn.onclick = closeDotlanModal;
+
+  // click en dehors → fermer (on attache un handler unique en le stockant pour pouvoir le retirer si besoin)
+  // évite d'empiler les listeners : on supprime l'ancien si présent, puis on en ajoute un.
+  if (modal._dotlanClickHandler) {
+    modal.removeEventListener("click", modal._dotlanClickHandler);
+  }
+  modal._dotlanClickHandler = function(e) {
+    if (e.target === modal) closeDotlanModal();
+  };
+  modal.addEventListener("click", modal._dotlanClickHandler);
+
+  // Fermer à l'Esc — on ajoute une fois et on stocke la référence
+  if (!modal._dotlanEscHandler) {
+    modal._dotlanEscHandler = function(e) {
+      if (e.key === "Escape") closeDotlanModal();
+    };
+    document.addEventListener("keydown", modal._dotlanEscHandler);
+  }
+}
+
    // === Tri par Countdown ===
   let countdownSortAsc = true;
 
