@@ -3,7 +3,18 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/functions.php';
 include __DIR__ . '/includes/header.php';
 ?>
-
+<button id="debugToggle" title="Basculer le mode debug" style="
+  position:absolute; top:10px; right:10px;
+  background:${localStorage.getItem('debugMode')==='true' ? '#4caf50' : '#333'};
+  color:white; border:none; border-radius:6px; padding:6px 10px;
+  cursor:pointer;">🐞 Debug</button>
+<script>
+document.getElementById('debugToggle').addEventListener('click', () => {
+  const newState = localStorage.getItem('debugMode') !== 'true';
+  localStorage.setItem('debugMode', newState);
+  location.reload();
+});
+</script>
 <div class="container">
   <header>
     <h1>📊 Structures — Drone Lands</h1>

@@ -3,6 +3,7 @@
  * manage_structures.php
  * Version fusionnée : stable + compatibilité ancienne
  */
+require_once __DIR__ . '/../config_debug.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -116,7 +117,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
         }
     }
+debug_log("🔍 Recherche: system={$input['Nom du système']} | structure={$input['Nom de la structure']} | found=" . ($found ? 'oui' : 'non'));
 
+if (!$found) {
+    debug_log("⚠️ Structure non trouvée dans le JSON local.");
+} else {
+    debug_log("✅ Structure mise à jour. Date={$input['Date']}, Reinforcé={$input['Renforcé']}");
+}
     if (!$found) {
         $structures[] = [
             "Nom du système" => $input["Nom du système"],

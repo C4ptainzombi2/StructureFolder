@@ -1,3 +1,16 @@
+// === MODE DEBUG ===
+const DEBUG_MODE = localStorage.getItem("debugMode") === "true";
+
+function debugLog(...args) {
+  if (DEBUG_MODE) console.log("🐞 DEBUG:", ...args);
+}
+
+function toggleDebugMode() {
+  const newState = !DEBUG_MODE;
+  localStorage.setItem("debugMode", newState);
+  location.reload();
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("📡 Chargement du module Structures — Drone Lands");
 
@@ -191,11 +204,13 @@ const JSON_URL = "api/manage_structures.php";
       feedback.textContent = "⏳ Mise à jour en cours...";
 
       try {
+        debugLog("🟢 Envoi des données vers API:", updated);
         const postRes = await fetch("api/manage_structures.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated)
         });
+        debugLog("📬 Réponse du serveur:", result);
 
         const result = await postRes.json();
         if (result.success) {
