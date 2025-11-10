@@ -91,10 +91,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   // === Format du compte à rebours ===
   function formatCountdown(ms) {
     const totalSeconds = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
+
+    if (days > 0) {
+      return `${days}d ${hours.toString().padStart(2, "0")}h ${minutes
+        .toString()
+        .padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
+    } else {
+      return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds
+        .toString()
+        .padStart(2, "0")}s`;
+    }
   }
 
   // === Affichage du tableau ===
@@ -119,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (diff > 0) {
           countdownHTML = `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`;
         } else {
-          countdownHTML = `<span class="expired">Expiré</span>`;
+          countdownHTML = `<span class="expired">❌</span>`;
         }
       }
 
@@ -158,11 +168,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       const diff = targetDate - new Date();
 
       if (diff <= 0) {
-        el.textContent = "Expiré";
+        el.textContent = "❌";
         el.classList.add("expired");
+        el.style.color = "#ff4444";
         el.classList.remove("countdown");
       } else {
         el.textContent = formatCountdown(diff);
+
+        const totalHours = diff / 3600000;
+        if (totalHours < 1) {
+          el.style.color = "#ff5555"; // Rouge vif si < 1h
+        } else if (totalHours < 6) {
+          el.style.color = "#ffaa00"; // Orange si < 6h
+        } else if (totalHours < 24) {
+          el.style.color = "#ffff66"; // Jaune si < 24h
+        } else {
+          el.style.color = "#00ff99"; // Vert sinon
+        }
       }
     });
   }, 1000);
