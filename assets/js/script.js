@@ -1,156 +1,6 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("📡 Chargement du module Structures — Drone Lands");
-
-  const JSON_URL = "/api/manage_structures.php";
-
-  // === Sélecteurs DOM ===
-  const regionFilter = document.getElementById("regionFilter");
-  const typeFilter = document.getElementById("typeFilter");
-  const allianceFilter = document.getElementById("allianceFilter");
-  const constellationFilter = document.getElementById("constellationFilter");
-  const searchInput = document.getElementById("searchInput");
-  const resetBtn = document.getElementById("resetFilters");
-  const tableBody = document.getElementById("tableBody");
-  const counter = document.getElementById("counter");
-
-  let allStructures = [];
-
-  // === Charger les données ===
-  async function loadData() {
-    try {
-      const res = await fetch(`${JSON_URL}?v=${Date.now()}`);
-      const json = await res.json();
-      allStructures = json.structures || [];
-      renderTable(allStructures);
-      populateFilters();
-      console.log(`✅ ${allStructures.length} structures chargées.`);
-    } catch (e) {
-      console.error("Erreur de chargement :", e);
-      tableBody.innerHTML = `<tr><td colspan="9">❌ Impossible de charger les données</td></tr>`;
-    }
-  }
-
-  // === Filtres dynamiques ===
-  function populateFilters() {
-    const uniques = (key) => [...new Set(allStructures.map(s => s[key] || "Inconnu"))].sort();
-    function fillSelect(select, items, label) {
-      if (!select) return;
-      select.innerHTML = `<option value="">${label}</option>`;
-      items.forEach(i => {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = i;
-        select.appendChild(opt);
-      });
-    }
-    fillSelect(regionFilter, uniques("Région"), "🌍 Toutes régions");
-    fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
-    fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
-    fillSelect(constellationFilter, uniques("Constellation"), "🌌 Toutes constellations");
-  }
-
-  // === Filtrage ===
-  function applyFilters() {
-    let filtered = [...allStructures];
-    const region = regionFilter.value;
-    const type = typeFilter.value;
-    const alliance = allianceFilter.value;
-    const constellation = constellationFilter.value;
-    const search = searchInput.value.trim().toLowerCase();
-
-    if (region) filtered = filtered.filter(s => s["Région"] === region);
-    if (type) filtered = filtered.filter(s => s["Type"] === type);
-    if (alliance) filtered = filtered.filter(s => s["Alliance / Corporation"] === alliance);
-    if (constellation) filtered = filtered.filter(s => s["Constellation"] === constellation);
-    if (search)
-      filtered = filtered.filter(s =>
-        Object.values(s).some(v => v?.toString().toLowerCase().includes(search))
-      );
-
-    renderTable(filtered);
-  }
-
-  [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(f =>
-    f?.addEventListener("change", applyFilters)
-  );
-  searchInput?.addEventListener("input", applyFilters);
-  resetBtn?.addEventListener("click", () => {
-    [regionFilter, typeFilter, allianceFilter, constellationFilter, searchInput].forEach(el => {
-      if (el) el.value = "";
-    });
-    renderTable(allStructures);
-  });
-
-  // === Compte à rebours ===
-  function formatCountdown(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const d = Math.floor(totalSeconds / 86400);
-    const h = Math.floor((totalSeconds % 86400) / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return d > 0
-      ? `${d}d ${h.toString().padStart(2, "0")}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`
-      : `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`;
-  }
-
-  function renderTable(structures) {
-    if (!structures.length) {
-      tableBody.innerHTML = `<tr><td colspan="9">Aucune structure trouvée</td></tr>`;
-      counter.textContent = "Total : 0";
-      return;
-    }
-
-    tableBody.innerHTML = "";
-    structures.forEach(s => {
-      const system = s["Nom du système"] || "-";
-      const structureName = s["Nom de la structure"] || s["Remarques"] || "-";
-      const date = s["Date"];
-      let countdownHTML = "-";
-
-      if (date && !isNaN(new Date(date))) {
-        const target = new Date(date);
-        const diff = target - new Date();
-        countdownHTML = diff > 0
-          ? `<span class="countdown" data-target="${target.toISOString()}">${formatCountdown(diff)}</span>`
-          : `<span class="expired">❌</span>`;
-      }
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${system}</td>
-        <td>${structureName}</td>
-        <td>${s["Région"] || "-"}</td>
-        <td>${s["Constellation"] || "-"}</td>
-        <td>${s["Type"] || "-"}</td>
-        <td>${s["Alliance / Corporation"] || "-"}</td>
-        <td>${date || "-"}</td>
-        <td>${countdownHTML}</td>
-      `;
-      tableBody.appendChild(tr);
-    });
-
-    counter.textContent = `Total : ${structures.length}`;
-  }
-
-  setInterval(() => {
-    document.querySelectorAll(".countdown").forEach(el => {
-      const t = new Date(el.dataset.target);
-      const diff = t - new Date();
-      if (diff <= 0) {
-        el.textContent = "❌";
-        el.className = "expired";
-      } else el.textContent = formatCountdown(diff);
-    });
-  }, 1000);
-
-  await loadData();
-  await initStrategicMap(allStructures);
-});
-
-
 // === 🗺️ Carte stratégique ===
 async function initStrategicMap(structures) {
-  console.log("🗺️ Initialisation de la carte stratégique (avec légende personnalisée)");
+  console.log("🗺️ Initialisation de la carte stratégique (version avec légende personnalisée)...");
 
   const mapContainer = document.getElementById("strategicMap");
   const timersList = document.getElementById("mapTimersList");
@@ -159,6 +9,16 @@ async function initStrategicMap(structures) {
 
   if (!mapContainer) return;
 
+  // 🔧 Supprime les liens Dotlan
+  function sanitizeSVG(svg) {
+    svg.querySelectorAll("a").forEach(a => {
+      a.removeAttribute("href");
+      a.removeAttribute("xlink:href");
+      a.addEventListener("click", e => e.preventDefault());
+    });
+  }
+
+  // 🔧 Charge un SVG depuis un fichier ou Dotlan (via proxy)
   async function loadSVG(svgPath) {
     try {
       if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
@@ -168,6 +28,7 @@ async function initStrategicMap(structures) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const svgText = await res.text();
       mapContainer.innerHTML = svgText;
+
       const svg = mapContainer.querySelector("svg");
       sanitizeSVG(svg);
       return svg;
@@ -178,11 +39,83 @@ async function initStrategicMap(structures) {
     }
   }
 
-  function sanitizeSVG(svg) {
-    if (!svg) return;
-    svg.querySelectorAll("a").forEach(a => {
-      a.removeAttribute("href");
-      a.removeAttribute("xlink:href");
+  // === Fonction pour ajouter la légende personnalisée ===
+  function addCustomLegend(svg) {
+    // Supprime l’ancienne légende Dotlan
+    svg.querySelectorAll("text, rect, g").forEach(el => {
+      if (el.textContent?.includes("Outer Passage") || el.textContent?.includes("by Wollari")) {
+        el.remove();
+      }
+    });
+
+    // Crée un groupe pour ta légende
+    const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", "20");
+    bg.setAttribute("y", "620");
+    bg.setAttribute("width", "250");
+    bg.setAttribute("height", "45");
+    bg.setAttribute("fill", "#1a1a1a");
+    bg.setAttribute("stroke", "#444");
+    bg.setAttribute("rx", "6");
+    legendGroup.appendChild(bg);
+
+    const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt1.setAttribute("x", "35");
+    txt1.setAttribute("y", "638");
+    txt1.setAttribute("fill", "#cccccc");
+    txt1.setAttribute("font-size", "11");
+    txt1.textContent = "⚙️ Gris = structures présentes";
+    legendGroup.appendChild(txt1);
+
+    const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt2.setAttribute("x", "35");
+    txt2.setAttribute("y", "655");
+    txt2.setAttribute("fill", "#ff4444");
+    txt2.setAttribute("font-size", "11");
+    txt2.textContent = "🔥 Rouge = structures renforcées";
+    legendGroup.appendChild(txt2);
+
+    svg.appendChild(legendGroup);
+  }
+
+  // === Met à jour les systèmes avec les compteurs ===
+  function updateSystemIndicators(svg) {
+    const texts = svg.querySelectorAll("a text, text");
+
+    texts.forEach(text => {
+      const systemName = text.textContent.trim();
+      if (!systemName) return;
+
+      // Trouve les structures associées à ce système
+      const systemStructures = structures.filter(s =>
+        s["Nom du système"]?.toUpperCase() === systemName.toUpperCase()
+      );
+
+      if (systemStructures.length > 0) {
+        const reinforcedCount = systemStructures.filter(s => s["Renforcé"]?.toLowerCase() === "oui").length;
+
+        // Ajout du compteur sous le nom
+        const countText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        countText.setAttribute("x", text.getAttribute("x"));
+        countText.setAttribute("y", parseFloat(text.getAttribute("y")) + 10);
+        countText.setAttribute("font-size", "8");
+        countText.setAttribute("text-anchor", "middle");
+        countText.setAttribute("fill", "#aaa");
+        countText.textContent = `(${systemStructures.length}/${reinforcedCount})`;
+        text.parentNode.appendChild(countText);
+
+        // Coloration du fond du système
+        const shape = text.closest("a")?.querySelector("ellipse, rect, polygon") || text.closest("ellipse, rect, polygon");
+        if (shape) {
+          if (reinforcedCount > 0) {
+            shape.setAttribute("fill", "#ffb3b3"); // rouge clair
+          } else {
+            shape.setAttribute("fill", "#d9d9d9"); // gris clair
+          }
+        }
+      }
     });
   }
 
@@ -196,7 +129,7 @@ async function initStrategicMap(structures) {
       const name = text.textContent.trim();
       if (!name) return;
       text.style.cursor = "pointer";
-      text.addEventListener("click", async (e) => {
+      text.addEventListener("click", async e => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -207,103 +140,11 @@ async function initStrategicMap(structures) {
         const dotlanURL = `https://evemaps.dotlan.net/svg/${regionName}.svg`;
         svgDoc = await loadSVG(dotlanURL);
         if (svgDoc) {
-          attachRegionHandlers(name);
+          updateSystemIndicators(svgDoc);
           addCustomLegend(svgDoc);
         }
       });
     });
-  }
-
-  function attachRegionHandlers(regionName) {
-    const links = svgDoc.querySelectorAll("a");
-    timersList.innerHTML = "";
-
-    links.forEach(link => {
-      const textNode = link.querySelector("text");
-      const sysName = textNode ? textNode.textContent.trim() : link.textContent.trim();
-      if (!sysName) return;
-
-      const systemTimers = structures.filter(s =>
-        s["Nom du système"]?.toUpperCase() === sysName.toUpperCase()
-      );
-      const total = systemTimers.length;
-      const reinforced = systemTimers.filter(s => {
-        const d = new Date(s["Date"]);
-        return !isNaN(d) && d > new Date();
-      }).length;
-
-      // Supprime anciens tspan
-      link.querySelectorAll("tspan").forEach(t => t.remove());
-
-      if (textNode) {
-        const custom = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-        custom.setAttribute("x", textNode.getAttribute("x"));
-        custom.setAttribute("dy", "10");
-        custom.setAttribute("font-size", "8");
-        custom.setAttribute("fill", reinforced > 0 ? "#ff5555" : "#aaa");
-        custom.textContent = `(${total} / ${reinforced})`;
-        textNode.appendChild(custom);
-      }
-
-      const shape = link.querySelector("circle, rect, polygon, path");
-      if (shape) {
-        if (reinforced > 0) shape.setAttribute("stroke", "#ff3333");
-        else if (total > 0) shape.setAttribute("stroke", "#888");
-      }
-
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        timersList.innerHTML = "";
-        if (systemTimers.length === 0) {
-          timersList.innerHTML = `<li>Aucune structure dans ${sysName}</li>`;
-          return;
-        }
-
-        systemTimers.forEach(s => {
-          const date = new Date(s["Date"]);
-          const now = new Date();
-          const expired = date < now;
-          const li = document.createElement("li");
-          li.style.borderLeft = `4px solid ${expired ? "#ff4444" : "#ffaa00"}`;
-          li.textContent = `${sysName} — ${s["Nom de la structure"]}`;
-          timersList.appendChild(li);
-        });
-      });
-    });
-  }
-
-  function addCustomLegend(svg) {
-    svg.querySelectorAll("text").forEach(t => {
-      if (t.textContent.includes("Outer Passage")) return;
-    });
-    const legendGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    legendGroup.setAttribute("transform", "translate(20, 630)");
-
-    const legendBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    legendBg.setAttribute("width", "200");
-    legendBg.setAttribute("height", "50");
-    legendBg.setAttribute("fill", "#0e141f");
-    legendBg.setAttribute("stroke", "#00d4ff");
-    legendBg.setAttribute("rx", "6");
-    legendGroup.appendChild(legendBg);
-
-    const line1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    line1.setAttribute("x", "10");
-    line1.setAttribute("y", "20");
-    line1.setAttribute("fill", "#ccc");
-    line1.textContent = "⚙️ Gris = structures présentes";
-    legendGroup.appendChild(line1);
-
-    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    line2.setAttribute("x", "10");
-    line2.setAttribute("y", "40");
-    line2.setAttribute("fill", "#ff6666");
-    line2.textContent = "🔥 Rouge = structures renforcées";
-    legendGroup.appendChild(line2);
-
-    svg.appendChild(legendGroup);
   }
 
   backButton.addEventListener("click", async () => {
