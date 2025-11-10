@@ -184,10 +184,11 @@ button:hover {
   background: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 15px rgba(0,255,255,0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
 }
 
-#strategicMapContainer {
+/* ✅ Correction ici : on cible #strategicMap (le vrai conteneur) */
+#strategicMap {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -198,12 +199,16 @@ button:hover {
   padding: 10px;
   overflow: auto;
   max-width: 70%;
+  min-height: 85vh; /* garantit que la carte reste grande */
 }
 
-#strategicMapContainer svg {
-  width: 100%;
+/* ✅ Le SVG ne sera plus réduit */
+#strategicMap svg {
+  width: auto;
   height: auto;
+  max-width: 100%;
   max-height: 85vh;
+  display: block;
   object-fit: contain;
   background: transparent;
 }
