@@ -255,45 +255,57 @@ async function addCustomLegend(svg) {
 
   // === Chargement d’un SVG avec proxy ===
     async function loadSVG(svgPath) {
-    try {
-        // Proxy pour contourner CORS si nécessaire
-        if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
-        svgPath = `/api/proxy_svg.php?url=${encodeURIComponent(svgPath)}`;
-        }
-
-        const res = await fetch(svgPath);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const svgText = await res.text();
-
-        // 🔧 Crée un conteneur temporaire pour parser le SVG sans l’effacer du DOM
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svgText, "image/svg+xml");
-        const newSvg = doc.querySelector("svg");
-
-        if (!newSvg) throw new Error("Aucun élément <svg> trouvé dans la ressource.");
-
-        // 🧹 On vide uniquement l'ancien SVG, pas le container complet
-        mapContainer.querySelectorAll("svg").forEach(s => s.remove());
-
-        // 🔧 On conserve le SVG dans le DOM sans réécrire innerHTML
-        mapContainer.appendChild(newSvg);
-
-        // ✅ On neutralise les liens Dotlan
-        sanitizeSVG(newSvg);
-
-        console.log("✅ SVG chargé et inséré correctement :", svgPath);
-        return newSvg;
-
-    } catch (err) {
-        mapContainer.innerHTML = `
-        <div style="color:red;padding:10px;">
-            Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}
-        </div>`;
-        console.error("Erreur SVG :", err);
-        return null;
+  try {
+    // Proxy pour contourner CORS si nécessaire
+    if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
+      svgPath = `/api/proxy_svg.php?url=${encodeURIComponent(svgPath)}`;
     }
+
+    const res = await fetch(svgPath);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const svgText = await res.text();
+
+    // Parser proprement le SVG
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgText, "image/svg+xml");
+    const newSvg = doc.querySelector("svg");
+
+    if (!newSvg) throw new Error("Aucun élément <svg> trouvé dans le fichier.");
+
+    // 🔧 Sécurisation des dimensions
+    if (!newSvg.hasAttribute("viewBox")) {
+      // Si pas de viewBox, on la calcule d'après width/height
+      const w = parseFloat(newSvg.getAttribute("width")) || 1200;
+      const h = parseFloat(newSvg.getAttribute("height")) || 800;
+      newSvg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     }
+
+    // Force les dimensions visibles pour éviter le rendu vide
+    newSvg.setAttribute("width", "100%");
+    newSvg.setAttribute("height", "100%");
+    newSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    // Supprime tout ancien SVG avant d’ajouter le nouveau
+    mapContainer.querySelectorAll("svg").forEach(s => s.remove());
+    mapContainer.appendChild(newSvg);
+
+    // Neutralise les liens Dotlan
+    sanitizeSVG(newSvg);
+
+    console.log("✅ SVG chargé et inséré correctement :", svgPath);
+    return newSvg;
+
+  } catch (err) {
+    console.error("Erreur SVG :", err);
+    mapContainer.innerHTML = `
+      <div style="color:red;padding:10px;">
+        Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}
+      </div>`;
+    return null;
+  }
+}
+
 
 
   // === Chargement de la carte univers ===
