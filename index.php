@@ -50,25 +50,14 @@ include __DIR__ . '/includes/header.php';
   </table>
 
   <!-- 🗺️ Carte stratégique interactive -->
-  <section id="strategicSection">
-    <h2>🗺️ Carte stratégique interactive</h2>
+  <div id="mapContainer">
+  <div id="strategicMapContainer" title="Carte Drone Lands"></div>
 
-    <div id="mapContainer">
-      <!-- SVG principal de New Eden -->
-      <object id="strategicMap" type="image/svg+xml" data="/assets/maps/New_Eden.svg">
-        Votre navigateur ne supporte pas les SVG interactifs.
-      </object>
-
-      <!-- Panneau d’informations à droite -->
-      <aside id="mapSidebar">
-        <h3 id="mapRegionTitle">Sélectionnez une région</h3>
-        <ul id="mapTimersList">
-          <li>Aucune région sélectionnée.</li>
-        </ul>
-        <button id="mapBackButton">⬅️ Retour à la carte globale</button>
-      </aside>
-    </div>
-  </section>
+  <div id="mapSidebar">
+    <h3 id="mapRegionTitle">🗺️ New Eden</h3>
+    <ul id="mapTimersList"></ul>
+    <button id="mapBackButton" style="display:none;">⬅️ Retour</button>
+  </div>
 </div>
 
 <?php include __DIR__ . '/includes/modal_dotlan.php'; ?>
