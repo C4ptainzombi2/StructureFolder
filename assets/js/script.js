@@ -55,6 +55,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     fillSelect(constellationFilter, uniques("Constellation"), "🌌 Toutes constellations");
   }
 
+  // === Mettre à jour les filtres dépendants ===
+  function updateDependentFilters() {
+    const selectedRegion = regionFilter.value;
+    const selectedType = typeFilter.value;
+    const selectedAlliance = allianceFilter.value;
+
+    // Structures filtrées selon les sélections
+    const filteredStructures = allStructures.filter(s => {
+      if (selectedRegion && s["Région"] !== selectedRegion) return false;
+      if (selectedType && s["Type"] !== selectedType) return false;
+      if (selectedAlliance && s["Alliance / Corporation"] !== selectedAlliance) return false;
+      return true;
+    });
+
+    const uniques = (key) => [...new Set(filteredStructures.map(s => s[key]).filter(Boolean))].sort();
+
+    function fillSelect(select, items, label) {
+      if (!select) return;
+      const currentValue = select.value;
+      select.innerHTML = `<option value="">${label}</option>`;
+      items.forEach(i => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i;
+        select.appendChild(opt);
+      });
+      if (currentValue && items.includes(currentValue)) select.value = currentValue;
+    }
+
+    fillSelect(constellationFilter, uniques("Constellation"), "🌌 Toutes constellations");
+    fillSelect(typeFilter, uniques("Type"), "🏗️ Tous types");
+    fillSelect(allianceFilter, uniques("Alliance / Corporation"), "🛡️ Toutes alliances");
+  }
+
   // === Affichage du tableau ===
   function renderTable(structures) {
     if (!structures || structures.length === 0) {
@@ -123,11 +157,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (el) el.addEventListener("input", filterAndRender);
   });
 
+  // 🔄 Ajout des événements pour les filtres dépendants
+  [regionFilter, typeFilter, allianceFilter].forEach(el => {
+    if (el) el.addEventListener("change", () => {
+      updateDependentFilters();
+      filterAndRender();
+    });
+  });
+
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
       [regionFilter, typeFilter, allianceFilter, constellationFilter].forEach(el => el.value = "");
       reinforcedFilter.checked = false;
       searchInput.value = "";
+      populateFilters();
       filterAndRender();
     });
   }
@@ -141,9 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const structureName = match ? match[2].trim() : "";
 
     const reinforcedMatch = text.match(/Reinforced until\s+(\d{4}\.\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2})/i);
-    const date = reinforcedMatch
-      ? reinforcedMatch[1].replace(/\./g, "-")
-      : "";
+    const date = reinforcedMatch ? reinforcedMatch[1].replace(/\./g, "-") : "";
 
     return { system, structureName, date };
   }
@@ -212,36 +253,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // === Ouvrir la modale DOTLAN ===
-function openDotlanModal(systemName) {
-  const modal = document.getElementById("dotlanModal");
-  const iframe = document.getElementById("dotlanFrame");
-  const title = document.getElementById("dotlanTitle");
-  const closeBtn = document.getElementById("dotlanClose");
+  function openDotlanModal(systemName) {
+    const modal = document.getElementById("dotlanModal");
+    const iframe = document.getElementById("dotlanFrame");
+    const title = document.getElementById("dotlanTitle");
+    const closeBtn = document.getElementById("dotlanClose");
 
-  if (!modal || !iframe) {
-    console.error("⚠️ Modale DOTLAN introuvable.");
-    return;
-  }
+    if (!modal || !iframe) {
+      console.error("⚠️ Modale DOTLAN introuvable.");
+      return;
+    }
 
-  const cleanSystem = systemName.trim();
-  const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
+    const cleanSystem = systemName.trim();
+    const dotlanUrl = `https://evemaps.dotlan.net/svg/Universe.svg?&path=C-J6MT:${encodeURIComponent(cleanSystem)}`;
 
-  iframe.src = dotlanUrl;
-  title.textContent = `Carte du système : ${cleanSystem}`;
-  modal.style.display = "flex"; // ✅ affiche et centre la modale
+    iframe.src = dotlanUrl;
+    title.textContent = `Carte du système : ${cleanSystem}`;
+    modal.style.display = "flex";
 
-  closeBtn.onclick = () => {
-    modal.style.display = "none";
-    iframe.src = "";
-  };
-
-  window.onclick = (event) => {
-    if (event.target === modal) {
+    closeBtn.onclick = () => {
       modal.style.display = "none";
       iframe.src = "";
-    }
-  };
-}
+    };
+
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+        iframe.src = "";
+      }
+    };
+  }
 
   // === Initialisation ===
   await loadData();
