@@ -254,31 +254,47 @@ async function addCustomLegend(svg) {
 
 
   // === Chargement d’un SVG avec proxy ===
-  async function loadSVG(svgPath) {
+    async function loadSVG(svgPath) {
     try {
-      if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
+        // Proxy pour contourner CORS si nécessaire
+        if (svgPath.startsWith("https://evemaps.dotlan.net/")) {
         svgPath = `/api/proxy_svg.php?url=${encodeURIComponent(svgPath)}`;
-      }
-      const res = await fetch(svgPath);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const svgText = await res.text();
+        }
 
-      // On remplace uniquement le contenu du conteneur
-      mapContainer.innerHTML = svgText;
-      const svg = mapContainer.querySelector("svg");
-      if (!svg) throw new Error("Le SVG est vide ou invalide");
+        const res = await fetch(svgPath);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      sanitizeSVG(svg);
-      // on attend un tick pour que le rendu soit prêt avant modif
-      requestAnimationFrame(() => addCustomLegend(svg));
+        const svgText = await res.text();
 
-      return svg;
+        // 🔧 Crée un conteneur temporaire pour parser le SVG sans l’effacer du DOM
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgText, "image/svg+xml");
+        const newSvg = doc.querySelector("svg");
+
+        if (!newSvg) throw new Error("Aucun élément <svg> trouvé dans la ressource.");
+
+        // 🧹 On vide uniquement l'ancien SVG, pas le container complet
+        mapContainer.querySelectorAll("svg").forEach(s => s.remove());
+
+        // 🔧 On conserve le SVG dans le DOM sans réécrire innerHTML
+        mapContainer.appendChild(newSvg);
+
+        // ✅ On neutralise les liens Dotlan
+        sanitizeSVG(newSvg);
+
+        console.log("✅ SVG chargé et inséré correctement :", svgPath);
+        return newSvg;
+
     } catch (err) {
-      console.error("Erreur SVG :", err);
-      mapContainer.innerHTML = `<div style="color:red;padding:10px;">Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}</div>`;
-      return null;
+        mapContainer.innerHTML = `
+        <div style="color:red;padding:10px;">
+            Erreur lors du chargement du SVG : ${svgPath}<br>${err.message}
+        </div>`;
+        console.error("Erreur SVG :", err);
+        return null;
     }
-  }
+    }
+
 
   // === Chargement de la carte univers ===
   let svgDoc = await loadSVG("/data/maps/New_Eden.svg");
