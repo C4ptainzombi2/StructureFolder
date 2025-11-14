@@ -58,20 +58,25 @@ foreach ($regions as $region) {
 
     foreach ($data as $k) {
 
-        // ignore NPC
-        if (isset($k["zkb"]["npc"]) && $k["zkb"]["npc"] === true) continue;
+    // Ignore entries without killmail_time (zKill sometimes sends corrupted rows)
+    if (!isset($k["killmail_time"])) continue;
 
-        $time = strtotime($k["killmail_time"]);
-        if ($time < $minDate) continue;
+    // ignore NPC
+    if (isset($k["zkb"]["npc"]) && $k["zkb"]["npc"] === true) continue;
 
-        // check group_id (structure identification)
-        $groupID = $k["victim"]["group_id"] ?? null;
-        if (!$groupID) continue;
+    $time = strtotime($k["killmail_time"]);
+    if ($time === false || $time < $minDate) continue;
 
-        if (!in_array($groupID, $structureGroups)) continue;
+    // check group_id (structure identification)
+    if (!isset($k["victim"]["group_id"])) continue;
 
-        $allKills[] = $k;
-    }
+    $groupID = $k["victim"]["group_id"];
+
+    if (!in_array($groupID, $structureGroups)) continue;
+
+    $allKills[] = $k;
+}
+
 }
 
 // Tri par date DESC (plus récent d'abord)
