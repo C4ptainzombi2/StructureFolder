@@ -66,6 +66,10 @@ include __DIR__ . '/includes/header.php';
     </aside>
   </div>
 </section>
-
+  </main>
+  <?php include __DIR__ . '/modal_dotlan.php'; ?>
+  <script src="<?= ASSETS_PATH ?>/js/script.js"></script>
+</body>
+</html>
 <?php include __DIR__ . '/includes/modal_dotlan.php'; ?>
 <?php include __DIR__ . '/includes/footer.php'; ?>
