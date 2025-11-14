@@ -1,0 +1,23 @@
+.kill {
+  display: flex;
+  align-items: center;
+  background: #1b1d26;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+.kill img {
+  margin-right: 15px;
+  border-radius: 4px;
+}
+#pagination {
+  text-align: center;
+  margin: 20px 0;
+}
+.isk-box {
+  padding: 10px;
+  background: #20232d;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 1.1em;
+}
