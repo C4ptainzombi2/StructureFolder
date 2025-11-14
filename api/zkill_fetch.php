@@ -12,38 +12,28 @@ $regions = [
     10000071  // Malpais
 ];
 
-$minDate = isset($_GET["after"]) ? strtotime($_GET["after"]) : strtotime("-30 days");
-$page = isset($_GET["page"]) ? intval($_GET["page"]) : 1;
-$perPage = 50;
-
-$allKills = [];
-
-// Liste réelle des structures Upwell
 $structureIDs = [
-    35825, // Raitaru
-    35826, // Azbel
-    35827, // Tatara
-    35832, // Astrahus
-    35833, // Fortizar
-    35834, // Keepstar
-    35835, // Athanor
-    47512, // Ansiblex
-    35836, // Sotiyo
-    47513, // Tenebrex Cyno Jammer
-    47514  // Pharolux Cyno Beacon
+    35825, 35826, 35827, 35832, 35833, 35834, 35835, 35836,
+    47512, 47513, 47514
 ];
 
-foreach ($regions as $region) {
+$minDate = isset($_GET["after"]) ? strtotime($_GET["after"]) : strtotime("-30 days");
+$page = isset($_GET["page"]) ? intval($_GET["page"]) : 1;
 
-    // On récupère plusieurs pages pour éviter la limite 200 kills
+$perPage = 50;
+$allKills = [];
+
+$userAgent = "MyZkillFetcher/1.0";
+
+foreach ($regions as $region) {
     for ($p = 1; $p <= 10; $p++) {
 
-        $url = "https://zkillboard.com/api/kills/regionID/$region/page/$p/?no-attackers";
+        $url = "https://zkillboard.com/api/kills/regionID/$region/page/$p/?orderDirection=desc";
 
         $opts = [
             "http" => [
                 "method" => "GET",
-                "header" => "User-Agent: MyStructureFetcher/1.0\r\n"
+                "header" => "User-Agent: $userAgent\r\n"
             ]
         ];
 
@@ -55,28 +45,49 @@ foreach ($regions as $region) {
         $data = json_decode($json, true);
         if (!is_array($data) || count($data) === 0) break;
 
-        foreach ($data as $k) {
-            $time = strtotime($k["killmail_time"]);
+        foreach ($data as $entry) {
 
-            if ($time >= $minDate) {
-                $shipID = $k["victim"]["ship_type_id"] ?? 0;
+            $killID = $entry["killmail_id"];
+            $hash = $entry["zkb"]["hash"];
 
-                if (in_array($shipID, $structureIDs)) {
-                    $allKills[] = $k;
-                }
-            }
+            // Appel ESI pour obtenir les infos manquantes
+            $esiURL = "https://esi.evetech.net/latest/killmails/$killID/$hash/";
+            $esiJSON = @file_get_contents($esiURL);
+
+            if (!$esiJSON) continue;
+            $kill = json_decode($esiJSON, true);
+
+            $killTime = strtotime($kill["killmail_time"]);
+
+            if ($killTime < $minDate) continue;
+
+            $shipID = $kill["victim"]["ship_type_id"] ?? 0;
+
+            if (!in_array($shipID, $structureIDs)) continue;
+
+            // Fusionne zKill + ESI
+            $entry["esi"] = $kill;
+            $allKills[] = $entry;
+
+            // anti rate limit
+            usleep(500000);
         }
     }
 }
 
+// Pagination
 $totalKills = count($allKills);
 $totalPages = ceil($totalKills / $perPage);
 
 $offset = ($page - 1) * $perPage;
 $pageKills = array_slice($allKills, $offset, $perPage);
 
-$totalISK = array_sum(array_column(array_filter($allKills, fn($k)=>isset($k['zkb']['totalValue'])), "zkb.totalValue"));
-$pageISK = array_sum(array_column(array_filter($pageKills, fn($k)=>isset($k['zkb']['totalValue'])), "zkb.totalValue"));
+// Calcul ISK
+$totalISK = 0;
+$pageISK = 0;
+
+foreach ($allKills as $k) $totalISK += $k["zkb"]["totalValue"] ?? 0;
+foreach ($pageKills as $k) $pageISK += $k["zkb"]["totalValue"] ?? 0;
 
 echo json_encode([
     "page" => $page,
@@ -84,4 +95,4 @@ echo json_encode([
     "total_isk" => $totalISK,
     "page_isk" => $pageISK,
     "kills" => $pageKills
-]);
+], JSON_PRETTY_PRINT);
